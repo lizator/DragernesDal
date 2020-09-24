@@ -2,6 +2,8 @@ package com.example.dragernesdal.data;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.Assert.*;
 
 public class PasswordHandlerTest {
@@ -44,7 +46,7 @@ public class PasswordHandlerTest {
     @Test
     public void encryptPassword() {
         String testPass = "testPassW0rd";
-
-        assertNotEquals(testPass, ph.encryptPassword(testPass).get(0));
+        ArrayList<String> arr = ph.encryptPassword(testPass);
+        assertNotEquals(testPass, arr.get(0));
     }
 }
