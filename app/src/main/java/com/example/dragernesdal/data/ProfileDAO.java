@@ -1,48 +1,60 @@
 package com.example.dragernesdal.data;
 
 
+import android.util.Log;
+
 import com.example.dragernesdal.data.model.ProfileDTO;
 
+import org.json.JSONObject;
+
+import java.io.DataOutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ProfileDAO {
-    private final SQLDatabaseIO db = new SQLDatabaseIO("andro", "andro", "127.0.0.1", 3306);
 
-    public ProfileDAO() {
+    ProfileDTO getProfileByEmail(String email) throws InterruptedException {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    URL url = new URL("https://127.0.0.1:8080/user/getbyemail");
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("POST");
+                    conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+                    conn.setRequestProperty("Accept","application/json");
+                    conn.setDoOutput(true);
+                    conn.setDoInput(true);
+
+                    JSONObject jsonParam = new JSONObject();
+                    jsonParam.put("email", email);
+                    Log.i("JSON", jsonParam.toString());
+                    DataOutputStream os = new DataOutputStream(conn.getOutputStream());
+                    //os.writeBytes(URLEncoder.encode(jsonParam.toString(), "UTF-8"));
+                    os.writeBytes(jsonParam.toString());
+
+                    os.flush();
+                    os.close();
+
+                    Log.i("STATUS", String.valueOf(conn.getResponseCode()));
+                    Log.i("MSG" , conn.getResponseMessage());
+
+                    conn.disconnect();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread.start();
+        thread.join();
+        return null;
     }
 
-    public ProfileDTO getProfileByEmail(String email) throws Exception{
-        try {
-            db.connect();
-            ResultSet rs = db.query("SELECT * FROM user WHERE email = '" + email + "'");
-            db.close();
 
-            rs.next();
-            ProfileDTO user = new ProfileDTO();
-            setUser(rs, user);
-            return user;
-
-        } catch (SQLException e) {
-            throw new SQLException("Error in Database");
-        }
-
+    void getConnected() throws SQLException {
+        return;
     }
-
-    public boolean getConnected() throws SQLException {
-        db.connect();
-        return true;
-    }
-
-    private void setUser(ResultSet rs, ProfileDTO user) throws SQLException {
-        user.setId(rs.getInt("idUser"));
-        user.setFirstName(rs.getString("firstName"));
-        user.setLastName(rs.getString("secoundName"));
-        user.setEmail(rs.getString("email"));
-        user.setPhone(rs.getInt("phone"));
-        user.setPassHash(rs.getString("passHash"));
-        user.setSalt(rs.getString("salt"));
-        user.setAdmin(rs.getBoolean("admin"));
-    }
-
 }
