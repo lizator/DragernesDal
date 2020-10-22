@@ -55,7 +55,7 @@ public class PasswordHandlerTest {
     @Test
     public void login() {
         PasswordHandler ds = new PasswordHandler();
-        Result<ProfileDTO> result = ds.login("test@gmail.com", "testP4ssWord");
+        Result<ProfileDTO> result = ds.login("test@gmail.com", "pass");
         if (result instanceof Result.Success) {
             ProfileDTO dto = ((Result.Success<ProfileDTO>) result).getData();
             assertEquals(dto.getId(), 2);
