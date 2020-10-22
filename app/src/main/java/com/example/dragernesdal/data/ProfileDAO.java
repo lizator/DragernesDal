@@ -3,53 +3,50 @@ package com.example.dragernesdal.data;
 
 import android.util.Log;
 
+import com.example.dragernesdal.R;
 import com.example.dragernesdal.data.model.ProfileDTO;
 
 import org.json.JSONObject;
 
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
+import retrofit2.Converter;
+import retrofit2.http;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
+
 public class ProfileDAO {
 
     ProfileDTO getProfileByEmail(String email) throws InterruptedException {
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    URL url = new URL("https://10.16.234.21:8080/user/getbyemail");
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("POST");
-                    conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
-                    conn.setRequestProperty("Accept","application/json");
-                    conn.setDoOutput(true);
-                    conn.setDoInput(true);
+        Retrofit retrofit = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(http.build())
+                .baseUrl("http://10.16.234.21:8080/")
+                .build();
 
-                    JSONObject jsonParam = new JSONObject();
-                    jsonParam.put("email", email);
-                    Log.i("JSON", jsonParam.toString());
-                    DataOutputStream os = new DataOutputStream(conn.getOutputStream());
-                    //os.writeBytes(URLEncoder.encode(jsonParam.toString(), "UTF-8"));
-                    os.writeBytes(jsonParam.toString());
+        StringService service = retrofit.create(StringService.class);
 
-                    os.flush();
-                    os.close();
-
-                    Log.i("STATUS", String.valueOf(conn.getResponseCode()));
-                    Log.i("MSG" , conn.getResponseMessage());
-
-                    conn.disconnect();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        thread.start();
-        thread.join();
+        ProfileDTO dto = new ProfileDTO();
+        dto.setEmail("test@gmail.com");
+        Call<ProfileDTO> call = service.post(dto);
+        Response<ProfileDTO> resp;
+        try {
+            resp = call.execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+            resp = null;
+        }
+        System.out.println(call);
         return null;
     }
 
@@ -57,4 +54,11 @@ public class ProfileDAO {
     void getConnected() throws SQLException {
         return;
     }
+
+    public interface StringService {
+        @POST("user/getbyemail")
+        Call<ProfileDTO> post(@Body ProfileDTO dto);
+    }
 }
+
+
