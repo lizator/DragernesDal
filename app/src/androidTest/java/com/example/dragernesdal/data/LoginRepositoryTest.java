@@ -26,7 +26,7 @@ public class LoginRepositoryTest {
 
     @Test
     public void login() {
-        Result<ProfileDTO> result = rp.login("test@gmail.com", "pass");
+        Result<ProfileDTO> result = rp.login("test@gmail.com", "password");
         if (result instanceof Result.Success) {
             ProfileDTO dto = ((Result.Success<ProfileDTO>) result).getData();
             assertEquals(dto.getId(), 2);
