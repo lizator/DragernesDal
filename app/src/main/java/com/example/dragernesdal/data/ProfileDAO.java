@@ -20,7 +20,7 @@ public class ProfileDAO {
             @Override
             public void run() {
                 try {
-                    URL url = new URL("https://127.0.0.1:8080/user/getbyemail");
+                    URL url = new URL("https://10.16.234.21:8080/user/getbyemail");
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestMethod("POST");
                     conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
