@@ -1,7 +1,11 @@
 package com.example.dragernesdal.data;
 
+import com.example.dragernesdal.data.model.ProfileDTO;
+
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.security.spec.KeySpec;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.crypto.SecretKeyFactory;
@@ -10,6 +14,35 @@ import javax.crypto.spec.PBEKeySpec;
 public class PasswordHandler {
 
     public PasswordHandler() {
+    }
+
+    public Result<ProfileDTO> login(String email, String password) {
+
+        try {
+            ProfileDAO dao = new ProfileDAO();
+            ProfileDTO user = dao.getProfileByEmail(email);
+            String passS = user.getPassHash(); //passHash to check
+            String saltS = user.getSalt(); //salt for generating passHash with pass postet
+
+            if (checkPass(password, passS, saltS)){
+                return new Result.Success<ProfileDTO>(user);
+            } else {
+                throw new Exception("Password does not match");
+            }
+        } catch (Exception e) {
+            ProfileDAO dao2 = new ProfileDAO();
+            try {
+                dao2.getConnected();
+            } catch (SQLException e2){
+                return new Result.Error(new IOException("Error in connecting to database", e2));
+            }
+            return new Result.Error(new IOException("Error in Email or Password", e));
+        }
+    }
+
+
+    public void logout(){
+        //TODO: rewoke authentication
     }
 
     public static boolean checkPass(String pass, String passHash, String Ssalt) {
