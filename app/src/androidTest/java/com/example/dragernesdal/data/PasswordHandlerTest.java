@@ -1,5 +1,7 @@
 package com.example.dragernesdal.data;
 
+import com.example.dragernesdal.data.model.ProfileDTO;
+
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -48,5 +50,17 @@ public class PasswordHandlerTest {
         String testPass = "testPassW0rd";
         ArrayList<String> arr = ph.encryptPassword(testPass);
         assertNotEquals(testPass, arr.get(0));
+    }
+
+    @Test
+    public void login() {
+        PasswordHandler ds = new PasswordHandler();
+        Result<ProfileDTO> result = ds.login("test@gmail.com", "testP4ssWord");
+        if (result instanceof Result.Success) {
+            ProfileDTO dto = ((Result.Success<ProfileDTO>) result).getData();
+            assertEquals(dto.getId(), 2);
+        } else {
+            assertTrue(false);
+        }
     }
 }

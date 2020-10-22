@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 import android.util.Patterns;
 
 import com.example.dragernesdal.data.LoginRepository;
+import com.example.dragernesdal.data.PasswordHandler;
 import com.example.dragernesdal.data.Result;
 import com.example.dragernesdal.data.model.LoggedInUser;
 import com.example.dragernesdal.R;
@@ -16,7 +17,7 @@ public class LoginViewModel extends ViewModel {
 
     private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
     private MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
-    private LoginRepository loginRepository;
+    private LoginRepository loginRepository = new LoginRepository(new PasswordHandler());
 
     LoginViewModel(LoginRepository loginRepository) {
         this.loginRepository = loginRepository;
