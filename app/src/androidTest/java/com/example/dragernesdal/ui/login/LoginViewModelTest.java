@@ -12,8 +12,9 @@ public class LoginViewModelTest {
 
     @Test
     public void login() {
-        vm.login("test@gmail.com", "testP4ssWord");
-
+        vm.login("test@gmail.com", "pass");
+        String name = vm.getLoginResult().getValue().getSuccess().getDisplayName();
+        assertEquals("name", name);
 
     }
 }
