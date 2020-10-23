@@ -122,15 +122,11 @@ public class LoginActivity extends AppCompatActivity {
             loginButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Handler handler = new Handler();
-                    /*loadingProgressBar.setVisibility(View.VISIBLE);
-                    loginViewModel.login(usernameEditText.getText().toString(),
+                    loadingProgressBar.setVisibility(View.VISIBLE);
+                    /*loginViewModel.login(usernameEditText.getText().toString(),
                             passwordEditText.getText().toString());*/
-                    Runnable loginUser = () -> {
-                        loginViewModel.login(usernameEditText.getText().toString(),
-                                passwordEditText.getText().toString());
-                    };
-                    handler.post(loginUser);
+                    LoginThread thread = new LoginThread(usernameEditText.getText().toString(), passwordEditText.getText().toString(), loginViewModel);
+                    thread.start();
                 }
             });
         } else {
@@ -141,10 +137,31 @@ public class LoginActivity extends AppCompatActivity {
     private void updateUiWithUser(LoggedInUserView model) {
         String welcome = String.format(getString(R.string.welcome), model.getDisplayName());
         // TODO : initiate successful logged in experience
+        final ProgressBar loadingProgressBar = findViewById(R.id.loading);
+        loadingProgressBar.setVisibility(View.INVISIBLE);
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
     }
 
     private void showLoginFailed(@StringRes Integer errorString) {
+        final ProgressBar loadingProgressBar = findViewById(R.id.loading);
+        loadingProgressBar.setVisibility(View.INVISIBLE);
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+    }
+
+    class LoginThread extends Thread {
+        private String email;
+        private String pass;
+        private LoginViewModel vm;
+
+        public LoginThread(String email, String pass, LoginViewModel vm) {
+            this.email = email;
+            this.pass = pass;
+            this.vm = vm;
+        }
+
+        @Override
+        public void run() {
+            vm.login(email, pass);
+        }
     }
 }

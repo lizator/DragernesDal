@@ -18,11 +18,12 @@ import retrofit2.http.*;
 
 public class ProfileDAO {
 
+    Response<ProfileDTO> resp;
 
     ProfileDTO getProfileByEmail(String email) throws IOException {
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("http://10.16.234.21:8080/")
+                .baseUrl("http://10.16.162.242:8080/")
                 .build();
 
         StringService service = retrofit.create(StringService.class);
@@ -30,7 +31,6 @@ public class ProfileDAO {
         ProfileDTO dto = new ProfileDTO();
         dto.setEmail("test@gmail.com");
         Call<ProfileDTO> call = service.post(dto);
-        Response<ProfileDTO> resp;
         resp = call.execute();
         return resp.body();
     }

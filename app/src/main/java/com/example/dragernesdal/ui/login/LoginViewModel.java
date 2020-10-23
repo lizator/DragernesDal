@@ -4,7 +4,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import android.os.AsyncTask;
 import android.util.Patterns;
+import android.widget.ProgressBar;
 
 import com.example.dragernesdal.data.LoginRepository;
 import com.example.dragernesdal.data.PasswordHandler;
@@ -12,6 +14,8 @@ import com.example.dragernesdal.data.Result;
 import com.example.dragernesdal.data.model.LoggedInUser;
 import com.example.dragernesdal.R;
 import com.example.dragernesdal.data.model.ProfileDTO;
+
+import java.io.IOException;
 
 public class LoginViewModel extends ViewModel {
 
@@ -32,14 +36,14 @@ public class LoginViewModel extends ViewModel {
     }
 
     public void login(String username, String password) {
-        // can be launched in a separate asynchronous job
+        // can be launched in a separate asynchronous job cause postValue can be in background
         Result<ProfileDTO> result = loginRepository.login(username, password);
 
         if (result instanceof Result.Success) {
             ProfileDTO data = ((Result.Success<ProfileDTO>) result).getData();
-            loginResult.setValue(new LoginResult(new LoggedInUserView(data.getFirstName())));
+            loginResult.postValue(new LoginResult(new LoggedInUserView(data.getFirstName())));
         } else {
-            loginResult.setValue(new LoginResult(R.string.login_failed));
+            loginResult.postValue(new LoginResult(R.string.login_failed));
         }
     }
 
