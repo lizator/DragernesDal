@@ -134,19 +134,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void updateUiWithUser(LoggedInUserView model) {
-        String welcome = String.format(getString(R.string.welcome), model.getDisplayName());
-        // TODO : initiate successful logged in experience
-        final ProgressBar loadingProgressBar = findViewById(R.id.loading);
-        loadingProgressBar.setVisibility(View.INVISIBLE);
-        Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
-    }
 
-    private void showLoginFailed(@StringRes Integer errorString) {
-        final ProgressBar loadingProgressBar = findViewById(R.id.loading);
-        loadingProgressBar.setVisibility(View.INVISIBLE);
-        Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
-    }
 
     class LoginThread extends Thread {
         private String email;
@@ -163,5 +151,19 @@ public class LoginActivity extends AppCompatActivity {
         public void run() {
             vm.login(email, pass);
         }
+    }
+
+    private void updateUiWithUser(LoggedInUserView model) {
+        String welcome = String.format(getString(R.string.welcome), model.getDisplayName());
+        // TODO : initiate successful logged in experience
+        final ProgressBar loadingProgressBar = findViewById(R.id.loading);
+        loadingProgressBar.setVisibility(View.INVISIBLE);
+        Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
+    }
+
+    private void showLoginFailed(@StringRes Integer errorString) {
+        final ProgressBar loadingProgressBar = findViewById(R.id.loading);
+        loadingProgressBar.setVisibility(View.INVISIBLE);
+        Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
 }

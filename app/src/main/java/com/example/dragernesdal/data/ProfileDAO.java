@@ -26,11 +26,11 @@ public class ProfileDAO {
                 .baseUrl("http://10.16.162.242:8080/")
                 .build();
 
-        StringService service = retrofit.create(StringService.class);
+        CallService service = retrofit.create(CallService.class);
 
         ProfileDTO dto = new ProfileDTO();
         dto.setEmail("test@gmail.com");
-        Call<ProfileDTO> call = service.post(dto);
+        Call<ProfileDTO> call = service.getByEmail(dto);
         resp = call.execute();
         return resp.body();
     }
@@ -40,9 +40,9 @@ public class ProfileDAO {
         return;
     }
 
-    public interface StringService {
+    public interface CallService {
         @POST("user/getbyemail")
-        Call<ProfileDTO> post(@Body ProfileDTO dto);
+        Call<ProfileDTO> getByEmail(@Body ProfileDTO dto);
     }
 }
 
