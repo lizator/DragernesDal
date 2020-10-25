@@ -1,7 +1,6 @@
-package com.example.dragernesdal.data;
+package com.example.dragernesdal.data.login;
 
-import com.example.dragernesdal.data.model.LoggedInUser;
-import com.example.dragernesdal.data.model.ProfileDTO;
+import com.example.dragernesdal.data.login.model.ProfileDTO;
 
 /**
  * Class that requests authentication and user information from the remote data source and

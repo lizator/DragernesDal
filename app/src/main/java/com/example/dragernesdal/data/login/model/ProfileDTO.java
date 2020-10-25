@@ -1,6 +1,4 @@
-package com.example.dragernesdal.data.model;
-
-import java.util.PriorityQueue;
+package com.example.dragernesdal.data.login.model;
 
 public class ProfileDTO {
     private int id;

@@ -3,8 +3,8 @@ package com.example.dragernesdal.ui.login;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.annotation.NonNull;
-import com.example.dragernesdal.data.LoginRepository;
-import com.example.dragernesdal.data.PasswordHandler;
+import com.example.dragernesdal.data.login.LoginRepository;
+import com.example.dragernesdal.data.login.PasswordHandler;
 
 /**
  * ViewModel provider factory to instantiate LoginViewModel.

@@ -1,6 +1,6 @@
-package com.example.dragernesdal.data;
+package com.example.dragernesdal.data.login;
 
-import com.example.dragernesdal.data.model.ProfileDTO;
+import com.example.dragernesdal.data.login.model.ProfileDTO;
 
 import java.io.IOException;
 import java.security.SecureRandom;

@@ -1,4 +1,12 @@
 package com.example.dragernesdal.usercreation;
 
-public class CreateUserViewModel {
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
+
+
+
+public class CreateUserViewModel extends ViewModel {
+
+    private MutableLiveData<CreateUserFormState> createUserFormState = new MutableLiveData<>();
+
 }

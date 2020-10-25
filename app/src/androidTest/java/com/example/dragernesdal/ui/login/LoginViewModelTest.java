@@ -1,7 +1,7 @@
 package com.example.dragernesdal.ui.login;
 
-import com.example.dragernesdal.data.LoginRepository;
-import com.example.dragernesdal.data.PasswordHandler;
+import com.example.dragernesdal.data.login.LoginRepository;
+import com.example.dragernesdal.data.login.PasswordHandler;
 
 import org.junit.Test;
 

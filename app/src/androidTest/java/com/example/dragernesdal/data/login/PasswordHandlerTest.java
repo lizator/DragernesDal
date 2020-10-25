@@ -1,6 +1,8 @@
-package com.example.dragernesdal.data;
+package com.example.dragernesdal.data.login;
 
-import com.example.dragernesdal.data.model.ProfileDTO;
+import com.example.dragernesdal.data.login.PasswordHandler;
+import com.example.dragernesdal.data.login.Result;
+import com.example.dragernesdal.data.login.model.ProfileDTO;
 
 import org.junit.Test;
 

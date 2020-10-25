@@ -4,24 +4,18 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import android.os.AsyncTask;
 import android.util.Patterns;
-import android.widget.ProgressBar;
 
-import com.example.dragernesdal.data.LoginRepository;
-import com.example.dragernesdal.data.PasswordHandler;
-import com.example.dragernesdal.data.Result;
-import com.example.dragernesdal.data.model.LoggedInUser;
+import com.example.dragernesdal.data.login.LoginRepository;
+import com.example.dragernesdal.data.login.Result;
 import com.example.dragernesdal.R;
-import com.example.dragernesdal.data.model.ProfileDTO;
-
-import java.io.IOException;
+import com.example.dragernesdal.data.login.model.ProfileDTO;
 
 public class LoginViewModel extends ViewModel {
 
     private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
     private MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
-    private LoginRepository loginRepository = new LoginRepository(new PasswordHandler());
+    private LoginRepository loginRepository;
 
     LoginViewModel(LoginRepository loginRepository) {
         this.loginRepository = loginRepository;
