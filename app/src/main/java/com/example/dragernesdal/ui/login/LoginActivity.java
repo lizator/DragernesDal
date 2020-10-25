@@ -23,6 +23,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.dragernesdal.LoginHandler;
 import com.example.dragernesdal.R;
+import com.example.dragernesdal.ui.main.MainActivity;
 import com.example.dragernesdal.usercreation.CreateUserActivity;
 
 public class LoginActivity extends AppCompatActivity {
@@ -83,6 +84,8 @@ public class LoginActivity extends AppCompatActivity {
                     }
                     if (loginResult.getSuccess() != null) {
                         updateUiWithUser(loginResult.getSuccess());
+                        Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(myIntent);
                     }
                     setResult(Activity.RESULT_OK);
                 }

@@ -22,7 +22,7 @@ public class ProfileDAO {
     public ProfileDAO() {
         this.retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("http://10.16.162.242:8080/")
+                .baseUrl("http://192.168.1.36:8080/")
                 .build();
         this.service = retrofit.create(profileCallService.class);
     }
