@@ -9,7 +9,91 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context=".ui.login.LoginActivity">
+    tools:context=".ui.usercreation.CreateUserActivity">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dragernes Dal"
+        android:textSize="56sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/firstname"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="8dp"
+        android:autofillHints=""
+        android:hint="Fornavn"
+        android:imeActionLabel="@string/firstname_help"
+        android:imeOptions="actionNext"
+        android:inputType="textPersonName"
+        android:selectAllOnFocus="true"
+        app:layout_constraintBottom_toTopOf="@+id/lastname"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="1.0">
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/lastname"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="8dp"
+        android:autofillHints=""
+        android:hint="Efternavn"
+        android:imeActionLabel="@string/lastname_help"
+        android:imeOptions="actionNext"
+        android:inputType="textPersonName"
+        android:selectAllOnFocus="true"
+        app:layout_constraintBottom_toTopOf="@+id/create_username"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <EditText
+        android:id="@+id/create_username"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="212dp"
+        android:layout_marginEnd="24dp"
+        android:hint="@string/prompt_email"
+        android:importantForAutofill="no"
+        android:imeOptions="actionNext"
+        android:inputType="textEmailAddress"
+        android:selectAllOnFocus="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/create_password"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:autofillHints=""
+        android:hint="@string/prompt_password"
+        android:imeActionLabel="@string/action_sign_in_short"
+        android:imeOptions="actionNext"
+        android:inputType="textPassword"
+        android:selectAllOnFocus="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_username" />
 
     <EditText
         android:id="@+id/passwordConfirm"
@@ -21,7 +105,7 @@
         android:autofillHints=""
         android:hint="Gentag Kodeord"
         android:imeActionLabel="@string/invalid_password_confirmation"
-        android:imeOptions="actionDone"
+        android:imeOptions="actionNext"
         android:inputType="textPassword"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -48,75 +132,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/passwordConfirm" />
 
-    <EditText
-        android:id="@+id/lastname"
+    <CheckBox
+        android:id="@+id/termsConfirm"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="8dp"
-        android:autofillHints=""
-        android:hint="Efternavn"
-        android:imeActionLabel="@string/lastname_help"
-        android:imeOptions="actionDone"
-        android:inputType="textPersonName"
-        android:selectAllOnFocus="true"
-        app:layout_constraintBottom_toTopOf="@+id/create_username"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <EditText
-        android:id="@+id/firstname"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="8dp"
-        android:autofillHints=""
-        android:hint="Fornavn"
-        android:imeActionLabel="@string/firstname_help"
-        android:imeOptions="actionDone"
-        android:inputType="textPersonName"
-        android:selectAllOnFocus="true"
-        app:layout_constraintBottom_toTopOf="@+id/lastname"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <EditText
-        android:id="@+id/create_username"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="212dp"
-        android:layout_marginEnd="24dp"
-        android:hint="@string/prompt_email"
-        android:importantForAutofill="no"
-        android:inputType="textEmailAddress"
-        android:selectAllOnFocus="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/create_password"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
-        android:autofillHints=""
-        android:hint="@string/prompt_password"
-        android:imeActionLabel="@string/action_sign_in_short"
-        android:imeOptions="actionDone"
-        android:inputType="textPassword"
-        android:selectAllOnFocus="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_username" />
+        android:text="@string/terms_confirmation"
+        app:layout_constraintEnd_toEndOf="@+id/phone"
+        app:layout_constraintStart_toStartOf="@+id/phone"
+        app:layout_constraintTop_toBottomOf="@+id/phone" />
 
     <Button
         android:id="@+id/create"
@@ -151,24 +175,9 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.3" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Dragernes Dal"
-        android:textSize="56sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <CheckBox
-        android:id="@+id/termsConfirm"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/terms_confirmation"
-        app:layout_constraintEnd_toEndOf="@+id/phone"
-        app:layout_constraintStart_toStartOf="@+id/phone"
-        app:layout_constraintTop_toBottomOf="@+id/phone" />
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
