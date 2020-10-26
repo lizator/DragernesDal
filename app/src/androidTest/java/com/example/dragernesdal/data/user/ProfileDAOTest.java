@@ -1,4 +1,6 @@
-package com.example.dragernesdal.data;
+package com.example.dragernesdal.data.user;
+
+import com.example.dragernesdal.data.user.model.ProfileDTO;
 
 import org.junit.Test;
 
@@ -9,12 +11,14 @@ public class ProfileDAOTest {
 
     @Test
     public void getProfileByEmail() {
+        ProfileDTO dto;
         try {
-            dao.getProfileByEmail("test@gmail.com");
+            dto = dao.getProfileByEmail("test@gmail.com");
         } catch (Exception e) {
+            dto = null;
             e.printStackTrace();
             assertTrue(false);
         }
-        assertTrue(true);
+        assertEquals(2, dto.getId());
     }
 }

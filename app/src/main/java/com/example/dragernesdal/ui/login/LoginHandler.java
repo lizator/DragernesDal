@@ -1,4 +1,4 @@
-package com.example.dragernesdal;
+package com.example.dragernesdal.ui.login;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -6,7 +6,7 @@ import android.preference.PreferenceManager;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
-public class LoginHandler {
+public class LoginHandler { // for saved login
     static final String PREF_USER_NAME= "userID";
     private Context ctx;
 

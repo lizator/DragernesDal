@@ -1,6 +1,4 @@
-package com.example.dragernesdal.data.model;
-
-import java.util.PriorityQueue;
+package com.example.dragernesdal.data.user.model;
 
 public class ProfileDTO {
     private int id;
@@ -13,6 +11,7 @@ public class ProfileDTO {
     private String salt;
 
     private boolean admin;
+    private boolean mailConfirm;
 
     public ProfileDTO (){
     }

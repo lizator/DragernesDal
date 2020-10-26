@@ -1,4 +1,6 @@
-package com.example.dragernesdal.data;
+package com.example.dragernesdal.data.user;
+
+import com.example.dragernesdal.data.user.model.ProfileDTO;
 
 import org.junit.Test;
 
@@ -48,5 +50,17 @@ public class PasswordHandlerTest {
         String testPass = "testPassW0rd";
         ArrayList<String> arr = ph.encryptPassword(testPass);
         assertNotEquals(testPass, arr.get(0));
+    }
+
+    @Test
+    public void login() {
+        PasswordHandler ds = new PasswordHandler();
+        Result<ProfileDTO> result = ds.login("test@gmail.com", "pass");
+        if (result instanceof Result.Success) {
+            ProfileDTO dto = ((Result.Success<ProfileDTO>) result).getData();
+            assertEquals(dto.getId(), 2);
+        } else {
+            assertTrue(false);
+        }
     }
 }

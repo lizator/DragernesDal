@@ -6,20 +6,19 @@ import androidx.lifecycle.ViewModel;
 
 import android.util.Patterns;
 
-import com.example.dragernesdal.data.LoginRepository;
-import com.example.dragernesdal.data.Result;
-import com.example.dragernesdal.data.model.LoggedInUser;
+import com.example.dragernesdal.data.user.UserRepository;
+import com.example.dragernesdal.data.user.Result;
 import com.example.dragernesdal.R;
-import com.example.dragernesdal.data.model.ProfileDTO;
+import com.example.dragernesdal.data.user.model.ProfileDTO;
 
 public class LoginViewModel extends ViewModel {
 
     private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
     private MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
-    private LoginRepository loginRepository;
+    private UserRepository userRepository;
 
-    LoginViewModel(LoginRepository loginRepository) {
-        this.loginRepository = loginRepository;
+    LoginViewModel(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     LiveData<LoginFormState> getLoginFormState() {
@@ -31,14 +30,14 @@ public class LoginViewModel extends ViewModel {
     }
 
     public void login(String username, String password) {
-        // can be launched in a separate asynchronous job
-        Result<ProfileDTO> result = loginRepository.login(username, password);
+        // can be launched in a separate asynchronous job cause postValue can be in background
+        Result<ProfileDTO> result = userRepository.login(username, password);
 
         if (result instanceof Result.Success) {
             ProfileDTO data = ((Result.Success<ProfileDTO>) result).getData();
-            loginResult.setValue(new LoginResult(new LoggedInUserView(data.getFirstName())));
+            loginResult.postValue(new LoginResult(new LoggedInUserView(data.getFirstName())));
         } else {
-            loginResult.setValue(new LoginResult(R.string.login_failed));
+            loginResult.postValue(new LoginResult(R.string.login_failed));
         }
     }
 
