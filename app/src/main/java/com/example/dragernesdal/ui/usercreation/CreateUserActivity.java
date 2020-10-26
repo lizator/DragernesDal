@@ -13,6 +13,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -61,9 +62,6 @@ public class CreateUserActivity extends AppCompatActivity {
                 }
                 if (createUserFormState.getPhoneError() != null) {
                     phoneEditText.setError(getString(createUserFormState.getPhoneError()));
-                }
-                if (createUserFormState.getCheckboxError() != null) {
-                    checkBox.setError(getString(createUserFormState.getCheckboxError()));
                 }
                 setResult(Activity.RESULT_OK);
             }
@@ -121,7 +119,24 @@ public class CreateUserActivity extends AppCompatActivity {
         passwordEditText.addTextChangedListener(afterTextChangedListener);
         passwordConfirmEditText.addTextChangedListener(afterTextChangedListener);
         phoneEditText.addTextChangedListener(afterTextChangedListener);
-        checkBox.addTextChangedListener(afterTextChangedListener);
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                int phonenumber = 0;
+                String phone = phoneEditText.getText().toString();
+                if (!phone.equals("")){
+                    phonenumber = Integer.parseInt(phone);
+                }
+                createUserViewModel.createUserDataChanged(
+                        firstnameEditText.getText().toString(),
+                        lastnameEditText.getText().toString(),
+                        usernameEditText.getText().toString(),
+                        passwordEditText.getText().toString(),
+                        passwordConfirmEditText.getText().toString(),
+                        phonenumber,
+                        isChecked);
+            }
+        });
 
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,5 +184,6 @@ public class CreateUserActivity extends AppCompatActivity {
     private void showCreateFailed(@StringRes Integer errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
+
 
 }
