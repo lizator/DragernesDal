@@ -1,4 +1,4 @@
-package com.example.dragernesdal.data.login.model;
+package com.example.dragernesdal.data.user.model;
 
 public class ProfileDTO {
     private int id;
@@ -11,6 +11,7 @@ public class ProfileDTO {
     private String salt;
 
     private boolean admin;
+    private boolean mailConfirm;
 
     public ProfileDTO (){
     }

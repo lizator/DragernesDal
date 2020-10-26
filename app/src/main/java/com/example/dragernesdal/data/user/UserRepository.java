@@ -1,29 +1,29 @@
-package com.example.dragernesdal.data.login;
+package com.example.dragernesdal.data.user;
 
-import com.example.dragernesdal.data.login.model.ProfileDTO;
+import com.example.dragernesdal.data.user.model.ProfileDTO;
 
 /**
  * Class that requests authentication and user information from the remote data source and
  * maintains an in-memory cache of login status and user credentials information.
  */
-public class LoginRepository {
+public class UserRepository {
 
-    private static volatile LoginRepository instance;
+    private static volatile UserRepository instance;
 
-    private PasswordHandler dataSource;
+    private PasswordHandler passwordHandler;
 
     // If user credentials will be cached in local storage, it is recommended it be encrypted
     // @see https://developer.android.com/training/articles/keystore
     private ProfileDTO user = null;
 
     // private constructor : singleton access
-    public LoginRepository(PasswordHandler dataSource) {
-        this.dataSource = dataSource;
+    public UserRepository(PasswordHandler passwordHandler) {
+        this.passwordHandler = passwordHandler;
     }
 
-    public static LoginRepository getInstance(PasswordHandler dataSource) {
+    public static UserRepository getInstance(PasswordHandler dataSource) {
         if (instance == null) {
-            instance = new LoginRepository(dataSource);
+            instance = new UserRepository(dataSource);
         }
         return instance;
     }
@@ -34,7 +34,7 @@ public class LoginRepository {
 
     public void logout() {
         user = null;
-        dataSource.logout();
+        passwordHandler.logout();
     }
 
     private void setLoggedInUser(ProfileDTO user) {
@@ -45,10 +45,15 @@ public class LoginRepository {
 
     public Result<ProfileDTO> login(String username, String password) {
         // handle login
-        Result<ProfileDTO> result = dataSource.login(username, password);
+        Result<ProfileDTO> result = passwordHandler.login(username, password);
         if (result instanceof Result.Success) {
             setLoggedInUser(((Result.Success<ProfileDTO>) result).getData());
         }
         return result;
+    }
+
+    public Result<ProfileDTO> createUser(ProfileDTO user) {
+        Result<ProfileDTO> res = passwordHandler.createUser(user);
+        return res;
     }
 }

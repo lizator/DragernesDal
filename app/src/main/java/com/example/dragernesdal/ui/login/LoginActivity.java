@@ -3,7 +3,6 @@ package com.example.dragernesdal.ui.login;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -21,9 +20,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.example.dragernesdal.LoginHandler;
 import com.example.dragernesdal.R;
-import com.example.dragernesdal.usercreation.CreateUserActivity;
+import com.example.dragernesdal.ui.usercreation.*;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -40,9 +38,9 @@ public class LoginActivity extends AppCompatActivity {
             loginViewModel = ViewModelProviders.of(this, new LoginViewModelFactory())
                     .get(LoginViewModel.class);
 
-            final EditText usernameEditText = findViewById(R.id.username);
-            final EditText passwordEditText = findViewById(R.id.password);
-            final Button loginButton = findViewById(R.id.create);
+            final EditText usernameEditText = findViewById(R.id.create_username);
+            final EditText passwordEditText = findViewById(R.id.create_password);
+            final Button loginButton = findViewById(R.id.login);
             final ProgressBar loadingProgressBar = findViewById(R.id.loading);
             final TextView createUserTV = findViewById(R.id.tv_create_profile);
             final TextView forgotPassTV = findViewById(R.id.tv_forgot_password);

@@ -1,11 +1,11 @@
-package com.example.dragernesdal.usercreation;
+package com.example.dragernesdal.ui.usercreation;
 
 import androidx.annotation.Nullable;
 
 /**
  * Data validation state of the login form.
  */
-class CreateUserFormState {
+public class CreateUserFormState {
     @Nullable
     private Integer firstNameError;
     @Nullable

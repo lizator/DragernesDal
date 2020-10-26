@@ -1,7 +1,7 @@
-package com.example.dragernesdal.data.login;
+package com.example.dragernesdal.data.user;
 
 
-import com.example.dragernesdal.data.login.model.ProfileDTO;
+import com.example.dragernesdal.data.user.model.ProfileDTO;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -22,7 +22,7 @@ public class ProfileDAO {
     public ProfileDAO() {
         this.retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("http://10.16.162.242:8080/")
+                .baseUrl("http://10.16.234.21:8080/")
                 .build();
         this.service = retrofit.create(profileCallService.class);
     }
@@ -36,11 +36,15 @@ public class ProfileDAO {
         return resp.body();
     }
 
-    ProfileDTO createUser(ProfileDTO dto) throws IOException {
-
-        Call<ProfileDTO> call = service.createUser(dto);
-        resp = call.execute();
-        return resp.body();
+    Result<ProfileDTO> createUser(ProfileDTO dto){
+        try {
+            Call<ProfileDTO> call = service.createUser(dto);
+            resp = call.execute();
+            return new Result.Success<ProfileDTO>(resp.body());
+        } catch (IOException e){
+            e.printStackTrace();
+            return new Result.Error(new IOException("Error connection to database"));
+        }
     }
 
 
