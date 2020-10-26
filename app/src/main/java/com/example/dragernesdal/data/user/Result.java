@@ -1,4 +1,4 @@
-package com.example.dragernesdal.data;
+package com.example.dragernesdal.data.user;
 
 /**
  * A generic class that holds a result success w/ data or an error exception.

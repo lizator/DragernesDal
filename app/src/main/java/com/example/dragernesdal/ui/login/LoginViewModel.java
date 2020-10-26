@@ -4,27 +4,21 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import android.os.AsyncTask;
 import android.util.Patterns;
-import android.widget.ProgressBar;
 
-import com.example.dragernesdal.data.LoginRepository;
-import com.example.dragernesdal.data.PasswordHandler;
-import com.example.dragernesdal.data.Result;
-import com.example.dragernesdal.data.model.LoggedInUser;
+import com.example.dragernesdal.data.user.UserRepository;
+import com.example.dragernesdal.data.user.Result;
 import com.example.dragernesdal.R;
-import com.example.dragernesdal.data.model.ProfileDTO;
-
-import java.io.IOException;
+import com.example.dragernesdal.data.user.model.ProfileDTO;
 
 public class LoginViewModel extends ViewModel {
 
     private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
     private MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
-    private LoginRepository loginRepository = new LoginRepository(new PasswordHandler());
+    private UserRepository userRepository;
 
-    LoginViewModel(LoginRepository loginRepository) {
-        this.loginRepository = loginRepository;
+    LoginViewModel(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     LiveData<LoginFormState> getLoginFormState() {
@@ -37,7 +31,7 @@ public class LoginViewModel extends ViewModel {
 
     public void login(String username, String password) {
         // can be launched in a separate asynchronous job cause postValue can be in background
-        Result<ProfileDTO> result = loginRepository.login(username, password);
+        Result<ProfileDTO> result = userRepository.login(username, password);
 
         if (result instanceof Result.Success) {
             ProfileDTO data = ((Result.Success<ProfileDTO>) result).getData();

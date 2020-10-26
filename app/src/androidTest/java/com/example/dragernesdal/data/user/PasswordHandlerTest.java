@@ -1,6 +1,6 @@
-package com.example.dragernesdal.data;
+package com.example.dragernesdal.data.user;
 
-import com.example.dragernesdal.data.model.ProfileDTO;
+import com.example.dragernesdal.data.user.model.ProfileDTO;
 
 import org.junit.Test;
 

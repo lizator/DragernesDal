@@ -1,13 +1,13 @@
-package com.example.dragernesdal.data;
+package com.example.dragernesdal.data.user;
 
-import com.example.dragernesdal.data.model.ProfileDTO;
+import com.example.dragernesdal.data.user.model.ProfileDTO;
 
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class LoginRepositoryTest {
-    LoginRepository rp = new LoginRepository(new PasswordHandler());
+public class userRepositoryTest {
+    UserRepository rp = new UserRepository(new PasswordHandler());
 
     @Test
     public void getInstance() {
