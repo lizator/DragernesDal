@@ -5,6 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FAF3DD"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -70,8 +71,8 @@
         android:layout_marginTop="212dp"
         android:layout_marginEnd="24dp"
         android:hint="@string/prompt_email"
-        android:importantForAutofill="no"
         android:imeOptions="actionNext"
+        android:importantForAutofill="no"
         android:inputType="textEmailAddress"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -174,10 +175,6 @@
         app:layout_constraintStart_toStartOf="@+id/create_password"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.3" />
-
-
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
