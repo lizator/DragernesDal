@@ -16,7 +16,21 @@ public class ProfileDTO {
     public ProfileDTO (){
     }
 
-    public ProfileDTO(int id, String firstName, String lastName, String email, int phone, String passHash, String salt, boolean admin) {
+    //Constructer without admin/mailconfirm, for generation
+    public ProfileDTO(int id, String firstName, String lastName, String email, int phone, String passHash, String salt) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.passHash = passHash;
+        this.salt = salt;
+        this.admin = false;
+        this.mailConfirm = false;
+    }
+
+    //Constructer with admin/mailconfirm, for getting
+    public ProfileDTO(int id, String firstName, String lastName, String email, int phone, String passHash, String salt, boolean admin, boolean mailConfirm) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -25,6 +39,7 @@ public class ProfileDTO {
         this.passHash = passHash;
         this.salt = salt;
         this.admin = admin;
+        this.mailConfirm = mailConfirm;
     }
 
     public int getId() {
@@ -89,5 +104,13 @@ public class ProfileDTO {
 
     public void setAdmin(boolean admin) {
         this.admin = admin;
+    }
+
+    public boolean isMailConfirm() {
+        return mailConfirm;
+    }
+
+    public void setMailConfirm(boolean mailConfirm) {
+        this.mailConfirm = mailConfirm;
     }
 }

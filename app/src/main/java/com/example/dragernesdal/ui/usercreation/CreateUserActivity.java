@@ -168,7 +168,7 @@ public class CreateUserActivity extends AppCompatActivity {
         public createThread(String firstName, String lastName,
                             String email, String pass,
                             int phone, CreateUserViewModel vm) {
-            this.user = new ProfileDTO(0, firstName, lastName, email, phone, pass, "", false);
+            this.user = new ProfileDTO(0, firstName, lastName, email, phone, pass, "");
             this.vm = vm;
         }
 
