@@ -69,81 +69,81 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent.getBooleanExtra(getString(R.string.logout_command), false)) loginHandler.clear();
 
+        createUserTV.setOnClickListener(new View.OnClickListener() { //linking to create user activity
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(LoginActivity.this, CreateUserActivity.class);
+                startActivity(myIntent);
+            }
+        });
 
-        if (loginHandler.getEmail().length() == 0) {
-
-
-            createUserTV.setOnClickListener(new View.OnClickListener() { //linking to create user activity
-                @Override
-                public void onClick(View v) {
-                    Intent myIntent = new Intent(LoginActivity.this, CreateUserActivity.class);
-                    startActivity(myIntent);
+        loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
+            @Override
+            public void onChanged(@Nullable LoginFormState loginFormState) {
+                if (loginFormState == null) {
+                    return;
                 }
-            });
+                loginButton.setEnabled(loginFormState.isDataValid());
+                if (loginFormState.getUsernameError() != null) {
+                    usernameEditText.setError(getString(loginFormState.getUsernameError()));
 
-            loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
-                @Override
-                public void onChanged(@Nullable LoginFormState loginFormState) {
-                    if (loginFormState == null) {
-                        return;
-                    }
-                    loginButton.setEnabled(loginFormState.isDataValid());
-                    if (loginFormState.getUsernameError() != null) {
-                        usernameEditText.setError(getString(loginFormState.getUsernameError()));
-
-                    }
-                    if (loginFormState.getPasswordError() != null) {
-                        passwordEditText.setError(getString(loginFormState.getPasswordError()));
-                    }
                 }
-            });
-
-
-
-            TextWatcher afterTextChangedListener = new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                    // ignore
+                if (loginFormState.getPasswordError() != null) {
+                    passwordEditText.setError(getString(loginFormState.getPasswordError()));
                 }
+            }
+        });
 
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    // ignore
-                }
 
-                @Override
-                public void afterTextChanged(Editable s) {
-                    loginViewModel.loginDataChanged(usernameEditText.getText().toString(),
-                            passwordEditText.getText().toString());
-                }
-            };
-            usernameEditText.addTextChangedListener(afterTextChangedListener);
-            passwordEditText.addTextChangedListener(afterTextChangedListener);
-            passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
-                @Override
-                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                    if (actionId == EditorInfo.IME_ACTION_DONE) {
-                        loadingProgressBar.setVisibility(View.VISIBLE);
-                        /*loginViewModel.login(usernameEditText.getText().toString(),
-                            passwordEditText.getText().toString());*/
-                        LoginThread thread = new LoginThread(usernameEditText.getText().toString(), passwordEditText.getText().toString(), loginViewModel, false);
-                        thread.start();
-                    }
-                    return false;
-                }
-            });
+        TextWatcher afterTextChangedListener = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // ignore
+            }
 
-            loginButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // ignore
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                loginViewModel.loginDataChanged(usernameEditText.getText().toString(),
+                        passwordEditText.getText().toString());
+            }
+        };
+        usernameEditText.addTextChangedListener(afterTextChangedListener);
+        passwordEditText.addTextChangedListener(afterTextChangedListener);
+        passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
                     loadingProgressBar.setVisibility(View.VISIBLE);
-                    /*loginViewModel.login(usernameEditText.getText().toString(),
+                        /*loginViewModel.login(usernameEditText.getText().toString(),
                             passwordEditText.getText().toString());*/
                     LoginThread thread = new LoginThread(usernameEditText.getText().toString(), passwordEditText.getText().toString(), loginViewModel, false);
                     thread.start();
                 }
-            });
+                return false;
+            }
+        });
+
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadingProgressBar.setVisibility(View.VISIBLE);
+                    /*loginViewModel.login(usernameEditText.getText().toString(),
+                            passwordEditText.getText().toString());*/
+                LoginThread thread = new LoginThread(usernameEditText.getText().toString(), passwordEditText.getText().toString(), loginViewModel, false);
+                thread.start();
+            }
+        });
+
+
+        if (loginHandler.getEmail().length() == 0) {
+            //all should be set before this is checked, if an error happens in autologin all is still useable
         } else {
             loadingProgressBar.setVisibility(View.VISIBLE);
                     /*loginViewModel.login(usernameEditText.getText().toString(),
