@@ -42,6 +42,28 @@ public class PasswordHandler {
         }
     }
 
+    public Result<ProfileDTO> autologin(String email, String passhash) {
+
+        try {
+            ProfileDTO user = dao.getProfileByEmail(email);
+            String passS = user.getPassHash(); //passHash to check
+
+            if (passhash.equals(passS)){
+                return new Result.Success<ProfileDTO>(user);
+            } else {
+                throw new Exception("Password does not match");
+            }
+        } catch (Exception e) {
+            ProfileDAO dao2 = new ProfileDAO();
+            try {
+                dao2.getConnected();
+            } catch (SQLException e2){
+                return new Result.Error(new IOException("Error in connecting to database", e2));
+            }
+            return new Result.Error(new IOException("Error in Email or Password", e));
+        }
+    }
+
     public Result<ProfileDTO> createUser(ProfileDTO user) {
         String pass = user.getPassHash(); //Unencrypted pass
         ArrayList<String> passArr = encryptPassword(pass);

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">DragernesDal</string>
-    <!-- Strings related to login -->
+    <!-- Strings related to login and usercreation-->
+    <string name="logout_command">logout</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Kodeord</string>
     <string name="action_sign_in">Log ind!</string>
@@ -21,6 +22,8 @@
     <string name="phone_help">"Dansk tlf, 8 cifre"</string>
     <string name="firstname_help">"Dit fornavn"</string>
     <string name="lastname_help">"Dine andre navne"</string>
+
+    <!-- For nav -->
     <string name="title_activity_main">MainActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

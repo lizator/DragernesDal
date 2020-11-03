@@ -29,13 +29,18 @@ public class LoginViewModel extends ViewModel {
         return loginResult;
     }
 
-    public void login(String username, String password) {
+    public void login(String username, String password, boolean autoLogin) {
         // can be launched in a separate asynchronous job cause postValue can be in background
-        Result<ProfileDTO> result = userRepository.login(username, password);
+        Result<ProfileDTO> result;
+        if (autoLogin) {
+            result = userRepository.autologin(username, password);
+        } else {
+            result = userRepository.login(username, password);
+        }
 
         if (result instanceof Result.Success) {
             ProfileDTO data = ((Result.Success<ProfileDTO>) result).getData();
-            loginResult.postValue(new LoginResult(new LoggedInUserView(data.getFirstName())));
+            loginResult.postValue(new LoginResult(new LoggedInUserView(data.getFirstName(), data.getEmail(), data.getPassHash())));
         } else {
             loginResult.postValue(new LoginResult(R.string.login_failed));
         }

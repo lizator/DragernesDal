@@ -34,18 +34,44 @@ public class LoginActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) { //main
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        final EditText usernameEditText = findViewById(R.id.create_username);
+        final EditText passwordEditText = findViewById(R.id.create_password);
+        final Button loginButton = findViewById(R.id.login);
+        final ProgressBar loadingProgressBar = findViewById(R.id.loading);
+        final TextView createUserTV = findViewById(R.id.tv_create_profile);
+        final TextView forgotPassTV = findViewById(R.id.tv_forgot_password);
         loginHandler = new LoginHandler(getApplicationContext());
-        if (loginHandler.getUserID().length() == 0) {
+        loginViewModel = ViewModelProviders.of(this, new LoginViewModelFactory())
+                .get(LoginViewModel.class);
 
-            loginViewModel = ViewModelProviders.of(this, new LoginViewModelFactory())
-                    .get(LoginViewModel.class);
+        loginViewModel.getLoginResult().observe(this, new Observer<LoginResult>() {
+            @Override
+            public void onChanged(@Nullable LoginResult loginResult) {
+                if (loginResult == null) {
+                    return;
+                }
+                loadingProgressBar.setVisibility(View.GONE);
+                if (loginResult.getError() != null) {
+                    showLoginFailed(loginResult.getError());
+                }
+                if (loginResult.getSuccess() != null) {
+                    loginHandler.setUser(loginResult.getSuccess().getEmail(), loginResult.getSuccess().getPassHash());
+                    updateUiWithUser(loginResult.getSuccess());
+                    Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(myIntent);
+                    finish();
+                }
+                setResult(Activity.RESULT_OK);
+            }
+        });
 
-            final EditText usernameEditText = findViewById(R.id.create_username);
-            final EditText passwordEditText = findViewById(R.id.create_password);
-            final Button loginButton = findViewById(R.id.login);
-            final ProgressBar loadingProgressBar = findViewById(R.id.loading);
-            final TextView createUserTV = findViewById(R.id.tv_create_profile);
-            final TextView forgotPassTV = findViewById(R.id.tv_forgot_password);
+        //Checks to see if logging out
+        Intent intent = getIntent();
+        if (intent.getBooleanExtra(getString(R.string.logout_command), false)) loginHandler.clear();
+
+
+        if (loginHandler.getEmail().length() == 0) {
+
 
             createUserTV.setOnClickListener(new View.OnClickListener() { //linking to create user activity
                 @Override
@@ -64,6 +90,7 @@ public class LoginActivity extends AppCompatActivity {
                     loginButton.setEnabled(loginFormState.isDataValid());
                     if (loginFormState.getUsernameError() != null) {
                         usernameEditText.setError(getString(loginFormState.getUsernameError()));
+
                     }
                     if (loginFormState.getPasswordError() != null) {
                         passwordEditText.setError(getString(loginFormState.getPasswordError()));
@@ -71,24 +98,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
             });
 
-            loginViewModel.getLoginResult().observe(this, new Observer<LoginResult>() {
-                @Override
-                public void onChanged(@Nullable LoginResult loginResult) {
-                    if (loginResult == null) {
-                        return;
-                    }
-                    loadingProgressBar.setVisibility(View.GONE);
-                    if (loginResult.getError() != null) {
-                        showLoginFailed(loginResult.getError());
-                    }
-                    if (loginResult.getSuccess() != null) {
-                        updateUiWithUser(loginResult.getSuccess());
-                        Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(myIntent);
-                    }
-                    setResult(Activity.RESULT_OK);
-                }
-            });
+
 
             TextWatcher afterTextChangedListener = new TextWatcher() {
                 @Override
@@ -117,7 +127,7 @@ public class LoginActivity extends AppCompatActivity {
                         loadingProgressBar.setVisibility(View.VISIBLE);
                         /*loginViewModel.login(usernameEditText.getText().toString(),
                             passwordEditText.getText().toString());*/
-                        LoginThread thread = new LoginThread(usernameEditText.getText().toString(), passwordEditText.getText().toString(), loginViewModel);
+                        LoginThread thread = new LoginThread(usernameEditText.getText().toString(), passwordEditText.getText().toString(), loginViewModel, false);
                         thread.start();
                     }
                     return false;
@@ -130,12 +140,16 @@ public class LoginActivity extends AppCompatActivity {
                     loadingProgressBar.setVisibility(View.VISIBLE);
                     /*loginViewModel.login(usernameEditText.getText().toString(),
                             passwordEditText.getText().toString());*/
-                    LoginThread thread = new LoginThread(usernameEditText.getText().toString(), passwordEditText.getText().toString(), loginViewModel);
+                    LoginThread thread = new LoginThread(usernameEditText.getText().toString(), passwordEditText.getText().toString(), loginViewModel, false);
                     thread.start();
                 }
             });
         } else {
-            //TODO: auto login
+            loadingProgressBar.setVisibility(View.VISIBLE);
+                    /*loginViewModel.login(usernameEditText.getText().toString(),
+                            passwordEditText.getText().toString());*/
+            LoginThread thread = new LoginThread(loginHandler.getEmail(), loginHandler.getPasshash(), loginViewModel, true);
+            thread.start();
         }
     }
 
@@ -145,16 +159,18 @@ public class LoginActivity extends AppCompatActivity {
         private String email;
         private String pass;
         private LoginViewModel vm;
+        private boolean autologin;
 
-        public LoginThread(String email, String pass, LoginViewModel vm) {
+        public LoginThread(String email, String pass, LoginViewModel vm, boolean autologin) {
             this.email = email;
             this.pass = pass;
             this.vm = vm;
+            this.autologin = autologin;
         }
 
         @Override
         public void run() {
-            vm.login(email, pass);
+            vm.login(email, pass, autologin);
         }
     }
 

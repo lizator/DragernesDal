@@ -52,6 +52,15 @@ public class UserRepository {
         return result;
     }
 
+    public Result<ProfileDTO> autologin(String username, String passhash) {
+        // handle login
+        Result<ProfileDTO> result = passwordHandler.autologin(username, passhash);
+        if (result instanceof Result.Success) {
+            setLoggedInUser(((Result.Success<ProfileDTO>) result).getData());
+        }
+        return result;
+    }
+
     public Result<ProfileDTO> createUser(ProfileDTO user) {
         Result<ProfileDTO> res = passwordHandler.createUser(user);
         return res;
