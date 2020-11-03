@@ -144,6 +144,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (loginHandler.getEmail().length() == 0) {
             //all should be set before this is checked, if an error happens in autologin all is still useable
+            //TODO implement buttons should start not pressable and be set pressable here and in loginformstate.observer
         } else {
             loadingProgressBar.setVisibility(View.VISIBLE);
                     /*loginViewModel.login(usernameEditText.getText().toString(),
