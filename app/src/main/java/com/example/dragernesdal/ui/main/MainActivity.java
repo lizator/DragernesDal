@@ -19,9 +19,12 @@ import com.example.dragernesdal.R;
 import com.example.dragernesdal.ui.login.LoginActivity;
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
+    private ArrayList<Ability> abilityList = new ArrayList<Ability>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,5 +86,22 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    class Ability{
+        private String name;
+        private String desc;
+        public Ability(String name, String desc){
+            this.name = name;
+            this.desc = desc;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
     }
 }
