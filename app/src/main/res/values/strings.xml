@@ -32,7 +32,22 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string name="menu_home">Home</string>
+    <string name="menu_home">Hjem</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+    <string name="dragernes_dal">Dragernes Dal</string>
+    <string name="fornavn">Fornavn</string>
+    <string name="efternavn">Efternavn</string>
+    <string name="gentag_kodeord">Gentag Kodeord</string>
+    <string name="telefonnummer">Telefonnummer</string>
+    <string name="opret">Opret</string>
+    <string name="evner">Evner</string>
+    <string name="karakter">Karakter</string>
+    <string name="magi">Magi</string>
+    <string name="inventar">Inventar</string>
+    <string name="baggrund">Baggrund</string>
+    <string name="v_lg_karakter">Vælg Karakter</string>
+    <string name="information">Information</string>
+    <string name="regelbog">Regelbog</string>
+    <string name="event">Event</string>
 </resources>
