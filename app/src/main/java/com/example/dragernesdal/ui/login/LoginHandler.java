@@ -9,39 +9,33 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 public class LoginHandler { // for saved login
     static final String PREF_USER_EMAIL= "userEmail";
     static final String PREF_PASS_HASH= "userPassHash";
-    static final String PREF_DISPLAY_NAME= "userDisplayName";
     public static final int LOGOUT_CODE = 1;
-    private SharedPreferences prefs;
+    private Context ctx;
 
     public LoginHandler(Context ctx) {
-        prefs = ctx.getSharedPreferences("login_pref", ctx.MODE_MULTI_PROCESS);
+        this.ctx = ctx;
     }
 
 
-    public void setUser(String email, String passHash, String displayName) {
-        SharedPreferences.Editor editor = prefs.edit();
+    public void setUser(String email, String passHash) {
+        SharedPreferences.Editor editor = getDefaultSharedPreferences(ctx).edit();
         editor.putString(PREF_USER_EMAIL, email);
         editor.putString(PREF_PASS_HASH, passHash);
-        editor.putString(PREF_DISPLAY_NAME, displayName);
         editor.commit();
     }
 
     public String getEmail() {
-        return prefs.getString(PREF_USER_EMAIL, "");
+        return getDefaultSharedPreferences(this.ctx).getString(PREF_USER_EMAIL, "");
     }
 
     public String getPasshash() {
-        return prefs.getString(PREF_PASS_HASH, "");
-    }
-
-    public String getDisplayName() {
-        return prefs.getString(PREF_DISPLAY_NAME, "");
+        return getDefaultSharedPreferences(this.ctx).getString(PREF_PASS_HASH, "");
     }
 
 
     public void clear()
     {
-        SharedPreferences.Editor editor = prefs.edit();
+        SharedPreferences.Editor editor = getDefaultSharedPreferences(this.ctx).edit();
         editor.clear(); //clear all stored data
         editor.commit();
     }
