@@ -11,10 +11,6 @@
         <item android:title="Karakter">
             <menu>
                 <item
-                    android:id="@+id/nav_char"
-                    android:icon="@drawable/ic_menu_camera"
-                    android:title="Karakter" />
-                <item
                     android:id="@id/nav_char_skill"
                     android:icon="@drawable/ic_menu_camera"
                     android:title="Evner" />
@@ -30,7 +26,24 @@
                     android:id="@+id/nav_char_background"
                     android:icon="@drawable/ic_menu_camera"
                     android:title="Baggrund" />
+                <item
+                    android:id="@+id/nav_char_select"
+                    android:icon="@drawable/ic_menu_camera"
+                    android:title="Vælg Karakter" />
             </menu>
         </item>
+        <item android:title="Information">
+            <menu>
+                <item
+                    android:id="@+id/nav_rules"
+                    android:icon="@drawable/ic_menu_camera"
+                    android:title="Regelbog" />
+                <item
+                    android:id="@+id/nav_event"
+                    android:icon="@drawable/ic_menu_camera"
+                    android:title="Event" />
+            </menu>
+        </item>
+
     </group>
 </menu>
