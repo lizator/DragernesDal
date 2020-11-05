@@ -10,5 +10,34 @@
         android:name="com.example.dragernesdal.ui.home.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/nav_char"
+        android:name="com.example.dragernesdal.ui.character.CharFragment"
+        android:label="Karakter"
+        tools:layout="@layout/fragment_character"/>
+    <fragment
+        android:id="@+id/nav_char_skill"
+        android:name="com.example.dragernesdal.ui.character.skill.SkillFragment"
+        android:label="Evner"
+        android:layout="@layout/fragment_character_skill"
+        />
+    <fragment
+        android:id="@+id/nav_char_magic"
+        android:name="com.example.dragernesdal.ui.character.magic.MagicFragment"
+        android:label="Magi"
+        android:layout="@layout/fragment_character_magic"
+        />
+    <fragment
+        android:id="@+id/nav_char_inventory"
+        android:name="com.example.dragernesdal.ui.character.inventory.InventoryFragment"
+        android:label="Inventar"
+        android:layout="@layout/fragment_character_inventory"
+        />
+    <fragment
+        android:id="@+id/nav_char_background"
+        android:name="com.example.dragernesdal.ui.character.background.BackgroundFragment"
+        android:label="Baggrund"
+        android:layout="@layout/fragment_character_background"
+        />
 
 </navigation>

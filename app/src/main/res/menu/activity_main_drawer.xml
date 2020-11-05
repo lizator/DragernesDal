@@ -8,5 +8,29 @@
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_menu_camera"
             android:title="@string/menu_home" />
+        <item android:title="Karakter">
+            <menu>
+                <item
+                    android:id="@+id/nav_char"
+                    android:icon="@drawable/ic_menu_camera"
+                    android:title="Karakter" />
+                <item
+                    android:id="@id/nav_char_skill"
+                    android:icon="@drawable/ic_menu_camera"
+                    android:title="Evner" />
+                <item
+                    android:id="@+id/nav_char_magic"
+                    android:icon="@drawable/ic_menu_camera"
+                    android:title="Magi" />
+                <item
+                    android:id="@+id/nav_char_inventory"
+                    android:icon="@drawable/ic_menu_camera"
+                    android:title="Inventar" />
+                <item
+                    android:id="@+id/nav_char_background"
+                    android:icon="@drawable/ic_menu_camera"
+                    android:title="Baggrund" />
+            </menu>
+        </item>
     </group>
 </menu>
