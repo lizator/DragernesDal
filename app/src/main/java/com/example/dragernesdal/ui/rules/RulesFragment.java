@@ -30,6 +30,7 @@ public class RulesFragment extends Fragment {
                 textView.setText(s);
             }
         });
+        //TODO: Open browser and redirect to pdf. Switch to Home fragment.
         return root;
     }
 }
