@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +16,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dragernesdal.R;
 import com.example.dragernesdal.ui.login.LoginActivity;
@@ -25,7 +28,9 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
+    private AbilityAdapter abilityAdapter = new AbilityAdapter();
     private ArrayList<Ability> abilityList = new ArrayList<Ability>();
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +64,17 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        //insert abilities
+        recyclerView = (RecyclerView) findViewById(R.id.abilityRecycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(abilityAdapter);
+
+        //testing ability
+        abilityList.add(new Ability("name1", "long asssss desc"));
+        abilityList.add(new Ability("name2", "long asssss desc"));
+        abilityList.add(new Ability("name3", "long asssss desc"));
+        abilityAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -91,6 +107,40 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+
+    class AbilityViewHolder extends RecyclerView.ViewHolder{
+        TextView name;
+        public AbilityViewHolder(View abilityViews) {
+            super(abilityViews);
+            name = abilityViews.findViewById(R.id.abilityName);
+            // Gør listeelementer klikbare og vis det ved at deres baggrunsfarve ændrer sig ved berøring
+            name.setBackgroundResource(android.R.drawable.list_selector_background);
+        }
+
+    }
+
+    class AbilityAdapter extends RecyclerView.Adapter<AbilityViewHolder> {
+        @Override
+        public int getItemCount() {
+            return abilityList.size();
+        }
+
+        @Override
+        public AbilityViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View listElementViews = getLayoutInflater().inflate(R.layout.recycler_home_ability_view, parent, false);
+            AbilityViewHolder vh = new AbilityViewHolder(listElementViews);
+            return vh;
+        }
+
+        @Override
+        public void onBindViewHolder(AbilityViewHolder vh, int position) {
+            vh.name.setText(abilityList.get(position).getName());
+            //TODO set onclick to show abilityList.get(position).getDesc()
+
+        }
+
+    }
+
 
     class Ability{
         private String name;
