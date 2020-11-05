@@ -31,21 +31,21 @@
 
     <EditText
         android:id="@+id/create_username"
+        style="@style/TextZone"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="208dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
         android:autofillHints=""
-        android:textSize="20dp"
         android:hint="@string/prompt_email"
         android:inputType="textEmailAddress"
         android:selectAllOnFocus="true"
-        style="@style/TextZone"
         android:text="test@gmail.com"
+        android:textSize="26dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_create_profile" />
 
     <EditText
         android:id="@+id/create_password"
@@ -54,7 +54,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
-        android:textSize="20dp"
+        android:textSize="26dp"
         android:autofillHints=""
         android:hint="@string/prompt_password"
         android:imeActionLabel="@string/action_sign_in_short"
@@ -73,24 +73,25 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:layout_marginStart="48dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="48dp"
         android:layout_marginBottom="64dp"
         android:enabled="true"
+        android:fontFamily="@font/josefin_slab_bold"
         android:text="@string/action_sign_in"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_password"
-        app:layout_constraintVertical_bias="0.432" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_forgot_password"
+        app:layout_constraintVertical_bias="0.093" />
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Dragernes Dal"
-        android:textSize="56sp"
+        style="@style/textTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -99,10 +100,11 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="124dp"
-        android:layout_marginLeft="124dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="36dp"
+        style="@style/textSmall"
         android:text="Ny spiller? "
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.376"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
@@ -111,6 +113,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/create_profile"
+        style="@style/textSmall"
         android:textColor="@color/colorLink"
         app:layout_constraintStart_toEndOf="@+id/textView2"
         app:layout_constraintTop_toTopOf="@+id/textView2" />
@@ -121,6 +124,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/forgot_password"
+        style="@style/textSmall"
         android:textColor="@color/colorLink"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

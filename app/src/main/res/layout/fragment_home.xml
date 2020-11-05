@@ -8,16 +8,79 @@
     tools:context=".ui.main.ui.home.HomeFragment">
 
     <TextView
-        android:id="@+id/text_home"
-        android:layout_width="match_parent"
+        android:id="@+id/home_heading"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="30dp"
+        style="@style/text"
+        android:text="Karakter skema"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/overviewTV"
+        style="@style/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:gravity="right"
+        android:text="Navn:\nRace:\nAlder:"
+        android:textSize="22dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/home_heading" />
+
+    <EditText
+        android:id="@+id/characterNameEdit"
+        style="@style/TextZone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Illidan Legolas"
+        android:textSize="20dp"
+        app:layout_constraintStart_toEndOf="@+id/overviewTV"
+        app:layout_constraintTop_toTopOf="@+id/overviewTV" />
+
+    <TextView
+        android:id="@+id/RaceTV"
+        style="@style/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Elver"
+        android:textSize="20dp"
+        app:layout_constraintStart_toEndOf="@+id/overviewTV"
+        app:layout_constraintTop_toBottomOf="@+id/characterNameEdit" />
+
+    <EditText
+        android:id="@+id/yearEdit"
+        style="@style/TextZone"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:text="0000"
+        android:textSize="20dp"
+        android:gravity="right"
+        android:inputType="number"
+        android:maxLength="4"
+        app:layout_constraintStart_toEndOf="@+id/overviewTV"
+        app:layout_constraintTop_toBottomOf="@+id/RaceTV" />
+
+    <TextView
+        android:id="@+id/textView6"
+        style="@style/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="år"
+        android:textSize="20dp"
+        app:layout_constraintStart_toEndOf="@+id/yearEdit"
+        app:layout_constraintTop_toTopOf="@+id/yearEdit" />
 </androidx.constraintlayout.widget.ConstraintLayout>

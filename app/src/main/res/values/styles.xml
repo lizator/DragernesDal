@@ -27,6 +27,25 @@
         <item name="android:paddingLeft">10dp</item>
         <item name="android:paddingRight">10dp</item>
         <item name="android:elevation">4dp</item>
+        <item name="fontFamily">@font/josefin_slab</item>
     </style>
+
+    <style name="text">
+        <item name="fontFamily">@font/josefin_slab_semibold</item>
+        <item name="android:lineSpacingExtra">6dp</item>
+    </style>
+
+    <style name="textSmall">
+        <item name="fontFamily">@font/josefin_slab_bold</item>
+        <item name="android:lineSpacingExtra">6dp</item>
+        <item name="android:textSize">16dp</item>
+    </style>
+
+    <style name="textTitle">
+        <item name="fontFamily">@font/endor</item>
+        <item name="android:textSize">50dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
 
 </resources>
