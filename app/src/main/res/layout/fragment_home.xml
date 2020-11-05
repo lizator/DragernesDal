@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:gravity="right"
         android:text="Navn:\nRace:\nAlder:"
         android:textSize="22dp"
@@ -83,4 +83,56 @@
         android:textSize="20dp"
         app:layout_constraintStart_toEndOf="@+id/yearEdit"
         app:layout_constraintTop_toTopOf="@+id/yearEdit" />
+
+    <TextView
+        android:id="@+id/styrke_headerTV"
+        style="@style/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Styrke:"
+        android:textSize="26dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.189"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/overviewTV" />
+
+    <TextView
+        android:id="@+id/textView4"
+        style="@style/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="18dp"
+        android:text="Karakter Point:"
+        android:textSize="26dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.867"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/styrke_headerTV" />
+
+    <TextView
+        android:id="@+id/strengthTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/clipart_font"
+        android:gravity="center"
+        android:text="JJJ"
+        android:textSize="80dp"
+        app:layout_constraintEnd_toEndOf="@+id/styrke_headerTV"
+        app:layout_constraintStart_toStartOf="@+id/styrke_headerTV"
+        app:layout_constraintTop_toBottomOf="@+id/styrke_headerTV" />
+
+    <TextView
+        android:id="@+id/kpTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/clipart_font"
+        android:text="AAA"
+        android:textSize="40dp"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="@+id/textView4"
+        app:layout_constraintStart_toStartOf="@+id/textView4"
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
 </androidx.constraintlayout.widget.ConstraintLayout>
