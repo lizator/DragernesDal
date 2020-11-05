@@ -58,6 +58,8 @@ public class LoginActivity extends AppCompatActivity {
                     loginHandler.setUser(loginResult.getSuccess().getEmail(), loginResult.getSuccess().getPassHash());
                     updateUiWithUser(loginResult.getSuccess());
                     Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
+                    myIntent.putExtra("username",loginResult.getSuccess().getDisplayName());
+                    myIntent.putExtra("email",loginResult.getSuccess().getEmail());
                     startActivity(myIntent);
                     finish();
                 }

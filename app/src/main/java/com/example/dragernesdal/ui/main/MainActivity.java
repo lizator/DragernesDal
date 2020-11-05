@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,12 +41,15 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });*/
-        Intent intent = getIntent();
-        TextView username = findViewById(R.id.username);
-        TextView email = findViewById(R.id.userEmail);
+
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+        TextView username = headerView.findViewById(R.id.username);
+        TextView userEmail = headerView.findViewById(R.id.userEmail);
+        username.setText(getIntent().getStringExtra("username"));
+        userEmail.setText(getIntent().getStringExtra("email"));
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
