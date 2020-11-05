@@ -8,40 +8,40 @@
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_menu_camera"
             android:title="@string/menu_home" />
-        <item android:title="Karakter">
+        <item android:title="@string/karakter">
             <menu>
                 <item
                     android:id="@id/nav_char_skill"
                     android:icon="@drawable/ic_menu_camera"
-                    android:title="Evner" />
+                    android:title="@string/evner" />
                 <item
                     android:id="@+id/nav_char_magic"
                     android:icon="@drawable/ic_menu_camera"
-                    android:title="Magi" />
+                    android:title="@string/magi" />
                 <item
                     android:id="@+id/nav_char_inventory"
                     android:icon="@drawable/ic_menu_camera"
-                    android:title="Inventar" />
+                    android:title="@string/inventar" />
                 <item
                     android:id="@+id/nav_char_background"
                     android:icon="@drawable/ic_menu_camera"
-                    android:title="Baggrund" />
+                    android:title="@string/baggrund" />
                 <item
                     android:id="@+id/nav_char_select"
                     android:icon="@drawable/ic_menu_camera"
-                    android:title="Vælg Karakter" />
+                    android:title="@string/v_lg_karakter" />
             </menu>
         </item>
-        <item android:title="Information">
+        <item android:title="@string/information">
             <menu>
                 <item
                     android:id="@+id/nav_rules"
                     android:icon="@drawable/ic_menu_camera"
-                    android:title="Regelbog" />
+                    android:title="@string/regelbog" />
                 <item
                     android:id="@+id/nav_event"
                     android:icon="@drawable/ic_menu_camera"
-                    android:title="Event" />
+                    android:title="@string/event" />
             </menu>
         </item>
 
