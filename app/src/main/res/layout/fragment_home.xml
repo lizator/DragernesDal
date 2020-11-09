@@ -140,11 +140,15 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/abilityRecycler"
-        android:layout_width="174dp"
-        android:layout_height="337dp"
+        android:layout_width="168dp"
+        android:layout_height="279dp"
         android:layout_marginStart="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_weight="1"
         android:background="@color/colorBackgroundGreen"
+        android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/strengthTV"
+        app:layout_constraintVertical_bias="0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

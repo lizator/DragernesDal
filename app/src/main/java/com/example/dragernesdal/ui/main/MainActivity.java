@@ -28,9 +28,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-    private AbilityAdapter abilityAdapter = new AbilityAdapter();
-    private ArrayList<Ability> abilityList = new ArrayList<Ability>();
-    private RecyclerView recyclerView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,15 +64,6 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
 
         //insert abilities
-        recyclerView = (RecyclerView) findViewById(R.id.abilityRecycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(abilityAdapter);
-
-        //testing ability
-        abilityList.add(new Ability("name1", "long asssss desc"));
-        abilityList.add(new Ability("name2", "long asssss desc"));
-        abilityList.add(new Ability("name3", "long asssss desc"));
-        abilityAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -108,54 +97,5 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-    class AbilityViewHolder extends RecyclerView.ViewHolder{
-        TextView name;
-        public AbilityViewHolder(View abilityViews) {
-            super(abilityViews);
-            name = abilityViews.findViewById(R.id.abilityName);
-            // Gør listeelementer klikbare og vis det ved at deres baggrunsfarve ændrer sig ved berøring
-            name.setBackgroundResource(android.R.drawable.list_selector_background);
-        }
 
-    }
-
-    class AbilityAdapter extends RecyclerView.Adapter<AbilityViewHolder> {
-        @Override
-        public int getItemCount() {
-            return abilityList.size();
-        }
-
-        @Override
-        public AbilityViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View listElementViews = getLayoutInflater().inflate(R.layout.recycler_home_ability_view, parent, false);
-            AbilityViewHolder vh = new AbilityViewHolder(listElementViews);
-            return vh;
-        }
-
-        @Override
-        public void onBindViewHolder(AbilityViewHolder vh, int position) {
-            vh.name.setText(abilityList.get(position).getName());
-            //TODO set onclick to show abilityList.get(position).getDesc()
-
-        }
-
-    }
-
-
-    class Ability{
-        private String name;
-        private String desc;
-        public Ability(String name, String desc){
-            this.name = name;
-            this.desc = desc;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getDesc() {
-            return desc;
-        }
-    }
 }
