@@ -10,7 +10,7 @@ public class RulesViewModel extends ViewModel {
 
     public RulesViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is rules fragment");
+        mText.setValue("Åbnes i en browser");
     }
 
     public LiveData<String> getText() {
