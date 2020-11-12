@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +51,7 @@ public class HomeFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
         //Finding recyclerview to input abilities
+        ImageView imgView = (ImageView) root.findViewById(R.id.characterPicView);
         recyclerView = (RecyclerView) root.findViewById(R.id.abilityRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
         recyclerView.setAdapter(abilityAdapter);
@@ -58,15 +60,18 @@ public class HomeFragment extends Fragment {
             @Override
             public void run() {
                 ViewGroup.LayoutParams params=recyclerView.getLayoutParams();
-                Toast.makeText(getContext(), "width=" + root.getMeasuredWidth(), Toast.LENGTH_SHORT).show();
-                int h = (int) Math.floor(root.getMeasuredHeight() * 5 / 9 - 200) ;
-                int w = (int) Math.floor(root.getMeasuredWidth() * 5 / 13 + 35) ;
+                ViewGroup.LayoutParams paramsImg=imgView.getLayoutParams();
+                int h = (int) Math.floor(root.getMeasuredHeight() * 5 / 9 - 200);
+                int w = (int) Math.floor(root.getMeasuredWidth() * 5 / 13 + 25);
                 params.height=h;
                 params.width=w;
+                paramsImg.height=h;
+                paramsImg.width=w;
                 recyclerView.setLayoutParams(params);
+                imgView.setLayoutParams(paramsImg);
+                imgView.setImageResource(R.drawable.rac_menneske);
             }
         });
-
 
         //testing ability
         abilityList.add(new Ability("name1", "long asssss desc"));
