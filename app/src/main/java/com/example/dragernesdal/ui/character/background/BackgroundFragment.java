@@ -23,13 +23,15 @@ public class BackgroundFragment extends Fragment {
         backgroundViewModel =
                 new ViewModelProvider(this).get(BackgroundViewModel.class);
         View root = inflater.inflate(R.layout.fragment_character_background, container, false);
-        final TextView textView = root.findViewById(R.id.text_home);
+        //final TextView textView = root.findViewById(R.id.text_home);
         backgroundViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                textView.setText(s);
+                //textView.setText(s);
             }
         });
+
+
         return root;
     }
 }

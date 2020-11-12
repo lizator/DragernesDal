@@ -51,4 +51,9 @@
     <string name="regelbog">Regelbog</string>
     <string name="event">Event</string>
     <string name="regler">Regler</string>
+
+    <!-- Strings for Character Backgrounds -->
+    <string name="baggrundshistorie">Baggrundshistorie</string>
+    <string name="dårlige_karaktertræk">Dårlige karaktertræk</string>
+    <string name="baggrundtext">Baggrund (max 5000 tegn)</string>
 </resources>
