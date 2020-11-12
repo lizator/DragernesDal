@@ -140,8 +140,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/abilityRecycler"
-        android:layout_width="168dp"
-        android:layout_height="279dp"
+        android:layout_width="170dp"
+        android:layout_height="280dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_weight="1"
@@ -149,6 +149,64 @@
         android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/strengthTV"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/kobberTitle"
+        app:layout_constraintVertical_bias="0.062" />
+
+    <TextView
+        android:id="@+id/kobberTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        style="@style/textSmall"
+        android:text="Kobber: "
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/strengthTV" />
+
+    <TextView
+        android:id="@+id/silverTitle"
+        style="@style/textSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sølv: "
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/kobberTitle" />
+
+    <TextView
+        android:id="@+id/goldTitle"
+        style="@style/textSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Guld: "
+        app:layout_constraintEnd_toStartOf="@+id/goldTV"
+        app:layout_constraintTop_toTopOf="@+id/kobberTitle" />
+
+    <TextView
+        android:id="@+id/kobberTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/textSmall"
+        android:text="00"
+        app:layout_constraintStart_toEndOf="@+id/kobberTitle"
+        app:layout_constraintTop_toTopOf="@+id/kobberTitle" />
+
+    <TextView
+        android:id="@+id/silverTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/textSmall"
+        android:text="00"
+        app:layout_constraintStart_toEndOf="@+id/silverTitle"
+        app:layout_constraintTop_toTopOf="@+id/kobberTitle" />
+
+    <TextView
+        android:id="@+id/goldTV"
+        style="@style/textSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="00"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/kobberTitle" />
 </androidx.constraintlayout.widget.ConstraintLayout>
