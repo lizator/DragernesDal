@@ -1,5 +1,6 @@
 package com.example.dragernesdal.ui.home;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,10 +16,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dragernesdal.R;
+import com.example.dragernesdal.data.user.model.Ability;
 import com.example.dragernesdal.ui.home.HomeViewModel;
 import com.example.dragernesdal.ui.main.MainActivity;
 
 import java.util.ArrayList;
+
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 public class HomeFragment extends Fragment {
 
@@ -27,8 +31,17 @@ public class HomeFragment extends Fragment {
     private ArrayList<Ability> abilityList = new ArrayList<Ability>();
     private RecyclerView recyclerView;
 
+    private static final String CHARACTER_ID_SAVESPACE = "currCharacterID";
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
+        SharedPreferences prefs = getDefaultSharedPreferences(getContext());
+        int characterID = prefs.getInt(CHARACTER_ID_SAVESPACE, -1);
+        if (characterID == -1){
+            //TODO send to create character activity
+        }
+
         homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
@@ -98,21 +111,4 @@ public class HomeFragment extends Fragment {
 
     }
 
-
-    class Ability{
-        private String name;
-        private String desc;
-        public Ability(String name, String desc){
-            this.name = name;
-            this.desc = desc;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getDesc() {
-            return desc;
-        }
-    }
 }
