@@ -216,7 +216,7 @@
         android:layout_height="280dp"
         android:layout_marginEnd="16dp"
         android:background="@color/colorPrimaryDark"
-        android:padding="1dp"
+        android:padding="2dp"
         tools:srcCompat="@drawable/rac_menneske"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/abilityRecycler" />
