@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,6 +43,8 @@ public class HomeFragment extends Fragment {
             //TODO send to create character activity
         }
 
+
+
         homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
@@ -50,6 +53,18 @@ public class HomeFragment extends Fragment {
         recyclerView = (RecyclerView) root.findViewById(R.id.abilityRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
         recyclerView.setAdapter(abilityAdapter);
+
+        root.post(new Runnable() {
+            @Override
+            public void run() {
+                ViewGroup.LayoutParams params=recyclerView.getLayoutParams();
+                int h = (int) Math.floor(root.getMeasuredHeight() * 5 / 9 - 175) ;
+                params.height=h;
+                params
+                recyclerView.setLayoutParams(params);
+            }
+        });
+
 
         //testing ability
         abilityList.add(new Ability("name1", "long asssss desc"));
