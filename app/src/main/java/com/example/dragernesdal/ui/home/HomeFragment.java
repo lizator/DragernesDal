@@ -58,9 +58,11 @@ public class HomeFragment extends Fragment {
             @Override
             public void run() {
                 ViewGroup.LayoutParams params=recyclerView.getLayoutParams();
-                int h = (int) Math.floor(root.getMeasuredHeight() * 5 / 9 - 175) ;
+                Toast.makeText(getContext(), "width=" + root.getMeasuredWidth(), Toast.LENGTH_SHORT).show();
+                int h = (int) Math.floor(root.getMeasuredHeight() * 5 / 9 - 200) ;
+                int w = (int) Math.floor(root.getMeasuredWidth() * 5 / 13 + 35) ;
                 params.height=h;
-                params
+                params.width=w;
                 recyclerView.setLayoutParams(params);
             }
         });
