@@ -13,8 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dragernesdal.R;
-import com.example.dragernesdal.data.user.model.Ability;
-import com.example.dragernesdal.data.user.model.Character;
+import com.example.dragernesdal.data.character.model.Character;
 
 import java.util.ArrayList;
 

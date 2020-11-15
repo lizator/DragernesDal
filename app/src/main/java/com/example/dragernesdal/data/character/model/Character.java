@@ -1,4 +1,4 @@
-package com.example.dragernesdal.data.user.model;
+package com.example.dragernesdal.data.character.model;
 import java.sql.Date;
 import java.sql.Time;
 

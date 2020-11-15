@@ -1,4 +1,4 @@
-package com.example.dragernesdal.data.user.model;
+package com.example.dragernesdal.data.ability.model;
 
 public class Ability{
     private int id;

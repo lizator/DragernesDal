@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,9 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dragernesdal.R;
-import com.example.dragernesdal.data.user.model.Ability;
-import com.example.dragernesdal.ui.home.HomeViewModel;
-import com.example.dragernesdal.ui.main.MainActivity;
+import com.example.dragernesdal.data.ability.model.Ability;
 
 import java.util.ArrayList;
 
@@ -33,7 +30,7 @@ public class HomeFragment extends Fragment {
     private ArrayList<Ability> abilityList = new ArrayList<Ability>();
     private RecyclerView recyclerView;
 
-    private static final String CHARACTER_ID_SAVESPACE = "currCharacterID";
+    public static final String CHARACTER_ID_SAVESPACE = "currCharacterID";
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -42,9 +39,9 @@ public class HomeFragment extends Fragment {
         int characterID = prefs.getInt(CHARACTER_ID_SAVESPACE, -1);
         if (characterID == -1){
             //TODO send to create character activity
+        } else {
+
         }
-
-
 
         homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
