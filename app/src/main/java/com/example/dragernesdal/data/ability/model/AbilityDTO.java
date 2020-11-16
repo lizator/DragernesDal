@@ -1,6 +1,6 @@
 package com.example.dragernesdal.data.ability.model;
 
-public class Ability{
+public class AbilityDTO {
     private int id;
     private String name;
     private int cost;
@@ -9,12 +9,12 @@ public class Ability{
     private int pagenumber;
     private String command;
 
-    public Ability(String name, String desc){
+    public AbilityDTO (String name, String desc){
         this.name = name;
         this.desc = desc;
     }
 
-    public Ability(int id, String name, int cost, String desc, String type, int pagenumber, String command) {
+    public AbilityDTO (int id, String name, int cost, String desc, String type, int pagenumber, String command) {
         this.id = id;
         this.name = name;
         this.cost = cost;

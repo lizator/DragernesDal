@@ -11,19 +11,17 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dragernesdal.R;
-import com.example.dragernesdal.data.ability.model.Ability;
+import com.example.dragernesdal.data.ability.model.AbilityDTO;
 import com.example.dragernesdal.data.character.model.CharacterDTO;
 import com.example.dragernesdal.ui.character.select.SelectFragment;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
+import java.util.List;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
@@ -31,7 +29,7 @@ public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
     private AbilityAdapter abilityAdapter = new AbilityAdapter();
-    private ArrayList<Ability> abilityList = new ArrayList<Ability>();
+    private ArrayList<AbilityDTO> abilityList = new ArrayList<AbilityDTO>();
     private RecyclerView recyclerView;
 
     public static final String CHARACTER_ID_SAVESPACE = "currCharacterID";
@@ -44,12 +42,13 @@ public class HomeFragment extends Fragment {
         SharedPreferences prefs = getDefaultSharedPreferences(getContext());
         //Start testing
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt(CHARACTER_ID_SAVESPACE, 2);
+        editor.putInt(CHARACTER_ID_SAVESPACE, 1);
         editor.commit();
         //End testing
         int characterID = prefs.getInt(CHARACTER_ID_SAVESPACE, -1);
         if (characterID == -1){
             //TODO send to create character activity
+            //Doesn't work
             SelectFragment nextFrag= new SelectFragment();
             System.out.println(root.getId());
             getActivity().getSupportFragmentManager().beginTransaction()
@@ -86,21 +85,21 @@ public class HomeFragment extends Fragment {
         });
 
         //testing ability
-        abilityList.add(new Ability("name1", "long asssss desc"));
-        abilityList.add(new Ability("name2", "long asssss desc"));
-        abilityList.add(new Ability("name3", "long asssss desc"));
-        abilityList.add(new Ability("name1", "long asssss desc"));
-        abilityList.add(new Ability("name2", "long asssss desc"));
-        abilityList.add(new Ability("name3", "long asssss desc"));
-        abilityList.add(new Ability("name1", "long asssss desc"));
-        abilityList.add(new Ability("name2", "long asssss desc"));
-        abilityList.add(new Ability("name3", "long asssss desc"));
-        abilityList.add(new Ability("name1", "long asssss desc"));
-        abilityList.add(new Ability("name2", "long asssss desc"));
-        abilityList.add(new Ability("name3", "long asssss desc"));
-        abilityList.add(new Ability("name1", "long asssss desc"));
-        abilityList.add(new Ability("name2", "long asssss desc"));
-        abilityList.add(new Ability("name3", "long asssss desc"));
+        abilityList.add(new AbilityDTO("name1", "long asssss desc"));
+        abilityList.add(new AbilityDTO("name2", "long asssss desc"));
+        abilityList.add(new AbilityDTO("name3", "long asssss desc"));
+        abilityList.add(new AbilityDTO("name1", "long asssss desc"));
+        abilityList.add(new AbilityDTO("name2", "long asssss desc"));
+        abilityList.add(new AbilityDTO("name3", "long asssss desc"));
+        abilityList.add(new AbilityDTO("name1", "long asssss desc"));
+        abilityList.add(new AbilityDTO("name2", "long asssss desc"));
+        abilityList.add(new AbilityDTO("name3", "long asssss desc"));
+        abilityList.add(new AbilityDTO("name1", "long asssss desc"));
+        abilityList.add(new AbilityDTO("name2", "long asssss desc"));
+        abilityList.add(new AbilityDTO("name3", "long asssss desc"));
+        abilityList.add(new AbilityDTO("name1", "long asssss desc"));
+        abilityList.add(new AbilityDTO("name2", "long asssss desc"));
+        abilityList.add(new AbilityDTO("name3", "long asssss desc"));
         abilityAdapter.notifyDataSetChanged();
 
         homeViewModel.getCharacter().observe(getViewLifecycleOwner(), new Observer<CharacterDTO>() {
@@ -129,6 +128,15 @@ public class HomeFragment extends Fragment {
                 kpTV.setText(kp);
 
                 //TODO change picture from where its saved
+            }
+        });
+
+        homeViewModel.getAbilities().observe(getViewLifecycleOwner(), new Observer<List<AbilityDTO>>() {
+            @Override
+            public void onChanged(List<AbilityDTO> abilityDTOS) {
+                abilityList.clear();
+                abilityList = (ArrayList<AbilityDTO>) abilityDTOS;
+                abilityAdapter.notifyDataSetChanged();
             }
         });
         return root;
