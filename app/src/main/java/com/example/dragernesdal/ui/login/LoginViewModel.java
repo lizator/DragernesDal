@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel;
 import android.util.Patterns;
 
 import com.example.dragernesdal.data.user.UserRepository;
-import com.example.dragernesdal.data.user.Result;
+import com.example.dragernesdal.data.Result;
 import com.example.dragernesdal.R;
 import com.example.dragernesdal.data.user.model.ProfileDTO;
 

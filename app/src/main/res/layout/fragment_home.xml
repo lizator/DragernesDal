@@ -46,7 +46,7 @@
         app:layout_constraintTop_toTopOf="@+id/overviewTV" />
 
     <TextView
-        android:id="@+id/RaceTV"
+        android:id="@+id/raceTV"
         style="@style/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -71,7 +71,7 @@
         android:inputType="number"
         android:maxLength="4"
         app:layout_constraintStart_toEndOf="@+id/overviewTV"
-        app:layout_constraintTop_toBottomOf="@+id/RaceTV" />
+        app:layout_constraintTop_toBottomOf="@+id/raceTV" />
 
     <TextView
         android:id="@+id/textView6"
@@ -140,8 +140,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/abilityRecycler"
-        android:layout_width="170dp"
-        android:layout_height="280dp"
+        android:layout_width="148dp"
+        android:layout_height="272dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_weight="1"
@@ -212,12 +212,12 @@
 
     <ImageView
         android:id="@+id/characterPicView"
-        android:layout_width="170dp"
-        android:layout_height="280dp"
+        android:layout_width="152dp"
+        android:layout_height="279dp"
         android:layout_marginEnd="16dp"
         android:background="@color/colorPrimaryDark"
         android:padding="2dp"
-        tools:srcCompat="@drawable/rac_menneske"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/abilityRecycler" />
+        app:layout_constraintTop_toTopOf="@+id/abilityRecycler"
+        tools:srcCompat="@drawable/rac_menneske" />
 </androidx.constraintlayout.widget.ConstraintLayout>

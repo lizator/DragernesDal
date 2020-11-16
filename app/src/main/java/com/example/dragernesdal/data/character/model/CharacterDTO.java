@@ -2,7 +2,7 @@ package com.example.dragernesdal.data.character.model;
 import java.sql.Date;
 import java.sql.Time;
 
-public class Character {
+public class CharacterDTO {
     int idcharacter;
     int iduser;
     String name;
@@ -10,14 +10,14 @@ public class Character {
     int age;
     int currentep;
     String status;
-    Date date;
-    Time timestamp;
+    String date;
+    String timestamp;
     int strength;
     int health;
 
-    public Character(){}
+    public CharacterDTO(){}
 
-    public Character(int idcharacter, int iduser, String name, int idrace, int age){
+    public CharacterDTO(int idcharacter, int iduser, String name, int idrace, int age){
         this.idcharacter = idcharacter;
         this.iduser = iduser;
         this.name = name;
@@ -25,7 +25,7 @@ public class Character {
         this.age = age;
     }
 
-    public Character(int idcharacter, int iduser, String name, int idrace, int age, int currentep, String status, Date date, Time timestamp, int strength, int health) {
+    public CharacterDTO(int idcharacter, int iduser, String name, int idrace, int age, int currentep, String status, String date, String timestamp, int strength, int health) {
         this.idcharacter = idcharacter;
         this.iduser = iduser;
         this.name = name;
@@ -95,19 +95,19 @@ public class Character {
         this.status = status;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
-    public Time getTimestamp() {
+    public String getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Time timestamp) {
+    public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 

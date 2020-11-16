@@ -1,11 +1,11 @@
-package com.example.dragernesdal.data.user;
+package com.example.dragernesdal.data;
 
 /**
  * A generic class that holds a result success w/ data or an error exception.
  */
 public class Result<T> {
     // hide the private constructor to limit subclass types (Success, Error)
-    private Result() {
+    public Result() {
     }
 
     @Override

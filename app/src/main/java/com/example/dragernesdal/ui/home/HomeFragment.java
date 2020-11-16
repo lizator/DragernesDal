@@ -5,19 +5,21 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dragernesdal.R;
 import com.example.dragernesdal.data.ability.model.Ability;
+import com.example.dragernesdal.data.character.model.CharacterDTO;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -31,11 +33,17 @@ public class HomeFragment extends Fragment {
     private RecyclerView recyclerView;
 
     public static final String CHARACTER_ID_SAVESPACE = "currCharacterID";
+    //TODO maybe make some animation thing for when logging to to have data loaded and setup made?
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         SharedPreferences prefs = getDefaultSharedPreferences(getContext());
+        //Start testing
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(CHARACTER_ID_SAVESPACE, 1);
+        editor.commit();
+        //End testing
         int characterID = prefs.getInt(CHARACTER_ID_SAVESPACE, -1);
         if (characterID == -1){
             //TODO send to create character activity
@@ -43,8 +51,7 @@ public class HomeFragment extends Fragment {
 
         }
 
-        homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
+        homeViewModel = HomeViewModel.getInstance(characterID);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
         //Finding recyclerview to input abilities
@@ -88,9 +95,31 @@ public class HomeFragment extends Fragment {
         abilityList.add(new Ability("name3", "long asssss desc"));
         abilityAdapter.notifyDataSetChanged();
 
-        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        homeViewModel.getCharacter().observe(getViewLifecycleOwner(), new Observer<CharacterDTO>() {
             @Override
-            public void onChanged(@Nullable String s) {
+            public void onChanged(CharacterDTO character) {
+                EditText characterNameEdit = (EditText) root.findViewById(R.id.characterNameEdit);
+                TextView raceTV = (TextView) root.findViewById(R.id.raceTV);
+                EditText yearEdit = (EditText) root.findViewById(R.id.yearEdit);
+                TextView strengthTV = (TextView) root.findViewById(R.id.strengthTV); //Insert J, JJ, JJJ, JJJJ, JJJJJ
+                TextView kpTV = (TextView) root.findViewById(R.id.kpTV); //Insert A, AA, AAA, AAA\nA, AAA\nAA
+                TextView kobberTV = (TextView) root.findViewById(R.id.kobberTV);
+                TextView silverTV = (TextView) root.findViewById(R.id.silverTV);
+                TextView goldTV = (TextView) root.findViewById(R.id.goldTV);
+
+                characterNameEdit.setText(character.getName());
+                //raceTV.setText(character.getRaceName);
+                yearEdit.setText(String.valueOf(character.getAge()));
+                String strength = "";
+                for (int i = 0; i < character.getStrength(); i++) strength += "J";
+                strengthTV.setText(strength);
+                String kp = "";
+                for (int i = 0; i < character.getHealth(); i++){
+                    if(i == 4) kp += "\n";
+                    kp += "A";
+                }
+                kpTV.setText(kp);
+
 
             }
         });
@@ -108,7 +137,7 @@ public class HomeFragment extends Fragment {
 
     }
 
-    class AbilityAdapter extends RecyclerView.Adapter<AbilityViewHolder> {
+    class AbilityAdapter extends RecyclerView.Adapter<AbilityViewHolder> { //TODO make use onclick
         @Override
         public int getItemCount() {
             return abilityList.size();

@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dragernesdal.R;
-import com.example.dragernesdal.data.character.model.Character;
+import com.example.dragernesdal.data.character.model.CharacterDTO;
 
 import java.util.ArrayList;
 
@@ -21,7 +21,7 @@ public class SelectFragment extends Fragment {
 
     private SelectViewModel selectViewModel;
     private CharacterAdapter characterAdapter = new CharacterAdapter();
-    private ArrayList<Character> characterList = new ArrayList<>();
+    private ArrayList<CharacterDTO> characterList = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -33,12 +33,12 @@ public class SelectFragment extends Fragment {
         recyclerView = (RecyclerView) root.findViewById(R.id.charRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
         recyclerView.setAdapter(characterAdapter);
-        characterList.add(new Character(0,1,"Legolas",1,20));
-        characterList.add(new Character(1,1,"Illidan",1,21));
-        characterList.add(new Character(2,1,"Legolas Illidan",1,20));
-        characterList.add(new Character(3,1,"Illidan legolas",1,25));
-        characterList.add(new Character(4,1,"Illidian Illidan",1,20));
-        characterList.add(new Character(5,1,"Legolas Legolas",1,21));
+        characterList.add(new CharacterDTO(0,1,"Legolas",1,20));
+        characterList.add(new CharacterDTO(1,1,"Illidan",1,21));
+        characterList.add(new CharacterDTO(2,1,"Legolas Illidan",1,20));
+        characterList.add(new CharacterDTO(3,1,"Illidan legolas",1,25));
+        characterList.add(new CharacterDTO(4,1,"Illidian Illidan",1,20));
+        characterList.add(new CharacterDTO(5,1,"Legolas Legolas",1,21));
         return root;
     }
 

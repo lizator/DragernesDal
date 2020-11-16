@@ -1,6 +1,7 @@
 package com.example.dragernesdal.data.user;
 
 
+import com.example.dragernesdal.data.Result;
 import com.example.dragernesdal.data.user.model.ProfileDTO;
 
 import java.io.IOException;

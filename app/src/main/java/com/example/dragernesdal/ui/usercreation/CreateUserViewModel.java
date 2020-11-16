@@ -6,10 +6,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.dragernesdal.ui.usercreation.CreateUserFormState;
 import com.example.dragernesdal.R;
 import com.example.dragernesdal.data.user.PasswordHandler;
-import com.example.dragernesdal.data.user.Result;
+import com.example.dragernesdal.data.Result;
 import com.example.dragernesdal.data.user.UserRepository;
 import com.example.dragernesdal.data.user.model.ProfileDTO;
 
