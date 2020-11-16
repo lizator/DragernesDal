@@ -1,13 +1,17 @@
 package com.example.dragernesdal.data.character;
 
 import com.example.dragernesdal.data.Result;
+import com.example.dragernesdal.data.ability.model.Ability;
 import com.example.dragernesdal.data.character.model.CharacterDTO;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class CharacterRepository { //Class for getting characters and saving them for use
     private CharacterDAO dao;
     private HashMap<Integer, CharacterDTO> charList;
+    private HashMap<Integer, List<Ability>> abilitiesList; //character id to their List of abilities
+
     private static CharacterRepository instance;
 
     public static CharacterRepository getInstance(){

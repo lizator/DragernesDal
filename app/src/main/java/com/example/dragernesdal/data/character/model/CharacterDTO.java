@@ -7,6 +7,7 @@ public class CharacterDTO {
     int iduser;
     String name;
     int idrace;
+    String raceName;
     int age;
     int currentep;
     String status;
@@ -25,11 +26,12 @@ public class CharacterDTO {
         this.age = age;
     }
 
-    public CharacterDTO(int idcharacter, int iduser, String name, int idrace, int age, int currentep, String status, String date, String timestamp, int strength, int health) {
+    public CharacterDTO(int idcharacter, int iduser, String name, int idrace, String raceName, int age, int currentep, String status, String date, String timestamp, int strength, int health) {
         this.idcharacter = idcharacter;
         this.iduser = iduser;
         this.name = name;
         this.idrace = idrace;
+        this.raceName = raceName;
         this.age = age;
         this.currentep = currentep;
         this.status = status;
@@ -69,6 +71,14 @@ public class CharacterDTO {
 
     public void setIdrace(int idrace) {
         this.idrace = idrace;
+    }
+
+    public String getRaceName() {
+        return raceName;
+    }
+
+    public void setRaceName(String raceName) {
+        this.raceName = raceName;
     }
 
     public int getAge() {

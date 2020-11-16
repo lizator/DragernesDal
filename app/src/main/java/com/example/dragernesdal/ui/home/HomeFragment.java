@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dragernesdal.R;
 import com.example.dragernesdal.data.ability.model.Ability;
 import com.example.dragernesdal.data.character.model.CharacterDTO;
+import com.example.dragernesdal.ui.character.select.SelectFragment;
 
 import org.w3c.dom.Text;
 
@@ -37,22 +39,28 @@ public class HomeFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_home, container, false);
 
         SharedPreferences prefs = getDefaultSharedPreferences(getContext());
         //Start testing
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt(CHARACTER_ID_SAVESPACE, 1);
+        editor.putInt(CHARACTER_ID_SAVESPACE, 2);
         editor.commit();
         //End testing
         int characterID = prefs.getInt(CHARACTER_ID_SAVESPACE, -1);
         if (characterID == -1){
             //TODO send to create character activity
-        } else {
-
+            SelectFragment nextFrag= new SelectFragment();
+            System.out.println(root.getId());
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(((ViewGroup)root).getId(), nextFrag, "findThisFragment")
+                    .addToBackStack(null)
+                    .commit();
         }
+        homeViewModel = HomeViewModel.getInstance();
+        homeViewModel.startGetThread(characterID);
 
-        homeViewModel = HomeViewModel.getInstance(characterID);
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
+
 
         //Finding recyclerview to input abilities
         ImageView imgView = (ImageView) root.findViewById(R.id.characterPicView);
@@ -108,7 +116,7 @@ public class HomeFragment extends Fragment {
                 TextView goldTV = (TextView) root.findViewById(R.id.goldTV);
 
                 characterNameEdit.setText(character.getName());
-                //raceTV.setText(character.getRaceName);
+                raceTV.setText(character.getRaceName());
                 yearEdit.setText(String.valueOf(character.getAge()));
                 String strength = "";
                 for (int i = 0; i < character.getStrength(); i++) strength += "J";
@@ -120,7 +128,7 @@ public class HomeFragment extends Fragment {
                 }
                 kpTV.setText(kp);
 
-
+                //TODO change picture from where its saved
             }
         });
         return root;
