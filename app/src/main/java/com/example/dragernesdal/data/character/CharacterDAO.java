@@ -26,8 +26,8 @@ public class CharacterDAO {
     public CharacterDAO(){
         this.retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("http://10.16.234.21:28010")
-                //.baseUrl("http://80.197.112.212:25572")
+                //.baseUrl("http://10.16.234.21:28010")
+                .baseUrl("http://80.197.112.212:25572")
                 .build();
         this.service = retrofit.create(CharacterCallService.class);
     }

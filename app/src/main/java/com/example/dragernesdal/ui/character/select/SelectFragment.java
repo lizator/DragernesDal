@@ -1,5 +1,6 @@
 package com.example.dragernesdal.ui.character.select;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -44,9 +46,11 @@ public class SelectFragment extends Fragment {
 
 
     class CharacterViewHolder extends RecyclerView.ViewHolder{
+        CardView cardView;
         TextView name;
         public CharacterViewHolder(View charViews) {
             super(charViews);
+            cardView = charViews.findViewById(R.id.card_view);
             name = charViews.findViewById(R.id.characterName);
             // Gør listeelementer klikbare og vis det ved at deres baggrunsfarve ændrer sig ved berøring
             name.setBackgroundResource(android.R.drawable.list_selector_background);
@@ -70,7 +74,7 @@ public class SelectFragment extends Fragment {
         @Override
         public void onBindViewHolder(CharacterViewHolder vh, int position) {
             vh.name.setText(characterList.get(position).getName());
-            //TODO set onclick to show abilityList.get(position).getDesc()
+            System.out.println(characterList.get(position).getName());
 
         }
 
