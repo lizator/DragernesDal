@@ -48,6 +48,7 @@ public class SelectFragment extends Fragment {
         public CharacterViewHolder(View charViews) {
             super(charViews);
             name = charViews.findViewById(R.id.characterName);
+            System.out.println(name);
             // Gør listeelementer klikbare og vis det ved at deres baggrunsfarve ændrer sig ved berøring
             name.setBackgroundResource(android.R.drawable.list_selector_background);
         }
