@@ -1,7 +1,7 @@
-package com.example.dragernesdal.data.ability;
+package com.example.dragernesdal.data.inventory;
 
 import com.example.dragernesdal.data.Result;
-import com.example.dragernesdal.data.ability.model.AbilityDTO;
+import com.example.dragernesdal.data.inventory.model.InventoryDTO;
 
 import java.io.IOException;
 import java.util.List;
@@ -13,28 +13,27 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 
-public class AbilityDAO {
+public class InventoryDAO {
     private Retrofit retrofit;
-    private AbilityCallService service;
+    private InventoryCallService service;
 
-    Response<AbilityDTO> resp;
-    Response<List<AbilityDTO>> respList;
+    Response<InventoryDTO> resp;
+    Response<List<InventoryDTO>> respList;
 
-    public AbilityDAO(){
+    public InventoryDAO(){
         this.retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl("http://10.16.172.233:25572")
                 //.baseUrl("http://80.197.112.212:25572")
                 .build();
-        this.service = retrofit.create(AbilityCallService.class);
+        this.service = retrofit.create(InventoryCallService.class);
     }
 
-
-    public Result<List<AbilityDTO>> getAbilitiesByCharacterID(int characterID){
+    public Result<List<InventoryDTO>> getInventoryByCharacterID(int characterID){
         try {
-            Call<List<AbilityDTO>> call = service.getByCharacterID(characterID);
+            Call<List<InventoryDTO>> call = service.getByCharacterID(characterID);
             respList = call.execute();
-            return new Result.Success<List<AbilityDTO>>(respList.body());
+            return new Result.Success<List<InventoryDTO>>(respList.body());
         } catch (IOException e){
             e.printStackTrace();
             return new Result.Error(new IOException("Error connection to database"));
@@ -42,10 +41,9 @@ public class AbilityDAO {
     }
 
 
-
-    public interface AbilityCallService {
-        @GET("/ability/byCharacterID/{characterid}")
-        Call<List<AbilityDTO>> getByCharacterID(@Path(value = "characterid") int characterid);
+    public interface InventoryCallService {
+        @GET("/inventory/byCharacterID/{characterid}")
+        Call<List<InventoryDTO>> getByCharacterID(@Path(value = "characterid") int characterid);
 
         /*@GET("/character/byUserID/{userid}")
         Call<List<CharacterDTO>> getByUserID(@Path(value = "userid") int userid);

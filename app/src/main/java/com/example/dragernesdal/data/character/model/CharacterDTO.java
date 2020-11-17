@@ -1,6 +1,4 @@
 package com.example.dragernesdal.data.character.model;
-import java.sql.Date;
-import java.sql.Time;
 
 public class CharacterDTO {
     int idcharacter;

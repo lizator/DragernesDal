@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dragernesdal.R;
 import com.example.dragernesdal.data.ability.model.AbilityDTO;
 import com.example.dragernesdal.data.character.model.CharacterDTO;
+import com.example.dragernesdal.data.inventory.model.InventoryDTO;
 import com.example.dragernesdal.ui.character.select.SelectFragment;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class HomeFragment extends Fragment {
         SharedPreferences prefs = getDefaultSharedPreferences(getContext());
         //Start testing
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt(CHARACTER_ID_SAVESPACE, 1);
+        editor.putInt(CHARACTER_ID_SAVESPACE, 2);
         editor.commit();
         //End testing
         int characterID = prefs.getInt(CHARACTER_ID_SAVESPACE, -1);
@@ -84,24 +85,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        //testing ability
-        abilityList.add(new AbilityDTO("name1", "long asssss desc"));
-        abilityList.add(new AbilityDTO("name2", "long asssss desc"));
-        abilityList.add(new AbilityDTO("name3", "long asssss desc"));
-        abilityList.add(new AbilityDTO("name1", "long asssss desc"));
-        abilityList.add(new AbilityDTO("name2", "long asssss desc"));
-        abilityList.add(new AbilityDTO("name3", "long asssss desc"));
-        abilityList.add(new AbilityDTO("name1", "long asssss desc"));
-        abilityList.add(new AbilityDTO("name2", "long asssss desc"));
-        abilityList.add(new AbilityDTO("name3", "long asssss desc"));
-        abilityList.add(new AbilityDTO("name1", "long asssss desc"));
-        abilityList.add(new AbilityDTO("name2", "long asssss desc"));
-        abilityList.add(new AbilityDTO("name3", "long asssss desc"));
-        abilityList.add(new AbilityDTO("name1", "long asssss desc"));
-        abilityList.add(new AbilityDTO("name2", "long asssss desc"));
-        abilityList.add(new AbilityDTO("name3", "long asssss desc"));
-        abilityAdapter.notifyDataSetChanged();
-
         homeViewModel.getCharacter().observe(getViewLifecycleOwner(), new Observer<CharacterDTO>() {
             @Override
             public void onChanged(CharacterDTO character) {
@@ -110,9 +93,6 @@ public class HomeFragment extends Fragment {
                 EditText yearEdit = (EditText) root.findViewById(R.id.yearEdit);
                 TextView strengthTV = (TextView) root.findViewById(R.id.strengthTV); //Insert J, JJ, JJJ, JJJJ, JJJJJ
                 TextView kpTV = (TextView) root.findViewById(R.id.kpTV); //Insert A, AA, AAA, AAA\nA, AAA\nAA
-                TextView kobberTV = (TextView) root.findViewById(R.id.kobberTV);
-                TextView silverTV = (TextView) root.findViewById(R.id.silverTV);
-                TextView goldTV = (TextView) root.findViewById(R.id.goldTV);
 
                 characterNameEdit.setText(character.getName());
                 raceTV.setText(character.getRaceName());
@@ -137,6 +117,21 @@ public class HomeFragment extends Fragment {
                 abilityList.clear();
                 abilityList = (ArrayList<AbilityDTO>) abilityDTOS;
                 abilityAdapter.notifyDataSetChanged();
+            }
+        });
+
+        homeViewModel.getMoney().observe(getViewLifecycleOwner(), new Observer<List<InventoryDTO>>() {
+            @Override
+            public void onChanged(List<InventoryDTO> inventoryDTOS) {
+                ArrayList<InventoryDTO> moneyList = (ArrayList<InventoryDTO>) inventoryDTOS;
+                TextView goldTV = (TextView) root.findViewById(R.id.goldTV);
+                TextView silverTV = (TextView) root.findViewById(R.id.silverTV);
+                TextView kobberTV = (TextView) root.findViewById(R.id.kobberTV);
+
+                goldTV.setText(moneyList.get(0).getAmount() + "");
+                silverTV.setText(moneyList.get(1).getAmount() + "");
+                kobberTV.setText(moneyList.get(2).getAmount() + "");
+
             }
         });
         return root;
