@@ -23,11 +23,10 @@ public class CreateCharacterFragment extends Fragment {
         createCharacterViewModel =
                 new ViewModelProvider(this).get(CreateCharacterViewModel.class);
         View root = inflater.inflate(R.layout.fragment_character_create, container, false);
-        final TextView textView = root.findViewById(R.id.text_home);
         createCharacterViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                textView.setText(s);
+
             }
         });
         return root;
