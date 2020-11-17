@@ -31,7 +31,8 @@
         android:clickable="true"
         app:layout_constraintBottom_toBottomOf="@+id/charRecycler"
         app:layout_constraintEnd_toEndOf="@+id/charRecycler"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        app:maxImageSize="48dp"
+        app:srcCompat="@android:drawable/ic_plus" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
