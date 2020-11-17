@@ -10,16 +10,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dragernesdal.R;
 import com.example.dragernesdal.data.character.model.CharacterDTO;
+import com.example.dragernesdal.ui.character.create.CreateCharacterFragment;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
-public class SelectFragment extends Fragment {
+public class SelectFragment extends Fragment implements View.OnClickListener {
 
     private SelectViewModel selectViewModel;
     private CharacterAdapter characterAdapter = new CharacterAdapter();
@@ -31,6 +34,9 @@ public class SelectFragment extends Fragment {
                 new ViewModelProvider(this).get(SelectViewModel.class);
         View root = inflater.inflate(R.layout.fragment_character_select, container, false);
         RecyclerView recyclerView;
+
+        FloatingActionButton fab = root.findViewById(R.id.floatingActionButton);
+        fab.setOnClickListener(this);
         //Finding recyclerview to input abilities
         recyclerView = (RecyclerView) root.findViewById(R.id.charRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
@@ -42,6 +48,15 @@ public class SelectFragment extends Fragment {
         characterList.add(new CharacterDTO(4,1,"Illidian Illidan",1,20));
         characterList.add(new CharacterDTO(5,1,"Legolas Legolas",1,21));
         return root;
+    }
+
+    @Override
+    public void onClick(View v) {
+        Fragment mFragment = null;
+        mFragment = new CreateCharacterFragment();
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.nav_host_fragment, mFragment).commit();
     }
 
 
