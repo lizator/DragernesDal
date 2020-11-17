@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,18 +15,20 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dragernesdal.R;
+import com.example.dragernesdal.data.MainDAO;
+import com.example.dragernesdal.data.Result;
+import com.example.dragernesdal.ui.home.HomeViewModel;
 import com.example.dragernesdal.ui.login.LoginActivity;
 import com.google.android.material.navigation.NavigationView;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
+    private final static int UPDATE_TIMER = 1000;
 
 
     @Override
@@ -46,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
         });*/
 
 
+
+
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
@@ -62,8 +65,8 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-
-        //insert abilities
+        UpdaterThread updater = new UpdaterThread();
+        updater.run();
     }
 
     @Override
@@ -96,6 +99,61 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+    HashMap<String, String> tableTimes = new HashMap<>();
+    MainDAO dao = new MainDAO();
+
+    class UpdaterThread extends Thread { //Thread for checking for if changes  and starting threads to update
 
 
+        public UpdaterThread(){
+            tableTimes.put("abilities", null);
+            tableTimes.put("character", null);
+            tableTimes.put("eventAttendancyList", null);
+            tableTimes.put("events", null);
+            tableTimes.put("inventory", null);
+            tableTimes.put("krysling", null);
+            tableTimes.put("magicschools", null);
+            tableTimes.put("ownedabilities", null);
+            tableTimes.put("ownedspelltiers", null);
+            tableTimes.put("races", null);
+            tableTimes.put("spellrelation", null);
+            tableTimes.put("spells", null);
+            tableTimes.put("user", null);
+        }
+
+        @Override
+        public void run() {
+            checks();
+        }
+    }
+
+    private void checks(){
+        while (true){
+            try {
+                Thread.sleep(UPDATE_TIMER);
+                    for (String key : tableTimes.keySet()){
+                        Result<String> res = dao.getAbilitiesByCharacterID(key);
+                        if (res instanceof Result.Success){
+                            String time = ((Result.Success<String>) res).getData();
+                            if (tableTimes.get(key) == null) tableTimes.put(key, time); //initial (Should not update, cause when repos init, they get.
+                            else if (tableTimes.get(key) != time){
+                                tableTimes.put(key, time);
+                                //TODO start update of that repository
+                                switch (key){
+                                    case "abilities":
+
+                                        break;
+                                    case "character":
+                                        HomeViewModel vm = HomeViewModel.getInstance();
+                                        vm.updateCurrentCharacter();
+                                        break;
+                                }
+                            }
+                        }
+                    }
+            } catch (InterruptedException e){
+                e.printStackTrace();
+            }
+        }
+    }
 }
