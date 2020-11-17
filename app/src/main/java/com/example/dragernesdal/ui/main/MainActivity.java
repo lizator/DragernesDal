@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
@@ -24,6 +25,8 @@ import com.example.dragernesdal.ui.login.LoginActivity;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.HashMap;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -128,32 +131,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checks(){
+        Executor bgThread = Executors.newSingleThreadExecutor();
+        bgThread.execute(() ->{
+        Log.d("UpdaterThread","Started");
         while (true){
             try {
                 Thread.sleep(UPDATE_TIMER);
-                    for (String key : tableTimes.keySet()){
-                        Result<String> res = dao.getAbilitiesByCharacterID(key);
-                        if (res instanceof Result.Success){
-                            String time = ((Result.Success<String>) res).getData();
-                            if (tableTimes.get(key) == null) tableTimes.put(key, time); //initial (Should not update, cause when repos init, they get.
-                            else if (tableTimes.get(key) != time){
-                                tableTimes.put(key, time);
-                                //TODO start update of that repository
-                                switch (key){
-                                    case "abilities":
+                Log.d("UpdaterThread","Slept for: "+UPDATE_TIMER);
+                for (String key : tableTimes.keySet()){
+                    Result<String> res = dao.getAbilitiesByCharacterID(key);
+                    if (res instanceof Result.Success){
+                        String time = ((Result.Success<String>) res).getData();
+                        if (tableTimes.get(key) == null) tableTimes.put(key, time); //initial (Should not update, cause when repos init, they get.
+                        else if (tableTimes.get(key) != time){
+                            tableTimes.put(key, time);
+                            //TODO start update of that repository
+                            switch (key){
+                                case "abilities":
 
-                                        break;
-                                    case "character":
-                                        HomeViewModel vm = HomeViewModel.getInstance();
-                                        vm.updateCurrentCharacter();
-                                        break;
-                                }
+                                    break;
+                                case "character":
+                                    HomeViewModel vm = HomeViewModel.getInstance();
+                                    vm.updateCurrentCharacter();
+                                    break;
                             }
                         }
                     }
+                }
             } catch (InterruptedException e){
                 e.printStackTrace();
             }
         }
+        });
     }
 }
