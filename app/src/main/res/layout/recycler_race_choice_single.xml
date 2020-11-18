@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="145dp"
+    android:layout_height="170dp"
+    android:layout_marginBottom="5dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="130dp"
+        android:layout_height="160dp"
+        android:layout_marginLeft="5dp"
+        android:layout_gravity="center"
+        android:background="@color/colorBackgroundGreen"
+        app:cardCornerRadius="4dp">
+
+        <ImageView
+            android:id="@+id/raceChoiceImg"
+            android:layout_width="130dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="5dp"
+            android:background="@color/cardview_light_background"
+            app:srcCompat="@drawable/rac_menneske" />
+
+        <TextView
+            android:id="@+id/raceChoiceTV"
+            style="@style/text"
+            android:layout_width="130dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="center"
+            android:layout_marginBottom="5dp"
+            android:background="@color/colorPrimaryfaded"
+            android:elevation="4dp"
+            android:text="Menneske" />
+
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout >

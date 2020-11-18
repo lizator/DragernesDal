@@ -102,20 +102,18 @@
             android:text="@string/Background"
             android:textSize="24sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/characterAge" />
-
-        <EditText
+            app:layout_constraintTop_toBottomOf="@+id/characterAge" /><EditText
             android:id="@+id/CharacterBackground"
             style="@style/TextZone"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="378dp"
+            android:layout_height="294dp"
             android:layout_marginTop="8dp"
             android:gravity="top|left"
             android:imeOptions="actionNext"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:selectAllOnFocus="true"
-            android:textSize="26dp"
+            android:textSize="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.31"
             app:layout_constraintStart_toStartOf="parent"
