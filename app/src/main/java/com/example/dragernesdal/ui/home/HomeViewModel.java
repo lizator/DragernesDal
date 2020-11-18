@@ -39,6 +39,21 @@ public class HomeViewModel extends ViewModel {
         mCharacter.postValue(repo.updateCharacter(mCharacter.getValue().getIdcharacter())); //TODO Could maybe check to see if is the same? might not be needed
     }
 
+    public void updateCurrentAbilities(){
+        mAbilities.postValue(repo.updateAbilities(mCharacter.getValue().getIdcharacter())); //TODO Could maybe check to see if is the same? might not be needed
+    }
+
+    public void updateCurrentMoney(){
+        ArrayList<InventoryDTO> tmpLst = (ArrayList<InventoryDTO>) repo.updateInventory(mCharacter.getValue().getIdcharacter());
+        //We only want to show money here (ID's: 1 gold, 2 silver, 3 kobber)
+        ArrayList<InventoryDTO> moneyLst = new ArrayList<InventoryDTO>();
+        moneyLst.add(tmpLst.get(0));//Gold first
+        moneyLst.add(tmpLst.get(1));//Silver next
+        moneyLst.add(tmpLst.get(2));//Kobber last
+
+        mMoney.postValue(moneyLst); //TODO Could maybe check to see if is the same? might not be needed
+    }
+
     public void startGetThread(int characterID){
         GetCharacterThread thread = new GetCharacterThread(characterID);
         thread.start();

@@ -79,6 +79,18 @@ public class CharacterRepository { //Class for getting characters and saving the
         return result;
     }
 
+    public List<AbilityDTO> updateAbilities(int currCharacterID){
+        for (int characterID : abilitiesList.keySet()) {
+            Result<List<AbilityDTO>> result = abilityDAO.getAbilitiesByCharacterID(characterID);
+            if (result instanceof Result.Success) {
+                List<AbilityDTO> abilities = (List<AbilityDTO>) ((Result.Success) result).getData();
+                //Checking if update is needed
+                abilitiesList.put(characterID, abilities);
+            }
+        }
+        return abilitiesList.get(currCharacterID);
+    }
+
     public Result<List<InventoryDTO>> getInventoryByCharacterID(int characterID){
         if (inventoryList.containsKey(characterID)){
             Result<List<InventoryDTO>> result = new Result.Success<List<InventoryDTO>>(inventoryList.get(characterID));
@@ -90,6 +102,18 @@ public class CharacterRepository { //Class for getting characters and saving the
             inventoryList.put(characterID, inventory);
         }
         return result;
+    }
+
+    public List<InventoryDTO> updateInventory(int currCharacterID){
+        for (int characterID : inventoryList.keySet()) {
+            Result<List<InventoryDTO>> result = inventoryDAO.getInventoryByCharacterID(characterID);
+            if (result instanceof Result.Success) {
+                List<InventoryDTO> inventory = (List<InventoryDTO>) ((Result.Success) result).getData();
+                //Checking if update is needed
+                inventoryList.put(characterID, inventory);
+            }
+        }
+        return inventoryList.get(currCharacterID);
     }
 
 }

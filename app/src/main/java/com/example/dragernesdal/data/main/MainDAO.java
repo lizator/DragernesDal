@@ -1,9 +1,11 @@
-package com.example.dragernesdal.data;
+package com.example.dragernesdal.data.main;
 
 
 
 
+import com.example.dragernesdal.data.Result;
 import com.example.dragernesdal.data.ability.model.AbilityDTO;
+import com.example.dragernesdal.data.main.model.MainDTO;
 import com.example.dragernesdal.ui.main.MainActivity;
 
 import java.io.IOException;
@@ -20,24 +22,27 @@ public class MainDAO {
     private Retrofit retrofit;
     private MainCallService service;
 
-    Response<String> resp;
+    Response<MainDTO> resp;
 
     public MainDAO(){
         {
             this.retrofit = new Retrofit.Builder()
                     .addConverterFactory(GsonConverterFactory.create())
-                    //.baseUrl("http://10.16.234.21:25572")
-                    .baseUrl("http://80.197.112.212:25572")
+                    .baseUrl("http://192.168.0.101:25572")
+                    //.baseUrl("http://80.197.112.212:25572")
                     .build();
             this.service = retrofit.create(MainCallService.class);
         }
     }
 
-    public Result<String> getAbilitiesByCharacterID(String tableName){
+    public Result<MainDTO> getAbilitiesByCharacterID(String tableName){
         try {
-            Call<String> call = service.getTableLastModified(tableName);
+            Call<MainDTO> call = service.getTableLastModified(tableName);
             resp = call.execute();
-            return new Result.Success<String>(resp.body());
+            if (resp.code() == 200) {
+                return new Result.Success<MainDTO>(resp.body());
+            }
+            throw new IOException("error for " + tableName);
         } catch (IOException e){
             e.printStackTrace();
             return new Result.Error(new IOException("Error connection to database"));
@@ -46,7 +51,7 @@ public class MainDAO {
 
     public interface MainCallService {
         @GET("/main/tableupdate/{tableName}")
-        Call<String> getTableLastModified(@Path(value = "tableName") String tableName);
+        Call<MainDTO> getTableLastModified(@Path(value = "tableName") String tableName);
 
         /*@GET("/character/byUserID/{userid}")
         Call<List<CharacterDTO>> getByUserID(@Path(value = "userid") int userid);
@@ -54,4 +59,5 @@ public class MainDAO {
         @POST("/character/create")
         Call<CharacterDTO> createCharacter(@Body CharacterDTO character);*/
     }
+
 }

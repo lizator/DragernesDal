@@ -18,8 +18,9 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.dragernesdal.R;
-import com.example.dragernesdal.data.MainDAO;
+import com.example.dragernesdal.data.main.MainDAO;
 import com.example.dragernesdal.data.Result;
+import com.example.dragernesdal.data.main.model.MainDTO;
 import com.example.dragernesdal.ui.home.HomeViewModel;
 import com.example.dragernesdal.ui.login.LoginActivity;
 import com.google.android.material.navigation.NavigationView;
@@ -31,7 +32,7 @@ import java.util.concurrent.Executors;
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-    private final static int UPDATE_TIMER = 1000;
+    private final static int UPDATE_TIMER = 10000;
 
 
     @Override
@@ -134,25 +135,29 @@ public class MainActivity extends AppCompatActivity {
         Executor bgThread = Executors.newSingleThreadExecutor();
         bgThread.execute(() ->{
         Log.d("UpdaterThread","Started");
+        HomeViewModel homeVM = HomeViewModel.getInstance();
         while (true){
             try {
                 Thread.sleep(UPDATE_TIMER);
                 Log.d("UpdaterThread","Slept for: "+UPDATE_TIMER);
+                Log.d("UpdaterThread", tableTimes.toString());
                 for (String key : tableTimes.keySet()){
-                    Result<String> res = dao.getAbilitiesByCharacterID(key);
+                    Result<MainDTO> res = dao.getAbilitiesByCharacterID(key);
                     if (res instanceof Result.Success){
-                        String time = ((Result.Success<String>) res).getData();
+                        String time = ((Result.Success<MainDTO>) res).getData().getInfo();
                         if (tableTimes.get(key) == null) tableTimes.put(key, time); //initial (Should not update, cause when repos init, they get.
                         else if (tableTimes.get(key) != time){
                             tableTimes.put(key, time);
-                            //TODO start update of that repository
+                            //TODO start update of those repository
                             switch (key){
                                 case "abilities":
-
+                                    homeVM.updateCurrentAbilities();
                                     break;
                                 case "character":
-                                    HomeViewModel vm = HomeViewModel.getInstance();
-                                    vm.updateCurrentCharacter();
+                                    homeVM.updateCurrentCharacter();
+                                    break;
+                                case "inventory":
+                                    homeVM.updateCurrentMoney();
                                     break;
                             }
                         }
