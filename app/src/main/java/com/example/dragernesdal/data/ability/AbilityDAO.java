@@ -23,8 +23,8 @@ public class AbilityDAO {
     public AbilityDAO(){
         this.retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("http://10.16.172.233:25572")
-                //.baseUrl("http://80.197.112.212:25572")
+                //.baseUrl("http://10.16.172.233:25572")
+                .baseUrl("http://80.197.112.212:25572")
                 .build();
         this.service = retrofit.create(AbilityCallService.class);
     }

@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressed() { //TODO have int state for each fragment, and do different stuff according to state? if possible
         new AlertDialog.Builder(this)
                 .setTitle("Log ud?")
                 .setMessage("Er du sikker på at du vil logge ud?")
