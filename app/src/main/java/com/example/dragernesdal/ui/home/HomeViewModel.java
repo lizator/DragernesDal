@@ -28,11 +28,15 @@ public class HomeViewModel extends ViewModel {
     }
 
     private HomeViewModel() {
-        mCharacter = new MutableLiveData<>();
-        mAbilities = new MutableLiveData<>();
-        mMoney = new MutableLiveData<>();
-        repo = CharacterRepository.getInstance();
-        //Getting character
+        this.mCharacter = new MutableLiveData<>();
+        this.mAbilities = new MutableLiveData<>();
+        this.mMoney = new MutableLiveData<>();
+        this.repo = CharacterRepository.getInstance();
+        //initialing observers
+    }
+
+    public void updateCurrentCharacter(){
+        mCharacter.postValue(repo.updateCharacter(mCharacter.getValue().getIdcharacter())); //TODO Could maybe check to see if is the same? might not be needed
     }
 
     public void startGetThread(int characterID){
@@ -98,6 +102,7 @@ public class HomeViewModel extends ViewModel {
             //loginResult.postValue(new LoginResult(R.string.login_failed));
         }
     }
+
 
     class GetCharacterThread extends Thread {
         private int id;
