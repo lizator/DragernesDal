@@ -49,89 +49,88 @@ public class HomeFragment extends Fragment {
         //End testing
         int characterID = prefs.getInt(CHARACTER_ID_SAVESPACE, -1);
         if (characterID == -1){
-            //TODO send to create character activity
             Fragment mFragment = new SelectFragment();
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.nav_host_fragment, mFragment).commit();
-        }
-        homeViewModel = HomeViewModel.getInstance();
-        homeViewModel.startGetThread(characterID);
+        } else {
+            homeViewModel = HomeViewModel.getInstance();
+            homeViewModel.startGetThread(characterID);
 
 
+            //Finding recyclerview to input abilities
+            ImageView imgView = (ImageView) root.findViewById(R.id.characterPicView);
+            recyclerView = (RecyclerView) root.findViewById(R.id.abilityRecycler);
+            recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+            recyclerView.setAdapter(abilityAdapter);
 
-        //Finding recyclerview to input abilities
-        ImageView imgView = (ImageView) root.findViewById(R.id.characterPicView);
-        recyclerView = (RecyclerView) root.findViewById(R.id.abilityRecycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
-        recyclerView.setAdapter(abilityAdapter);
-
-        root.post(new Runnable() {
-            @Override
-            public void run() {
-                ViewGroup.LayoutParams params=recyclerView.getLayoutParams();
-                ViewGroup.LayoutParams paramsImg=imgView.getLayoutParams();
-                int h = (int) Math.floor(root.getMeasuredHeight() * 5 / 9 - 200);
-                int w = (int) Math.floor(root.getMeasuredWidth() * 5 / 13 + 25);
-                params.height=h;
-                params.width=w;
-                paramsImg.height=h;
-                paramsImg.width=w;
-                recyclerView.setLayoutParams(params);
-                imgView.setLayoutParams(paramsImg);
-                imgView.setImageResource(R.drawable.rac_menneske);
-            }
-        });
-
-        homeViewModel.getCharacter().observe(getViewLifecycleOwner(), new Observer<CharacterDTO>() {
-            @Override
-            public void onChanged(CharacterDTO character) {
-                EditText characterNameEdit = (EditText) root.findViewById(R.id.characterNameEdit);
-                TextView raceTV = (TextView) root.findViewById(R.id.raceTV);
-                EditText yearEdit = (EditText) root.findViewById(R.id.yearEdit);
-                TextView strengthTV = (TextView) root.findViewById(R.id.strengthTV); //Insert J, JJ, JJJ, JJJJ, JJJJJ
-                TextView kpTV = (TextView) root.findViewById(R.id.kpTV); //Insert A, AA, AAA, AAA\nA, AAA\nAA
-
-                characterNameEdit.setText(character.getName());
-                raceTV.setText(character.getRaceName());
-                yearEdit.setText(String.valueOf(character.getAge()));
-                String strength = "";
-                for (int i = 0; i < character.getStrength(); i++) strength += "J";
-                strengthTV.setText(strength);
-                String kp = "";
-                for (int i = 0; i < character.getHealth(); i++){
-                    if(i == 4) kp += "\n";
-                    kp += "A";
+            root.post(new Runnable() {
+                @Override
+                public void run() {
+                    ViewGroup.LayoutParams params = recyclerView.getLayoutParams();
+                    ViewGroup.LayoutParams paramsImg = imgView.getLayoutParams();
+                    int h = (int) Math.floor(root.getMeasuredHeight() * 5 / 9 - 200);
+                    int w = (int) Math.floor(root.getMeasuredWidth() * 5 / 13 + 25);
+                    params.height = h;
+                    params.width = w;
+                    paramsImg.height = h;
+                    paramsImg.width = w;
+                    recyclerView.setLayoutParams(params);
+                    imgView.setLayoutParams(paramsImg);
+                    imgView.setImageResource(R.drawable.rac_menneske);
                 }
-                kpTV.setText(kp);
+            });
 
-                //TODO change picture from where its saved
-            }
-        });
+            homeViewModel.getCharacter().observe(getViewLifecycleOwner(), new Observer<CharacterDTO>() {
+                @Override
+                public void onChanged(CharacterDTO character) {
+                    EditText characterNameEdit = (EditText) root.findViewById(R.id.characterNameEdit);
+                    TextView raceTV = (TextView) root.findViewById(R.id.raceTV);
+                    EditText yearEdit = (EditText) root.findViewById(R.id.yearEdit);
+                    TextView strengthTV = (TextView) root.findViewById(R.id.strengthTV); //Insert J, JJ, JJJ, JJJJ, JJJJJ
+                    TextView kpTV = (TextView) root.findViewById(R.id.kpTV); //Insert A, AA, AAA, AAA\nA, AAA\nAA
 
-        homeViewModel.getAbilities().observe(getViewLifecycleOwner(), new Observer<List<AbilityDTO>>() {
-            @Override
-            public void onChanged(List<AbilityDTO> abilityDTOS) {
-                abilityList.clear();
-                abilityList = (ArrayList<AbilityDTO>) abilityDTOS;
-                abilityAdapter.notifyDataSetChanged();
-            }
-        });
+                    characterNameEdit.setText(character.getName());
+                    raceTV.setText(character.getRaceName());
+                    yearEdit.setText(String.valueOf(character.getAge()));
+                    String strength = "";
+                    for (int i = 0; i < character.getStrength(); i++) strength += "J";
+                    strengthTV.setText(strength);
+                    String kp = "";
+                    for (int i = 0; i < character.getHealth(); i++) {
+                        if (i == 4) kp += "\n";
+                        kp += "A";
+                    }
+                    kpTV.setText(kp);
 
-        homeViewModel.getMoney().observe(getViewLifecycleOwner(), new Observer<List<InventoryDTO>>() {
-            @Override
-            public void onChanged(List<InventoryDTO> inventoryDTOS) {
-                ArrayList<InventoryDTO> moneyList = (ArrayList<InventoryDTO>) inventoryDTOS;
-                TextView goldTV = (TextView) root.findViewById(R.id.goldTV);
-                TextView silverTV = (TextView) root.findViewById(R.id.silverTV);
-                TextView kobberTV = (TextView) root.findViewById(R.id.kobberTV);
+                    //TODO change picture from where its saved
+                }
+            });
 
-                goldTV.setText(moneyList.get(0).getAmount() + "");
-                silverTV.setText(moneyList.get(1).getAmount() + "");
-                kobberTV.setText(moneyList.get(2).getAmount() + "");
+            homeViewModel.getAbilities().observe(getViewLifecycleOwner(), new Observer<List<AbilityDTO>>() {
+                @Override
+                public void onChanged(List<AbilityDTO> abilityDTOS) {
+                    abilityList.clear();
+                    abilityList = (ArrayList<AbilityDTO>) abilityDTOS;
+                    abilityAdapter.notifyDataSetChanged();
+                }
+            });
 
-            }
-        });
+            homeViewModel.getMoney().observe(getViewLifecycleOwner(), new Observer<List<InventoryDTO>>() {
+                @Override
+                public void onChanged(List<InventoryDTO> inventoryDTOS) {
+                    ArrayList<InventoryDTO> moneyList = (ArrayList<InventoryDTO>) inventoryDTOS;
+                    TextView goldTV = (TextView) root.findViewById(R.id.goldTV);
+                    TextView silverTV = (TextView) root.findViewById(R.id.silverTV);
+                    TextView kobberTV = (TextView) root.findViewById(R.id.kobberTV);
+
+                    goldTV.setText(moneyList.get(0).getAmount() + "");
+                    silverTV.setText(moneyList.get(1).getAmount() + "");
+                    kobberTV.setText(moneyList.get(2).getAmount() + "");
+
+                }
+            });
+        }
         return root;
     }
 
