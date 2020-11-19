@@ -58,7 +58,7 @@ public class CharacterDAO {
         try {
             Call<List<CharacterDTO>> call = service.getByUserID(userID);
             respList = call.execute();
-            return new Result.Success<CharacterDTO>(resp.body()); //TODO BUG!!! RETURNS RESP BUT SHOULD RETURN RESPLIST
+            return new Result.Success<List<CharacterDTO>>(respList.body());
         } catch (IOException e){
             e.printStackTrace();
             return new Result.Error(new IOException("Error connection to database"));

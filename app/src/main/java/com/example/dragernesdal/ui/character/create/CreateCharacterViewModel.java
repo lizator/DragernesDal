@@ -10,7 +10,7 @@ public class CreateCharacterViewModel extends ViewModel {
 
     public CreateCharacterViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is create character fragment");
+        mText.setValue("This is magic fragment");
     }
 
     public LiveData<String> getText() {

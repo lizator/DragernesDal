@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -49,13 +50,10 @@ public class HomeFragment extends Fragment {
         int characterID = prefs.getInt(CHARACTER_ID_SAVESPACE, -1);
         if (characterID == -1){
             //TODO send to create character activity
-            //Doesn't work
-            SelectFragment nextFrag= new SelectFragment();
-            System.out.println(root.getId());
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(((ViewGroup)root).getId(), nextFrag, "findThisFragment")
-                    .addToBackStack(null)
-                    .commit();
+            Fragment mFragment = new SelectFragment();
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.nav_host_fragment, mFragment).commit();
         }
         homeViewModel = HomeViewModel.getInstance();
         homeViewModel.startGetThread(characterID);

@@ -1,6 +1,5 @@
 package com.example.dragernesdal.ui.character.select;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dragernesdal.R;
 import com.example.dragernesdal.data.character.model.CharacterDTO;
-import com.example.dragernesdal.ui.character.create.CreateCharacterFragment;
+import com.example.dragernesdal.ui.character.create.ChooseRaceFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -52,8 +51,7 @@ public class SelectFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        Fragment mFragment = null;
-        mFragment = new CreateCharacterFragment();
+        Fragment mFragment = new ChooseRaceFragment();
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.nav_host_fragment, mFragment).commit();
