@@ -58,6 +58,7 @@ public class ChooseRaceFragment extends Fragment {
 
             // Gør listeelementer klikbare og vis det ved at deres baggrunsfarve ændrer sig ved berøring
             cardViewLeft.setBackgroundResource(android.R.drawable.list_selector_background);
+            cardViewLeft.setOnClickListener(this);
         }
 
         @Override
