@@ -42,7 +42,7 @@ public class ChooseRaceFragment extends Fragment {
         recyclerView.setLayoutManager(new GridLayoutManager(root.getContext(), 2));
         recyclerView.setAdapter(raceAdapter);
         raceAdapter.notifyDataSetChanged();
-
+        //TODO make recycler be the size of view and scroll within, and not in genneral.
         return root;
     }
 
