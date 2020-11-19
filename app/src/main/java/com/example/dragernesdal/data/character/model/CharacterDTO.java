@@ -13,10 +13,12 @@ public class CharacterDTO {
     String timestamp;
     int strength;
     int health;
+    String background;
 
-    public CharacterDTO(){}
+    public CharacterDTO() {
+    }
 
-    public CharacterDTO(int idcharacter, int iduser, String name, int idrace, int age){
+    public CharacterDTO(int idcharacter, int iduser, String name, int idrace, int age) {
         this.idcharacter = idcharacter;
         this.iduser = iduser;
         this.name = name;
@@ -133,5 +135,13 @@ public class CharacterDTO {
 
     public void setHealth(int health) {
         this.health = health;
+    }
+
+    public String getBackground() {
+        return background;
+    }
+
+    public void setBackground(String background) {
+        this.background = background;
     }
 }

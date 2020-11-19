@@ -23,7 +23,7 @@ public class CharacterDAO {
     Response<CharacterDTO> resp;
     Response<List<CharacterDTO>> respList;
 
-    public CharacterDAO(){
+    public CharacterDAO() {
         this.retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 //.baseUrl("http://10.16.172.233:25572")
@@ -32,39 +32,38 @@ public class CharacterDAO {
         this.service = retrofit.create(CharacterCallService.class);
     }
 
-    Result<CharacterDTO> createCharacter(CharacterDTO dto){
+    public Result<CharacterDTO> createCharacter(CharacterDTO dto) {
         try {
             Call<CharacterDTO> call = service.createCharacter(dto);
             resp = call.execute();
             return new Result.Success<CharacterDTO>(resp.body());
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
 
-    Result<CharacterDTO> getCharacterByID(int characterID){
+    Result<CharacterDTO> getCharacterByID(int characterID) {
         try {
             Call<CharacterDTO> call = service.getByID(characterID);
             resp = call.execute();
             return new Result.Success<CharacterDTO>(resp.body());
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
 
-    Result<List<CharacterDTO>> getCharacterByUserID(int userID){
+    Result<List<CharacterDTO>> getCharacterByUserID(int userID) {
         try {
             Call<List<CharacterDTO>> call = service.getByUserID(userID);
             respList = call.execute();
             return new Result.Success<List<CharacterDTO>>(respList.body());
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
-
 
 
     public interface CharacterCallService {

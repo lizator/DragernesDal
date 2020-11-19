@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         TextView userEmail = headerView.findViewById(R.id.userEmail);
         username.setText(getIntent().getStringExtra("username"));
         userEmail.setText(getIntent().getStringExtra("email"));
+        Log.d("UserID",getIntent().getStringExtra("id"));
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
