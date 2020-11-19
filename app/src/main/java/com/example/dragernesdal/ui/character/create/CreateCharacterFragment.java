@@ -1,12 +1,16 @@
 package com.example.dragernesdal.ui.character.create;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +22,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.dragernesdal.R;
 import com.example.dragernesdal.data.character.CharacterDAO;
 import com.example.dragernesdal.data.character.model.CharacterDTO;
+import com.example.dragernesdal.ui.character.select.SelectFragment;
+import com.example.dragernesdal.ui.main.MainActivity;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -31,6 +37,8 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
     private EditText characterName;
     private EditText characterAge;
     private EditText characterBackground;
+    private TextChecker textChecker;
+    private Handler uiThread = new Handler();
 
     public CreateCharacterFragment(int raceID) {
         this.raceID = raceID;
@@ -46,10 +54,11 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
         characterName = root.findViewById(R.id.characterName);
         characterAge = root.findViewById(R.id.characterAge);
         characterBackground = root.findViewById(R.id.characterBackground);
+        textChecker = new TextChecker("","","");
 
 
         create.setOnClickListener(this);
-        create.setEnabled(true);
+        create.setEnabled(false);
         userID = Integer.parseInt(getActivity().getIntent().getStringExtra("id"));
 
         ImageView raceImageView = (ImageView) root.findViewById(R.id.raceImageView);
@@ -90,6 +99,43 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
                 break;
         } //Switch for setting image resource
 
+        characterName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                textChecker.setName(s.toString());
+                create.setEnabled(textChecker.getDataValid());
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+        characterAge.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                textChecker.setAge(s.toString());
+                create.setEnabled(textChecker.getDataValid());
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        characterBackground.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                textChecker.setBackground(s.toString());
+                create.setEnabled(textChecker.getDataValid());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
         createCharacterViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
@@ -114,7 +160,41 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
         Executor bgThread = Executors.newSingleThreadExecutor();
         bgThread.execute(() ->{
             characterDAO.createCharacter(characterDTO);
+            uiThread.post(()-> {
+                Toast.makeText(getActivity(), "Karakter oprettet", Toast.LENGTH_SHORT).show();
+                Fragment mFragment = new SelectFragment();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.nav_host_fragment, mFragment).commit();
+            });
         });
+    }
 
+    class TextChecker{
+        private String name;
+        private String age;
+        private String background;
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public void setAge(String age) {
+            this.age = age;
+        }
+
+        public void setBackground(String background) {
+            this.background = background;
+        }
+
+        TextChecker(String name, String age, String background){
+            this.name = name;
+            this.age = age;
+            this.background = background;
+        }
+
+        public boolean getDataValid(){
+            return(name.length()!=0 && age.length()!=0 && background.length()!=0);
+        }
     }
 }
