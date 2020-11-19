@@ -32,7 +32,7 @@ public class CreateCharacterFragment extends Fragment {
                 new ViewModelProvider(this).get(CreateCharacterViewModel.class);
         View root = inflater.inflate(R.layout.fragment_character_create, container, false);
         ImageView raceImageView = (ImageView) root.findViewById(R.id.raceImageView);
-        
+
         switch (raceID) {
             case 1:
                 raceImageView.setImageResource(R.drawable.rac_dvaerg);
