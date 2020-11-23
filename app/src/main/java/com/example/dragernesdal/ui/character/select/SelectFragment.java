@@ -124,6 +124,10 @@ public class SelectFragment extends Fragment{
                     args.putInt(CHARACTER_ID_ARGUMENT, characterList.get(position).getIdcharacter());
                     mFragment.setArguments(args);
 
+                    Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+                    NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
+                    toolbar.setTitle(getString(R.string.menu_home));
+                    navigationView.setCheckedItem(R.id.nav_home);
                     FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                     fragmentManager.beginTransaction()
                             .replace(R.id.nav_host_fragment, mFragment).commit();
