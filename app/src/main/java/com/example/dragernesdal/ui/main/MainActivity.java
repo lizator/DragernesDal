@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                                 tableTimes.put(key, time);
                                 //TODO start update of those repository
                                 switch (key){
-                                    case "abilities":
+                                    case "ownedabilities":
                                         homeVM.updateCurrentAbilities();
                                         Log.d("UpdaterThread", "Running abilities");
                                         break;
