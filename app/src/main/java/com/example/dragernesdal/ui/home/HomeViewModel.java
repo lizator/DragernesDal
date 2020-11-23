@@ -12,6 +12,8 @@ import com.example.dragernesdal.data.inventory.model.InventoryDTO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class HomeViewModel extends ViewModel {
 
@@ -41,8 +43,11 @@ public class HomeViewModel extends ViewModel {
     }
 
     public void updateCurrentAbilities(){
-        if (mCharacter.getValue() != null)
-        mAbilities.postValue(repo.updateAbilities(mCharacter.getValue().getIdcharacter())); //TODO Could maybe check to see if is the same? might not be needed
+        Executor bgThread = Executors.newSingleThreadExecutor();
+        bgThread.execute(() -> {
+            if (mCharacter.getValue() != null)
+                mAbilities.postValue(repo.updateAbilities(mCharacter.getValue().getIdcharacter())); //TODO Could maybe check to see if is the same? might not be needed
+        });
     }
 
     public void updateCurrentMoney(){
@@ -96,7 +101,7 @@ public class HomeViewModel extends ViewModel {
 
         if (result instanceof Result.Success) {
             ArrayList<AbilityDTO> tmpLst = ((Result.Success<ArrayList<AbilityDTO>>) result).getData();
-            mAbilities.postValue(tmpLst);
+            if (!tmpLst.equals((ArrayList<AbilityDTO>) mAbilities.getValue())) mAbilities.postValue(tmpLst);
             //loginResult.postValue(new LoginResult(new LoggedInUserView(data.getFirstName() + " " + data.getLastName(), data.getEmail(), data.getPassHash())));
         } else {
             //loginResult.postValue(new LoginResult(R.string.login_failed));
