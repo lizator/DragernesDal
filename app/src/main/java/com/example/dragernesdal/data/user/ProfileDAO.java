@@ -30,11 +30,30 @@ public class ProfileDAO {
     }
 
     ProfileDTO getProfileByEmail(String email) throws IOException {
-
         ProfileDTO dto = new ProfileDTO();
         dto.setEmail(email);
         Call<ProfileDTO> call = service.getByEmail(dto);
         resp = call.execute();
+        return resp.body();
+    }
+
+    ProfileDTO login(String email, String password) throws IOException {
+        ProfileDTO dto = new ProfileDTO();
+        dto.setEmail(email);
+        dto.setPassHash(password);
+        Call<ProfileDTO> call = service.login(dto);
+        resp = call.execute();
+        if (resp.body() == null) throw new IOException("ERROR: no return body/error in BE");
+        return resp.body();
+    }
+
+    ProfileDTO autoLogin(String email, String passHash) throws IOException {
+        ProfileDTO dto = new ProfileDTO();
+        dto.setEmail(email);
+        dto.setPassHash(passHash);
+        Call<ProfileDTO> call = service.autoLogin(dto);
+        resp = call.execute();
+        if (resp.body() == null) throw new IOException("ERROR: no return body/error in BE");
         return resp.body();
     }
 
@@ -57,6 +76,12 @@ public class ProfileDAO {
     public interface profileCallService {
         @POST("user/getbyemail")
         Call<ProfileDTO> getByEmail(@Body ProfileDTO dto);
+
+        @POST("user/login")
+        Call<ProfileDTO> login(@Body ProfileDTO dto);
+
+        @POST("user/autologin")
+        Call<ProfileDTO> autoLogin(@Body ProfileDTO dto);
 
         @POST("user/create")
         Call<ProfileDTO> createUser(@Body ProfileDTO dto);
