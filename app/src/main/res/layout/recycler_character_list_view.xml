@@ -31,7 +31,7 @@
             android:textColor="#000000" />
 
         <ImageView
-            android:id="@+id/imageView3"
+            android:id="@+id/characterRecyclerImageView"
             android:layout_width="95dp"
             android:layout_height="match_parent"
             android:layout_marginTop="5dp"

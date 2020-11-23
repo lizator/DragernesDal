@@ -1,5 +1,7 @@
 package com.example.dragernesdal.data.character;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.dragernesdal.data.Result;
@@ -42,26 +44,41 @@ public class CharacterRepository { //Class for getting characters and saving the
 
     public Result<List<CharacterDTO>> getCharactersByUserID(int userID){
         Result<List<CharacterDTO>> result;
-        if (charList.containsKey(userID)){
+        if (charListList.containsKey(userID)){
             result = new Result.Success<List<CharacterDTO>>(charListList.get(userID));
+            Log.i("GetCharacters Results", "a");
         } else {
             result = characterDAO.getCharacterByUserID(userID);
             if (result instanceof Result.Success) {
                 ArrayList<CharacterDTO> lst = (ArrayList<CharacterDTO>) ((Result.Success) result).getData();
                 charListList.put(userID, lst);
+                Log.i("GetCharacters Results", "b");
+            }
+        }
+        ArrayList<CharacterDTO> lst = (ArrayList<CharacterDTO>) ((Result.Success) result).getData();
+        if (lst.size() == 0) {
+            result = characterDAO.getCharacterByUserID(userID);
+            if (result instanceof Result.Success) {
+                ArrayList<CharacterDTO> lst2 = (ArrayList<CharacterDTO>) ((Result.Success) result).getData();
+                charListList.put(userID, lst2);
+                Log.i("GetCharacters Results", "b");
             }
         }
         return result;
     }
 
     public List<CharacterDTO> updateCharacterList(int currUserID){
-        for (int userID : charList.keySet()) {
+        for (int userID : charListList.keySet()) {
             Result<List<CharacterDTO>> result = characterDAO.getCharacterByUserID(userID);
             if (result instanceof Result.Success) {
                 ArrayList<CharacterDTO> lst = (ArrayList<CharacterDTO>) ((Result.Success) result).getData();
-                charListList.put(currUserID, lst);
+                if (lst.size() == 0) {
+                    Log.i("GetCharacters Results", "c");
+                }
+                charListList.put(userID, lst);
             }
         }
+
         return charListList.get(currUserID);
     }
 

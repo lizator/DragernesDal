@@ -23,6 +23,7 @@ import com.example.dragernesdal.R;
 import com.example.dragernesdal.data.character.CharacterDAO;
 import com.example.dragernesdal.data.character.model.CharacterDTO;
 import com.example.dragernesdal.ui.character.select.SelectFragment;
+import com.example.dragernesdal.ui.character.select.SelectViewModel;
 import com.example.dragernesdal.ui.main.MainActivity;
 
 import java.util.concurrent.Executor;
@@ -162,10 +163,13 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
             characterDAO.createCharacter(characterDTO);
             uiThread.post(()-> {
                 Toast.makeText(getActivity(), "Karakter oprettet", Toast.LENGTH_SHORT).show();
+                SelectViewModel selectViewModel = SelectViewModel.getInstance();
+                selectViewModel.updateCurrentCharacters();
                 Fragment mFragment = new SelectFragment();
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction()
                         .replace(R.id.nav_host_fragment, mFragment).commit();
+
             });
         });
     }

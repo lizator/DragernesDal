@@ -144,19 +144,22 @@ public class MainActivity extends AppCompatActivity {
                         if (res instanceof Result.Success){
                             String time = ((Result.Success<MainDTO>) res).getData().getInfo();
                             if (tableTimes.get(key) == null) tableTimes.put(key, time); //initial (Should not update, cause when repos init, they get.
-                            else if (tableTimes.get(key) != time){
+                            else if (!tableTimes.get(key).equals(time)){
                                 tableTimes.put(key, time);
                                 //TODO start update of those repository
                                 switch (key){
                                     case "abilities":
                                         homeVM.updateCurrentAbilities();
+                                        Log.d("UpdaterThread", "Running abilities");
                                         break;
                                     case "character":
                                         homeVM.updateCurrentCharacter();
                                         selectCharVM.updateCurrentCharacters();
+                                        Log.d("UpdaterThread", "Running character");
                                         break;
                                     case "inventory":
                                         homeVM.updateCurrentMoney();
+                                        Log.d("UpdaterThread", "Running inventory");
                                         break;
                                 }
                             }
