@@ -1,6 +1,7 @@
 package com.example.dragernesdal.ui.rules;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,11 +9,16 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.dragernesdal.R;
+import com.example.dragernesdal.ui.home.HomeFragment;
+import com.google.android.material.navigation.NavigationView;
 
 public class RulesFragment extends Fragment{
 
@@ -37,6 +43,22 @@ public class RulesFragment extends Fragment{
         });
         webView.loadUrl("https://drive.google.com/viewerng/viewer?embedded=true&url=" + url);
         //TODO: Open browser and redirect to pdf. Switch to Home fragment.
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            @Override
+            public void handleOnBackPressed() {
+                Log.d("OnBackPress","Back pressed in RulesFragment");
+                Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+                NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
+                toolbar.setTitle(getString(R.string.menu_home));
+                navigationView.setCheckedItem(R.id.nav_home);
+                Fragment mFragment = new HomeFragment();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.nav_host_fragment, mFragment).commit();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
         return root;
     }
 }

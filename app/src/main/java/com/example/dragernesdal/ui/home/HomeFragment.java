@@ -1,7 +1,10 @@
 package com.example.dragernesdal.ui.home;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +12,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
@@ -21,6 +26,7 @@ import com.example.dragernesdal.data.ability.model.AbilityDTO;
 import com.example.dragernesdal.data.character.model.CharacterDTO;
 import com.example.dragernesdal.data.inventory.model.InventoryDTO;
 import com.example.dragernesdal.ui.character.select.SelectFragment;
+import com.example.dragernesdal.ui.login.LoginActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,6 +137,28 @@ public class HomeFragment extends Fragment {
                 }
             });
         }
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            @Override
+            public void handleOnBackPressed() {
+                Log.d("OnBackPress","Back pressed in HomeFragment");
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Log ud?")
+                        .setMessage("Er du sikker på at du vil logge ud?")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                Intent loginIntent = new Intent(getActivity(), LoginActivity.class);
+                                loginIntent.putExtra(getString(R.string.logout_command), true);
+                                startActivity(loginIntent);
+                                getActivity().finish();
+                            }})
+                        .setNegativeButton("Nej", null).show();
+            }
+        };requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+
+
         return root;
     }
 
