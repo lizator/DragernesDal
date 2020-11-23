@@ -24,6 +24,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -48,6 +51,8 @@ public class SelectFragment extends Fragment{
     private ArrayList<CharacterDTO> characterList;
     private CharacterAdapter characterAdapter;
     private RecyclerView recyclerView;
+    private NavController navController;
+    private View root2;
     public static final String CHARACTER_ID_ARGUMENT = "charIDArgument";
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -79,14 +84,8 @@ public class SelectFragment extends Fragment{
             @Override
             public void handleOnBackPressed() {
                 Log.d("OnBackPress","Back pressed in SelectFragment");
-                Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
-                NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
-                toolbar.setTitle(getString(R.string.menu_home));
-                navigationView.setCheckedItem(R.id.nav_home);
-                Fragment mFragment = new HomeFragment();
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.nav_host_fragment, mFragment).commit();
+                navController = Navigation.findNavController(root);
+                navController.popBackStack(R.id.nav_home,false);
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
@@ -98,6 +97,8 @@ public class SelectFragment extends Fragment{
                 characterAdapter.notifyDataSetChanged();
             }
         });
+
+        root2 = root;
         return root;
     }
 
@@ -117,16 +118,10 @@ public class SelectFragment extends Fragment{
                 public void onClick(View v){
                     Log.i("test", "Running");
                     final int position = getAdapterPosition(); // listeelementets position
-
-                    Fragment mFragment = new HomeFragment();
-
                     Bundle args = new Bundle();
                     args.putInt(CHARACTER_ID_ARGUMENT, characterList.get(position).getIdcharacter());
-                    mFragment.setArguments(args);
-
-                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.nav_host_fragment, mFragment).commit();
+                    navController = Navigation.findNavController(root2);
+                    navController.popBackStack(R.id.nav_home,false);
                 }
             });
 
