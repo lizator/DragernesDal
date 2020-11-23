@@ -1,11 +1,13 @@
 package com.example.dragernesdal.ui.character.select;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
@@ -40,6 +42,14 @@ public class SelectFragment extends Fragment implements View.OnClickListener {
         recyclerView = (RecyclerView) root.findViewById(R.id.charRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
         recyclerView.setAdapter(characterAdapter);
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            @Override
+            public void handleOnBackPressed() {
+                Log.d("OnBackPress","Back pressed in SelectFragment");
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
         characterList.add(new CharacterDTO(0,1,"Legolas",1,20));
         characterList.add(new CharacterDTO(1,1,"Illidan",1,21));
         characterList.add(new CharacterDTO(2,1,"Legolas Illidan",1,20));

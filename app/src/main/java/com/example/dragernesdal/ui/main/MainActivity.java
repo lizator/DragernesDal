@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home,R.id.nav_char,R.id.nav_char_skill,R.id.nav_char_magic,R.id.nav_char_inventory,R.id.nav_char_background,R.id.nav_char_select,R.id.nav_rules,R.id.nav_event)
+                R.id.nav_home,R.id.nav_char_skill,R.id.nav_char_magic,R.id.nav_char_inventory,R.id.nav_char_background,R.id.nav_char_select,R.id.nav_rules,R.id.nav_event)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -72,9 +72,13 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
         UpdaterThread updater = new UpdaterThread();
         updater.run();
+
+
     }
 
-    @Override
+
+
+    /*@Override
     public void onBackPressed() { //TODO have int state for each fragment, and do different stuff according to state? if possible
         new AlertDialog.Builder(this)
                 .setTitle("Log ud?")
@@ -89,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                         finish();
                     }})
                 .setNegativeButton("Nej", null).show();
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
