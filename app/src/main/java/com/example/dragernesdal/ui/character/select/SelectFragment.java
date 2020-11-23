@@ -1,15 +1,20 @@
 package com.example.dragernesdal.ui.character.select;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import androidx.appcompat.widget.Toolbar;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
@@ -19,7 +24,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dragernesdal.R;
 import com.example.dragernesdal.data.character.model.CharacterDTO;
 import com.example.dragernesdal.ui.character.create.ChooseRaceFragment;
+import com.example.dragernesdal.ui.home.HomeFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 
@@ -36,6 +43,7 @@ public class SelectFragment extends Fragment implements View.OnClickListener {
         View root = inflater.inflate(R.layout.fragment_character_select, container, false);
         RecyclerView recyclerView;
 
+
         FloatingActionButton fab = root.findViewById(R.id.floatingActionButton);
         fab.setOnClickListener(this);
         //Finding recyclerview to input abilities
@@ -47,6 +55,14 @@ public class SelectFragment extends Fragment implements View.OnClickListener {
             @Override
             public void handleOnBackPressed() {
                 Log.d("OnBackPress","Back pressed in SelectFragment");
+                Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+                NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
+                toolbar.setTitle(getString(R.string.menu_home));
+                navigationView.setCheckedItem(R.id.nav_home);
+                Fragment mFragment = new HomeFragment();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.nav_host_fragment, mFragment).commit();
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);

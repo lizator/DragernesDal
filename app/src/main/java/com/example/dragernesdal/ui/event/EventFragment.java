@@ -10,11 +10,15 @@ import android.widget.TextView;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.dragernesdal.R;
+import com.example.dragernesdal.ui.home.HomeFragment;
+import com.google.android.material.navigation.NavigationView;
 
 public class EventFragment extends Fragment {
 
@@ -36,6 +40,14 @@ public class EventFragment extends Fragment {
             @Override
             public void handleOnBackPressed() {
                 Log.d("OnBackPress","Back pressed in EventFragment");
+                Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+                NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
+                toolbar.setTitle(getString(R.string.menu_home));
+                navigationView.setCheckedItem(R.id.nav_home);
+                Fragment mFragment = new HomeFragment();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.nav_host_fragment, mFragment).commit();
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);

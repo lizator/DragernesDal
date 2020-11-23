@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
@@ -25,7 +26,9 @@ import com.example.dragernesdal.R;
 import com.example.dragernesdal.data.character.CharacterDAO;
 import com.example.dragernesdal.data.character.model.CharacterDTO;
 import com.example.dragernesdal.ui.character.select.SelectFragment;
+import com.example.dragernesdal.ui.home.HomeFragment;
 import com.example.dragernesdal.ui.main.MainActivity;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -145,10 +148,17 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
             }
         });
 
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.opretKarakter);
+
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
             public void handleOnBackPressed() {
                 Log.d("OnBackPress","Back pressed in CreateCharacterFragment");
+                Fragment mFragment = new ChooseRaceFragment();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.nav_host_fragment, mFragment).commit();
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
