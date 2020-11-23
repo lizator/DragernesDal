@@ -31,6 +31,7 @@ import com.example.dragernesdal.R;
 import com.example.dragernesdal.data.ability.model.AbilityDTO;
 import com.example.dragernesdal.data.character.model.CharacterDTO;
 import com.example.dragernesdal.ui.character.create.ChooseRaceFragment;
+import com.example.dragernesdal.ui.character.create.CreateCharacterFragment;
 import com.example.dragernesdal.ui.home.HomeFragment;
 import com.example.dragernesdal.ui.main.MainActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -41,12 +42,13 @@ import java.util.List;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
-public class SelectFragment extends Fragment implements View.OnClickListener {
+public class SelectFragment extends Fragment{
 
     private SelectViewModel selectViewModel;
     private ArrayList<CharacterDTO> characterList;
     private CharacterAdapter characterAdapter;
     private RecyclerView recyclerView;
+    public static final String CHARACTER_ID_ARGUMENT = "charIDArgument";
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -58,7 +60,15 @@ public class SelectFragment extends Fragment implements View.OnClickListener {
         Log.i("SelectFrag", "UserID Found: " + userID);
         selectViewModel.startGetThread(userID);
         FloatingActionButton fab = root.findViewById(R.id.floatingActionButton);
-        fab.setOnClickListener(this);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment mFragment = new ChooseRaceFragment();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.nav_host_fragment, mFragment).commit();
+            }
+        });
         //Finding recyclerview to input abilities
         recyclerView = (RecyclerView) root.findViewById(R.id.charRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
@@ -91,14 +101,6 @@ public class SelectFragment extends Fragment implements View.OnClickListener {
         return root;
     }
 
-    @Override
-    public void onClick(View v) {
-        Fragment mFragment = new ChooseRaceFragment();
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.nav_host_fragment, mFragment).commit();
-    }
-
     class CharacterViewHolder extends RecyclerView.ViewHolder{
         CardView cardView;
         TextView name;
@@ -110,8 +112,27 @@ public class SelectFragment extends Fragment implements View.OnClickListener {
             img = charViews.findViewById(R.id.characterRecyclerImageView);
             // Gør listeelementer klikbare og vis det ved at deres baggrunsfarve ændrer sig ved berøring
             name.setBackgroundResource(android.R.drawable.list_selector_background);
+            charViews.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v){
+                    Log.i("test", "Running");
+                    final int position = getAdapterPosition(); // listeelementets position
+
+                    Fragment mFragment = new HomeFragment();
+
+                    Bundle args = new Bundle();
+                    args.putInt(CHARACTER_ID_ARGUMENT, characterList.get(position).getIdcharacter());
+                    mFragment.setArguments(args);
+
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.nav_host_fragment, mFragment).commit();
+                }
+            });
 
         }
+
+
 
     }
 

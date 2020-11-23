@@ -46,12 +46,21 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-
         SharedPreferences prefs = getDefaultSharedPreferences(getContext());
+        Bundle args = getArguments();
+        if (args != null) {
+            int selectedUserID = args.getInt(SelectFragment.CHARACTER_ID_ARGUMENT, -1);
+            if (selectedUserID != -1) {
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putInt(CHARACTER_ID_SAVESPACE, selectedUserID);
+                editor.commit();
+            }
+        }
+        
         //Start testing
-        SharedPreferences.Editor editor = prefs.edit();
+        /*SharedPreferences.Editor editor = prefs.edit();
         editor.putInt(CHARACTER_ID_SAVESPACE, 2);
-        editor.commit();
+        editor.commit();*/
         //End testing
         int characterID = prefs.getInt(CHARACTER_ID_SAVESPACE, -1);
         if (characterID == -1){
