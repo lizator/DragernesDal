@@ -1,6 +1,8 @@
 package com.example.dragernesdal.ui.character.select;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,42 +12,54 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dragernesdal.R;
+import com.example.dragernesdal.data.ability.model.AbilityDTO;
 import com.example.dragernesdal.data.character.model.CharacterDTO;
 import com.example.dragernesdal.ui.character.create.ChooseRaceFragment;
+import com.example.dragernesdal.ui.main.MainActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 public class SelectFragment extends Fragment implements View.OnClickListener {
 
     private SelectViewModel selectViewModel;
+    private ArrayList<CharacterDTO> characterList = new ArrayList<CharacterDTO>();
     private CharacterAdapter characterAdapter = new CharacterAdapter();
-    private ArrayList<CharacterDTO> characterList = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        selectViewModel =
-                new ViewModelProvider(this).get(SelectViewModel.class);
         View root = inflater.inflate(R.layout.fragment_character_select, container, false);
         RecyclerView recyclerView;
-
+        selectViewModel = SelectViewModel.getInstance();
+        this.characterList = new ArrayList<CharacterDTO>();
+        SharedPreferences prefs = getDefaultSharedPreferences(getContext());
+        int userID = prefs.getInt(MainActivity.USER_ID_SAVESPACE, -1);
+        Log.i("SelectFrag", "UserID Found: " + userID);
+        selectViewModel.startGetThread(userID);
         FloatingActionButton fab = root.findViewById(R.id.floatingActionButton);
         fab.setOnClickListener(this);
         //Finding recyclerview to input abilities
         recyclerView = (RecyclerView) root.findViewById(R.id.charRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
         recyclerView.setAdapter(characterAdapter);
-        characterList.add(new CharacterDTO(0,1,"Legolas",1,20));
-        characterList.add(new CharacterDTO(1,1,"Illidan",1,21));
-        characterList.add(new CharacterDTO(2,1,"Legolas Illidan",1,20));
-        characterList.add(new CharacterDTO(3,1,"Illidan legolas",1,25));
-        characterList.add(new CharacterDTO(4,1,"Illidian Illidan",1,20));
-        characterList.add(new CharacterDTO(5,1,"Legolas Legolas",1,21));
+
+        selectViewModel.getCharacters().observe(getViewLifecycleOwner(), new Observer<List<CharacterDTO>>() {
+            @Override
+            public void onChanged(List<CharacterDTO> characterDTOS) {
+                characterList.clear();
+                characterList = (ArrayList<CharacterDTO>) characterDTOS;
+                characterAdapter.notifyDataSetChanged();
+            }
+        });
         return root;
     }
 
@@ -71,7 +85,7 @@ public class SelectFragment extends Fragment implements View.OnClickListener {
 
     }
 
-    class CharacterAdapter extends RecyclerView.Adapter<SelectFragment.CharacterViewHolder> {
+    class CharacterAdapter extends RecyclerView.Adapter<CharacterViewHolder> {
         @Override
         public int getItemCount() {
             return characterList.size();

@@ -18,6 +18,7 @@ public class CharacterRepository { //Class for getting characters and saving the
     private AbilityDAO abilityDAO;
     private InventoryDAO inventoryDAO;
     private HashMap<Integer, CharacterDTO> charList;
+    private HashMap<Integer, List<CharacterDTO>> charListList;
     private HashMap<Integer, List<AbilityDTO>> abilitiesList; //character id to their List of abilities
     private HashMap<Integer, List<InventoryDTO>> inventoryList; //character id to their List of abilities
 
@@ -34,10 +35,35 @@ public class CharacterRepository { //Class for getting characters and saving the
         this.abilityDAO = new AbilityDAO();
         this.inventoryDAO = new InventoryDAO();
         this.charList = new HashMap<>();
+        this.charListList = new HashMap<>();
         this.abilitiesList = new HashMap<>();
         this.inventoryList = new HashMap<>();
     }
 
+    public Result<List<CharacterDTO>> getCharactersByUserID(int userID){
+        Result<List<CharacterDTO>> result;
+        if (charList.containsKey(userID)){
+            result = new Result.Success<List<CharacterDTO>>(charListList.get(userID));
+        } else {
+            result = characterDAO.getCharacterByUserID(userID);
+            if (result instanceof Result.Success) {
+                ArrayList<CharacterDTO> lst = (ArrayList<CharacterDTO>) ((Result.Success) result).getData();
+                charListList.put(userID, lst);
+            }
+        }
+        return result;
+    }
+
+    public List<CharacterDTO> updateCharacterList(int currUserID){
+        for (int userID : charList.keySet()) {
+            Result<List<CharacterDTO>> result = characterDAO.getCharacterByUserID(userID);
+            if (result instanceof Result.Success) {
+                ArrayList<CharacterDTO> lst = (ArrayList<CharacterDTO>) ((Result.Success) result).getData();
+                charListList.put(currUserID, lst);
+            }
+        }
+        return charListList.get(currUserID);
+    }
 
     public Result<CharacterDTO> getCharacterByID(int characterID){
         if (charList.containsKey(characterID)){

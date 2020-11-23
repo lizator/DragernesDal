@@ -3,6 +3,7 @@ package com.example.dragernesdal.ui.main;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -21,6 +22,7 @@ import com.example.dragernesdal.R;
 import com.example.dragernesdal.data.main.MainDAO;
 import com.example.dragernesdal.data.Result;
 import com.example.dragernesdal.data.main.model.MainDTO;
+import com.example.dragernesdal.ui.character.select.SelectViewModel;
 import com.example.dragernesdal.ui.home.HomeViewModel;
 import com.example.dragernesdal.ui.login.LoginActivity;
 import com.google.android.material.navigation.NavigationView;
@@ -29,11 +31,13 @@ import java.util.HashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private final static int UPDATE_TIMER = 10000;
-
+    public static final String USER_ID_SAVESPACE = "currUserIDSave";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,18 +45,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        /*FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
-
-
-
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
@@ -61,6 +53,10 @@ public class MainActivity extends AppCompatActivity {
         username.setText(getIntent().getStringExtra("username"));
         userEmail.setText(getIntent().getStringExtra("email"));
         Log.d("UserID",getIntent().getStringExtra("id"));
+        SharedPreferences prefs = getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(USER_ID_SAVESPACE, Integer.parseInt(getIntent().getStringExtra("id")));
+        editor.commit();
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -135,39 +131,41 @@ public class MainActivity extends AppCompatActivity {
     private void checks(){
         Executor bgThread = Executors.newSingleThreadExecutor();
         bgThread.execute(() ->{
-        Log.d("UpdaterThread","Started");
-        HomeViewModel homeVM = HomeViewModel.getInstance();
-        while (true){
-            try {
-                Thread.sleep(UPDATE_TIMER);
-                Log.d("UpdaterThread","Slept for: "+UPDATE_TIMER);
-                Log.d("UpdaterThread", tableTimes.toString());
-                for (String key : tableTimes.keySet()){
-                    Result<MainDTO> res = dao.getAbilitiesByCharacterID(key);
-                    if (res instanceof Result.Success){
-                        String time = ((Result.Success<MainDTO>) res).getData().getInfo();
-                        if (tableTimes.get(key) == null) tableTimes.put(key, time); //initial (Should not update, cause when repos init, they get.
-                        else if (tableTimes.get(key) != time){
-                            tableTimes.put(key, time);
-                            //TODO start update of those repository
-                            switch (key){
-                                case "abilities":
-                                    homeVM.updateCurrentAbilities();
-                                    break;
-                                case "character":
-                                    homeVM.updateCurrentCharacter();
-                                    break;
-                                case "inventory":
-                                    homeVM.updateCurrentMoney();
-                                    break;
+            Log.d("UpdaterThread","Started");
+            HomeViewModel homeVM = HomeViewModel.getInstance();
+            SelectViewModel selectCharVM = SelectViewModel.getInstance();
+            while (true){
+                try {
+                    Thread.sleep(UPDATE_TIMER);
+                    Log.d("UpdaterThread","Slept for: "+UPDATE_TIMER);
+                    Log.d("UpdaterThread", tableTimes.toString());
+                    for (String key : tableTimes.keySet()){
+                        Result<MainDTO> res = dao.getAbilitiesByCharacterID(key);
+                        if (res instanceof Result.Success){
+                            String time = ((Result.Success<MainDTO>) res).getData().getInfo();
+                            if (tableTimes.get(key) == null) tableTimes.put(key, time); //initial (Should not update, cause when repos init, they get.
+                            else if (tableTimes.get(key) != time){
+                                tableTimes.put(key, time);
+                                //TODO start update of those repository
+                                switch (key){
+                                    case "abilities":
+                                        homeVM.updateCurrentAbilities();
+                                        break;
+                                    case "character":
+                                        homeVM.updateCurrentCharacter();
+                                        selectCharVM.updateCurrentCharacters();
+                                        break;
+                                    case "inventory":
+                                        homeVM.updateCurrentMoney();
+                                        break;
+                                }
                             }
                         }
                     }
+                } catch (InterruptedException e){
+                    e.printStackTrace();
                 }
-            } catch (InterruptedException e){
-                e.printStackTrace();
             }
-        }
         });
     }
 }
