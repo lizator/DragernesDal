@@ -70,7 +70,7 @@ public class HomeFragment extends Fragment {
                     ViewGroup.LayoutParams params = recyclerView.getLayoutParams();
                     ViewGroup.LayoutParams paramsImg = imgView.getLayoutParams();
                     int h = (int) Math.floor(root.getMeasuredHeight() * 5 / 9 - 200);
-                    int w = (int) Math.floor(root.getMeasuredWidth() * 5 / 13 + 25);
+                    int w = (int) Math.floor(root.getMeasuredWidth() * 5 / 12 + 15);
                     params.height = h;
                     params.width = w;
                     paramsImg.height = h;
