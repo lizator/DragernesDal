@@ -3,6 +3,8 @@ package com.example.dragernesdal.ui.login;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.annotation.NonNull;
+
+import com.example.dragernesdal.data.user.ProfileDAO;
 import com.example.dragernesdal.data.user.UserRepository;
 import com.example.dragernesdal.data.user.PasswordHandler;
 
@@ -17,7 +19,7 @@ public class LoginViewModelFactory implements ViewModelProvider.Factory {
     @SuppressWarnings("unchecked")
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(LoginViewModel.class)) {
-            return (T) new LoginViewModel(UserRepository.getInstance(new PasswordHandler()));
+            return (T) new LoginViewModel(UserRepository.getInstance());
         } else {
             throw new IllegalArgumentException("Unknown ViewModel class");
         }

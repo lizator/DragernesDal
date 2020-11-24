@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.dragernesdal.R;
 import com.example.dragernesdal.data.user.PasswordHandler;
 import com.example.dragernesdal.data.Result;
+import com.example.dragernesdal.data.user.ProfileDAO;
 import com.example.dragernesdal.data.user.UserRepository;
 import com.example.dragernesdal.data.user.model.ProfileDTO;
 
@@ -21,7 +22,7 @@ public class CreateUserViewModel extends ViewModel {
 
 
     public CreateUserViewModel() {
-        this.userRepository = new UserRepository(new PasswordHandler());
+        this.userRepository = UserRepository.getInstance();
     }
 
     public CreateUserViewModel(UserRepository userRepository) {

@@ -29,7 +29,7 @@ public class ProfileDAO {
         this.service = retrofit.create(profileCallService.class);
     }
 
-    ProfileDTO getProfileByEmail(String email) throws IOException {
+    public ProfileDTO getProfileByEmail(String email) throws IOException { //TODO Remove
         ProfileDTO dto = new ProfileDTO();
         dto.setEmail(email);
         Call<ProfileDTO> call = service.getByEmail(dto);
@@ -37,24 +37,30 @@ public class ProfileDAO {
         return resp.body();
     }
 
-    ProfileDTO login(String email, String password) throws IOException {
+    public Result<ProfileDTO> login(String email, String password) throws IOException {
         ProfileDTO dto = new ProfileDTO();
         dto.setEmail(email);
         dto.setPassHash(password);
         Call<ProfileDTO> call = service.login(dto);
         resp = call.execute();
         if (resp.body() == null) throw new IOException("ERROR: no return body/error in BE");
-        return resp.body();
+        return new Result.Success<ProfileDTO>(resp.body());
     }
 
-    ProfileDTO autoLogin(String email, String passHash) throws IOException {
+    public Result<ProfileDTO> autoLogin(String email, String passHash) throws IOException {
         ProfileDTO dto = new ProfileDTO();
         dto.setEmail(email);
         dto.setPassHash(passHash);
         Call<ProfileDTO> call = service.autoLogin(dto);
         resp = call.execute();
         if (resp.body() == null) throw new IOException("ERROR: no return body/error in BE");
-        return resp.body();
+        return new Result.Success<ProfileDTO>(resp.body());
+    }
+
+    public void logout() throws IOException {
+        Call<ProfileDTO> call = service.logout();
+        resp = call.execute();
+        if (resp.body() == null) throw new IOException("ERROR: no return body/error in BE");
     }
 
     Result<ProfileDTO> createUser(ProfileDTO dto){
@@ -82,6 +88,9 @@ public class ProfileDAO {
 
         @POST("user/autologin")
         Call<ProfileDTO> autoLogin(@Body ProfileDTO dto);
+
+        @GET("user/logout") //TODO kill session
+        Call<ProfileDTO> logout();
 
         @POST("user/create")
         Call<ProfileDTO> createUser(@Body ProfileDTO dto);

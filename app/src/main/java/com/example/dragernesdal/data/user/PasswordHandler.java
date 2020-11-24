@@ -15,7 +15,7 @@ import javax.crypto.spec.PBEKeySpec;
 public class PasswordHandler {
     private ProfileDAO dao;
 
-    public PasswordHandler() {
+    public PasswordHandler() { //Only used in tests, to be removed
         this.dao = new ProfileDAO();
     }
 
