@@ -19,7 +19,7 @@ public class PasswordHandler {
         this.dao = new ProfileDAO();
     }
 
-
+    //TODO Remove this and tests for it.
     public Result<ProfileDTO> login(String email, String password) {
 
         try {

@@ -2,6 +2,7 @@ package com.example.dragernesdal.data.user;
 
 
 import com.example.dragernesdal.data.Result;
+import com.example.dragernesdal.data.WebServerPointer;
 import com.example.dragernesdal.data.user.model.ProfileDTO;
 
 import java.io.IOException;
@@ -23,8 +24,7 @@ public class ProfileDAO {
     public ProfileDAO() {
         this.retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
-                //.baseUrl("http://10.16.234.21:25572")
-                .baseUrl("http://80.197.112.212:25572")
+                .baseUrl(WebServerPointer.getServerIP())
                 .build();
         this.service = retrofit.create(profileCallService.class);
     }
