@@ -1,6 +1,7 @@
 package com.example.dragernesdal.data.ability;
 
 import com.example.dragernesdal.data.Result;
+import com.example.dragernesdal.data.WebServerPointer;
 import com.example.dragernesdal.data.ability.model.AbilityDTO;
 
 import java.io.IOException;
@@ -23,8 +24,7 @@ public class AbilityDAO {
     public AbilityDAO(){
         this.retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
-                //.baseUrl("http://192.168.0.101:25572")
-                .baseUrl("http://80.197.112.212:25572")
+                .baseUrl(WebServerPointer.getServerIP())
                 .build();
         this.service = retrofit.create(AbilityCallService.class);
     }

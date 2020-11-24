@@ -15,11 +15,11 @@ import javax.crypto.spec.PBEKeySpec;
 public class PasswordHandler {
     private ProfileDAO dao;
 
-    public PasswordHandler() {
+    public PasswordHandler() { //Only used in tests, to be removed
         this.dao = new ProfileDAO();
     }
 
-
+    //TODO Remove this and tests for it.
     public Result<ProfileDTO> login(String email, String password) {
 
         try {

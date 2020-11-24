@@ -33,7 +33,7 @@ public class LoginViewModel extends ViewModel {
         // can be launched in a separate asynchronous job cause postValue can be in background
         Result<ProfileDTO> result;
         if (autoLogin) {
-            result = userRepository.autologin(username, password);
+            result = userRepository.autoLogin(username, password);
         } else {
             result = userRepository.login(username, password);
         }

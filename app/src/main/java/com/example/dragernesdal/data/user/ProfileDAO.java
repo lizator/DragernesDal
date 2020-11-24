@@ -2,6 +2,7 @@ package com.example.dragernesdal.data.user;
 
 
 import com.example.dragernesdal.data.Result;
+import com.example.dragernesdal.data.WebServerPointer;
 import com.example.dragernesdal.data.user.model.ProfileDTO;
 
 import java.io.IOException;
@@ -23,19 +24,43 @@ public class ProfileDAO {
     public ProfileDAO() {
         this.retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
-                //.baseUrl("http://192.168.0.101:25572")
-                .baseUrl("http://80.197.112.212:25572")
+                .baseUrl(WebServerPointer.getServerIP())
                 .build();
         this.service = retrofit.create(profileCallService.class);
     }
 
-    ProfileDTO getProfileByEmail(String email) throws IOException {
-
+    public ProfileDTO getProfileByEmail(String email) throws IOException { //TODO Remove
         ProfileDTO dto = new ProfileDTO();
         dto.setEmail(email);
         Call<ProfileDTO> call = service.getByEmail(dto);
         resp = call.execute();
         return resp.body();
+    }
+
+    public Result<ProfileDTO> login(String email, String password) throws IOException {
+        ProfileDTO dto = new ProfileDTO();
+        dto.setEmail(email);
+        dto.setPassHash(password);
+        Call<ProfileDTO> call = service.login(dto);
+        resp = call.execute();
+        if (resp.body() == null) throw new IOException("ERROR: no return body/error in BE");
+        return new Result.Success<ProfileDTO>(resp.body());
+    }
+
+    public Result<ProfileDTO> autoLogin(String email, String passHash) throws IOException {
+        ProfileDTO dto = new ProfileDTO();
+        dto.setEmail(email);
+        dto.setPassHash(passHash);
+        Call<ProfileDTO> call = service.autoLogin(dto);
+        resp = call.execute();
+        if (resp.body() == null) throw new IOException("ERROR: no return body/error in BE");
+        return new Result.Success<ProfileDTO>(resp.body());
+    }
+
+    public void logout() throws IOException {
+        Call<ProfileDTO> call = service.logout();
+        resp = call.execute();
+        if (resp.body() == null) throw new IOException("ERROR: no return body/error in BE");
     }
 
     Result<ProfileDTO> createUser(ProfileDTO dto){
@@ -57,6 +82,15 @@ public class ProfileDAO {
     public interface profileCallService {
         @POST("user/getbyemail")
         Call<ProfileDTO> getByEmail(@Body ProfileDTO dto);
+
+        @POST("user/login")
+        Call<ProfileDTO> login(@Body ProfileDTO dto);
+
+        @POST("user/autologin")
+        Call<ProfileDTO> autoLogin(@Body ProfileDTO dto);
+
+        @GET("user/logout") //TODO kill session
+        Call<ProfileDTO> logout();
 
         @POST("user/create")
         Call<ProfileDTO> createUser(@Body ProfileDTO dto);
