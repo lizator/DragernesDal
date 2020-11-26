@@ -74,7 +74,7 @@
             app:destination="@id/nav_home" />
     </fragment>
     <fragment
-        android:id="@+id/chooseRaceFragment"
+        android:id="@+id/nav_chooseRaceFragment"
         android:name="com.example.dragernesdal.ui.character.create.ChooseRaceFragment"
         android:label="ChooseRaceFragment">
         <action
@@ -83,13 +83,13 @@
             app:popUpTo="@id/nav_char_select"/>
     </fragment>
     <fragment
-        android:id="@+id/createCharacterFragment"
+        android:id="@+id/nav_createCharacterFragment"
         android:name="com.example.dragernesdal.ui.character.create.CreateCharacterFragment"
         android:label="CreateCharacterFragment">
         <action
             android:id="@+id/action_createCharacterFragment_to_chooseRaceFragment"
-            app:destination="@id/chooseRaceFragment"
-            app:popUpTo="@id/chooseRaceFragment"/>
+            app:destination="@id/nav_chooseRaceFragment"
+            app:popUpTo="@id/nav_chooseRaceFragment"/>
     </fragment>
 
 </navigation>

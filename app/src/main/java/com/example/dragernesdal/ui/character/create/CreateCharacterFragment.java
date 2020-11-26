@@ -38,7 +38,6 @@ import java.util.concurrent.Executors;
 
 public class CreateCharacterFragment extends Fragment implements View.OnClickListener {
 
-    private CreateCharacterViewModel createCharacterViewModel;
     private int raceID;
     private Button create;
     private int userID;
@@ -56,8 +55,6 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        createCharacterViewModel =
-                new ViewModelProvider(this).get(CreateCharacterViewModel.class);
         View root = inflater.inflate(R.layout.fragment_character_create, container, false);
 
         create = root.findViewById(R.id.create);
@@ -147,12 +144,6 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
             public void afterTextChanged(Editable s) {}
         });
 
-        createCharacterViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-
-            }
-        });
 
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.opretKarakter);

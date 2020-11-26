@@ -1,44 +1,29 @@
 package com.example.dragernesdal.ui.character.select;
 
 
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import androidx.appcompat.widget.Toolbar;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dragernesdal.R;
-import com.example.dragernesdal.data.ability.model.AbilityDTO;
 import com.example.dragernesdal.data.character.model.CharacterDTO;
-import com.example.dragernesdal.ui.character.create.ChooseRaceFragment;
-import com.example.dragernesdal.ui.character.create.CreateCharacterFragment;
-import com.example.dragernesdal.ui.home.HomeFragment;
 import com.example.dragernesdal.ui.main.MainActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +54,7 @@ public class SelectFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 NavController navController = Navigation.findNavController(root);
-                navController.navigate(R.id.chooseRaceFragment);
+                navController.navigate(R.id.nav_chooseRaceFragment);
             }
         });
         //Finding recyclerview to input abilities

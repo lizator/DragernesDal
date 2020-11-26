@@ -1,8 +1,5 @@
 package com.example.dragernesdal.ui.main;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,7 +21,6 @@ import com.example.dragernesdal.data.Result;
 import com.example.dragernesdal.data.main.model.MainDTO;
 import com.example.dragernesdal.ui.character.select.SelectViewModel;
 import com.example.dragernesdal.ui.home.HomeViewModel;
-import com.example.dragernesdal.ui.login.LoginActivity;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.HashMap;
@@ -60,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home,R.id.nav_char_skill,R.id.nav_char_magic,R.id.nav_char_inventory,R.id.nav_char_background,R.id.nav_char_select,R.id.nav_rules,R.id.nav_event,R.id.createCharacterFragment,R.id.chooseRaceFragment)
+                R.id.nav_home,R.id.nav_char_skill,R.id.nav_char_magic,R.id.nav_char_inventory,R.id.nav_char_background,R.id.nav_char_select,R.id.nav_rules,R.id.nav_event,R.id.nav_createCharacterFragment,R.id.nav_chooseRaceFragment)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);

@@ -13,16 +13,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dragernesdal.R;
-import com.example.dragernesdal.ui.character.select.SelectFragment;
-import com.example.dragernesdal.ui.home.HomeFragment;
-import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 
@@ -85,7 +81,7 @@ public class ChooseRaceFragment extends Fragment {
         @Override
         public void onClick(View v){
             NavController navController = Navigation.findNavController(root);
-            navController.navigate(R.id.createCharacterFragment);
+            navController.navigate(R.id.nav_createCharacterFragment);
         }
 
     }
