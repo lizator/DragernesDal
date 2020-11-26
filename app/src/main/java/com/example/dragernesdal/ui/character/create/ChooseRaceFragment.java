@@ -1,5 +1,6 @@
 package com.example.dragernesdal.ui.character.create;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +22,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dragernesdal.R;
 
 import java.util.ArrayList;
+
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 public class ChooseRaceFragment extends Fragment {
 
@@ -80,6 +83,10 @@ public class ChooseRaceFragment extends Fragment {
 
         @Override
         public void onClick(View v){
+            SharedPreferences prefs = getDefaultSharedPreferences(root.getContext());
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putInt("raceID", getAdapterPosition()+1);
+            editor.commit();
             NavController navController = Navigation.findNavController(root);
             navController.navigate(R.id.nav_createCharacterFragment);
         }

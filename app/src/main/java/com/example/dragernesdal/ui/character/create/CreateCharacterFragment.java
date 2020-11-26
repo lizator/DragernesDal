@@ -1,5 +1,6 @@
 package com.example.dragernesdal.ui.character.create;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -36,6 +37,8 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+
 public class CreateCharacterFragment extends Fragment implements View.OnClickListener {
 
     private int raceID;
@@ -52,6 +55,9 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
     public CreateCharacterFragment(int raceID) {
         this.raceID = raceID;
     }
+    public CreateCharacterFragment() {
+
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -67,6 +73,8 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
 
         create.setOnClickListener(this);
         create.setEnabled(false);
+        SharedPreferences prefs = getDefaultSharedPreferences(getContext());
+        raceID = prefs.getInt("raceID", 1);
         userID = Integer.parseInt(getActivity().getIntent().getStringExtra("id"));
 
         ImageView raceImageView = (ImageView) root.findViewById(R.id.raceImageView);
@@ -153,16 +161,8 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
             @Override
             public void handleOnBackPressed() {
                 Log.d("OnBackPress","Back pressed in CreateCharacterFragment");
-                Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
-                NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
-                toolbar.setTitle(getString(R.string.selectRace));
-                navigationView.setCheckedItem(R.id.nav_char_select);
-                getActivity().getSupportFragmentManager().popBackStack();
-                getActivity().getSupportFragmentManager().beginTransaction().detach(fragment).remove(fragment).commit();
-                Fragment mFragment = new ChooseRaceFragment();
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.nav_host_fragment, mFragment).commit();
+                navController = Navigation.findNavController(root);
+                navController.popBackStack(R.id.nav_chooseRaceFragment,false);
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
@@ -187,13 +187,11 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
 
         Executor bgThread = Executors.newSingleThreadExecutor();
         bgThread.execute(() ->{
-            //characterDAO.createCharacter(characterDTO);
+            characterDAO.createCharacter(characterDTO);
             uiThread.post(()-> {
                 Toast.makeText(getActivity(), "Karakter oprettet", Toast.LENGTH_SHORT).show();
                 SelectViewModel selectViewModel = SelectViewModel.getInstance();
                 selectViewModel.updateCurrentCharacters();
-                getActivity().getSupportFragmentManager().popBackStack();
-                getActivity().getSupportFragmentManager().beginTransaction().detach(this).remove(this).commit();
                 navController = Navigation.findNavController(root2);
                 navController.popBackStack(R.id.nav_home,false);
 
