@@ -21,6 +21,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.example.dragernesdal.R;
 import com.example.dragernesdal.data.character.CharacterDAO;
@@ -45,6 +47,8 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
     private EditText characterBackground;
     private TextChecker textChecker;
     private Handler uiThread = new Handler();
+    private NavController navController;
+    private View root2;
 
     public CreateCharacterFragment(int raceID) {
         this.raceID = raceID;
@@ -61,6 +65,7 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
         characterAge = root.findViewById(R.id.characterAge);
         characterBackground = root.findViewById(R.id.characterBackground);
         textChecker = new TextChecker("","","");
+
 
 
         create.setOnClickListener(this);
@@ -151,11 +156,18 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
 
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.opretKarakter);
+        Fragment fragment = this;
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
             public void handleOnBackPressed() {
                 Log.d("OnBackPress","Back pressed in CreateCharacterFragment");
+                Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+                NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
+                toolbar.setTitle(getString(R.string.selectRace));
+                navigationView.setCheckedItem(R.id.nav_char_select);
+                getActivity().getSupportFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().beginTransaction().detach(fragment).remove(fragment).commit();
                 Fragment mFragment = new ChooseRaceFragment();
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction()
@@ -164,8 +176,11 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
 
+
+        root2 = root;
         return root;
     }
+
 
 
     @Override
@@ -181,15 +196,15 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
 
         Executor bgThread = Executors.newSingleThreadExecutor();
         bgThread.execute(() ->{
-            characterDAO.createCharacter(characterDTO);
+            //characterDAO.createCharacter(characterDTO);
             uiThread.post(()-> {
                 Toast.makeText(getActivity(), "Karakter oprettet", Toast.LENGTH_SHORT).show();
                 SelectViewModel selectViewModel = SelectViewModel.getInstance();
                 selectViewModel.updateCurrentCharacters();
-                Fragment mFragment = new SelectFragment();
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.nav_host_fragment, mFragment).commit();
+                getActivity().getSupportFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().beginTransaction().detach(this).remove(this).commit();
+                navController = Navigation.findNavController(root2);
+                navController.popBackStack(R.id.nav_home,false);
 
             });
         });
