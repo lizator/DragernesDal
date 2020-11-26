@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DragernesDal</string>
+    <string name="app_name">A7 DragernesDal</string>
     <!-- Strings related to login and usercreation-->
     <string name="logout_command">logout</string>
     <string name="prompt_email">Email</string>
