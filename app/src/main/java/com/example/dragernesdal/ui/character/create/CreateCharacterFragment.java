@@ -74,7 +74,7 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
         create.setOnClickListener(this);
         create.setEnabled(false);
         SharedPreferences prefs = getDefaultSharedPreferences(getContext());
-        raceID = prefs.getInt("raceID", 1);
+        raceID = prefs.getInt(ChooseRaceFragment.RACE_ID_SAVESPACE, 1);
         userID = Integer.parseInt(getActivity().getIntent().getStringExtra("id"));
 
         ImageView raceImageView = (ImageView) root.findViewById(R.id.raceImageView);
