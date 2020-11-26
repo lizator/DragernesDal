@@ -18,6 +18,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,6 +43,7 @@ public class HomeFragment extends Fragment {
     private ArrayList<AbilityDTO> abilityList = new ArrayList<AbilityDTO>();
     private RecyclerView recyclerView;
     private int imgRes;
+    private NavController navController;
 
     public static final String CHARACTER_ID_SAVESPACE = "currCharacterID";
     //TODO maybe make some animation thing for when logging to to have data loaded and setup made?
@@ -57,7 +61,6 @@ public class HomeFragment extends Fragment {
                 editor.commit();
             }
         }
-        
         //Start testing
         /*SharedPreferences.Editor editor = prefs.edit();
         editor.putInt(CHARACTER_ID_SAVESPACE, 2);
@@ -65,10 +68,10 @@ public class HomeFragment extends Fragment {
         //End testing
         int characterID = prefs.getInt(CHARACTER_ID_SAVESPACE, -1);
         if (characterID == -1){
-            Fragment mFragment = new SelectFragment();
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.nav_host_fragment, mFragment).commit();
+            NavHostFragment navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager()
+                    .findFragmentById(R.id.nav_host_fragment);
+            navController = navHostFragment.getNavController();
+            navController.navigate(R.id.nav_char_select);
         } else {
             homeViewModel = HomeViewModel.getInstance();
             homeViewModel.startGetThread(characterID);
