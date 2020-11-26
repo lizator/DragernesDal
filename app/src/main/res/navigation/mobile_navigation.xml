@@ -76,8 +76,7 @@
     <fragment
         android:id="@+id/chooseRaceFragment"
         android:name="com.example.dragernesdal.ui.character.create.ChooseRaceFragment"
-        android:label="ChooseRaceFragment"
-        app:popUpTo="@id/nav_char_select">
+        android:label="ChooseRaceFragment">
         <action
             android:id="@+id/action_chooseRaceFragment_to_nav_char_select"
             app:destination="@id/nav_char_select"
@@ -86,8 +85,7 @@
     <fragment
         android:id="@+id/createCharacterFragment"
         android:name="com.example.dragernesdal.ui.character.create.CreateCharacterFragment"
-        android:label="CreateCharacterFragment"
-        app:popUpTo="@id/chooseRaceFragment">
+        android:label="CreateCharacterFragment">
         <action
             android:id="@+id/action_createCharacterFragment_to_chooseRaceFragment"
             app:destination="@id/chooseRaceFragment"

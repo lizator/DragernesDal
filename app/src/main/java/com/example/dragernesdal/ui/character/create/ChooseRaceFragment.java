@@ -84,11 +84,8 @@ public class ChooseRaceFragment extends Fragment {
 
         @Override
         public void onClick(View v){
-            final int position = super.getAdapterPosition(); // listeelementets position
-            Fragment mFragment = new CreateCharacterFragment(raceList.get(position).getRaceID());
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.nav_host_fragment, mFragment).commit();
+            NavController navController = Navigation.findNavController(root);
+            navController.navigate(R.id.createCharacterFragment);
         }
 
     }

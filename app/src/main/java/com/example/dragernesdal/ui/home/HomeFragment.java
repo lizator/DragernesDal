@@ -201,7 +201,5 @@ public class HomeFragment extends Fragment {
             //TODO set onclick to show abilityList.get(position).getDesc()
 
         }
-
     }
-
 }

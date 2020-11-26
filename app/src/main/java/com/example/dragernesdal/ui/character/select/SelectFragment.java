@@ -68,10 +68,8 @@ public class SelectFragment extends Fragment{
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment mFragment = new ChooseRaceFragment();
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.nav_host_fragment, mFragment).commit();
+                NavController navController = Navigation.findNavController(root);
+                navController.navigate(R.id.chooseRaceFragment);
             }
         });
         //Finding recyclerview to input abilities
