@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dragernesdal.R;
 import com.example.dragernesdal.data.character.model.CharacterDTO;
+import com.example.dragernesdal.ui.home.HomeFragment;
 import com.example.dragernesdal.ui.main.MainActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -101,10 +102,12 @@ public class SelectFragment extends Fragment{
                 public void onClick(View v){
                     Log.i("test", "Running");
                     final int position = getAdapterPosition(); // listeelementets position
-                    Bundle args = new Bundle();
-                    args.putInt(CHARACTER_ID_ARGUMENT, characterList.get(position).getIdcharacter());
+                    SharedPreferences prefs = getDefaultSharedPreferences(root2.getContext());
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putInt(HomeFragment.CHARACTER_ID_SAVESPACE, characterList.get(position).getIdcharacter());
+                    editor.commit();
                     navController = Navigation.findNavController(root2);
-                    navController.popBackStack(R.id.nav_home,false); //TODO change character
+                    navController.popBackStack(R.id.nav_home,false);
                 }
             });
 

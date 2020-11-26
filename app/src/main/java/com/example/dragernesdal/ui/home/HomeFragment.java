@@ -39,6 +39,7 @@ public class HomeFragment extends Fragment {
     private AbilityAdapter abilityAdapter = new AbilityAdapter();
     private ArrayList<AbilityDTO> abilityList = new ArrayList<AbilityDTO>();
     private RecyclerView recyclerView;
+    private int imgRes;
 
     public static final String CHARACTER_ID_SAVESPACE = "currCharacterID";
     //TODO maybe make some animation thing for when logging to to have data loaded and setup made?
@@ -92,7 +93,7 @@ public class HomeFragment extends Fragment {
                     paramsImg.width = w;
                     recyclerView.setLayoutParams(params);
                     imgView.setLayoutParams(paramsImg);
-                    imgView.setImageResource(R.drawable.rac_menneske);
+                    imgView.setImageResource(imgRes);
                 }
             });
 
@@ -104,7 +105,43 @@ public class HomeFragment extends Fragment {
                     EditText yearEdit = (EditText) root.findViewById(R.id.yearEdit);
                     TextView strengthTV = (TextView) root.findViewById(R.id.strengthTV); //Insert J, JJ, JJJ, JJJJ, JJJJJ
                     TextView kpTV = (TextView) root.findViewById(R.id.kpTV); //Insert A, AA, AAA, AAA\nA, AAA\nAA
-
+                    ImageView imgView = (ImageView) root.findViewById(R.id.characterPicView);
+                    switch (character.getIdrace()) {
+                        case 1:
+                            imgRes = R.drawable.rac_dvaerg;
+                            break;
+                        case 2:
+                            imgRes = R.drawable.rac_elver;
+                            break;
+                        case 3:
+                            imgRes = (R.drawable.rac_gobliner);
+                            break;
+                        case 4:
+                            imgRes = (R.drawable.rac_granitaner);
+                            break;
+                        case 5:
+                            imgRes = (R.drawable.rac_havfolk);
+                            break;
+                        case 6:
+                            imgRes = (R.drawable.rac_krysling);
+                            break;
+                        case 7:
+                            imgRes = (R.drawable.rac_menneske);
+                            break;
+                        case 8:
+                            imgRes = (R.drawable.rac_moerkskabt);
+                            break;
+                        case 9:
+                            imgRes = (R.drawable.rac_orker);
+                            break;
+                        case 10:
+                            imgRes = (R.drawable.rac_sortelver);
+                            break;
+                        default:
+                            imgRes = (R.drawable.rac_menneske);
+                            break;
+                    } //Switch for setting image resource
+                    imgView.setImageResource(imgRes);
                     characterNameEdit.setText(character.getName());
                     raceTV.setText(character.getRaceName());
                     yearEdit.setText(String.valueOf(character.getAge()));
