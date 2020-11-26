@@ -36,7 +36,7 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-    private final static int UPDATE_TIMER = 10000;
+    private final static int UPDATE_TIMER = 2000;
     public static final String USER_ID_SAVESPACE = "currUserIDSave";
 
     @Override
@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                         if (res instanceof Result.Success){
                             String time = ((Result.Success<MainDTO>) res).getData().getInfo();
                             if (tableTimes.get(key) == null) tableTimes.put(key, time); //initial (Should not update, cause when repos init, they get.
-                            else if (!tableTimes.get(key).equals(time)){
+                            else if (!tableTimes.get(key).equals(time) || true){ //TODO remove true when fixed
                                 tableTimes.put(key, time);
                                 //TODO start update of those repository
                                 switch (key){
