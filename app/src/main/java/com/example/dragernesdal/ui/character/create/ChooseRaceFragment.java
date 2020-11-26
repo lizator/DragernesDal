@@ -30,7 +30,7 @@ public class ChooseRaceFragment extends Fragment {
     private RaceAdapter raceAdapter = new RaceAdapter();
     private ArrayList<RaceChoiceCard> raceList = new ArrayList<>();
     private View root;
-
+    public static final String RACE_ID_SAVESPACE = "chosenRaceID";
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -85,7 +85,7 @@ public class ChooseRaceFragment extends Fragment {
         public void onClick(View v){
             SharedPreferences prefs = getDefaultSharedPreferences(root.getContext());
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putInt("raceID", getAdapterPosition()+1);
+            editor.putInt(RACE_ID_SAVESPACE, getAdapterPosition()+1);
             editor.commit();
             NavController navController = Navigation.findNavController(root);
             navController.navigate(R.id.nav_createCharacterFragment);
