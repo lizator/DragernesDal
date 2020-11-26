@@ -14,6 +14,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -56,11 +58,8 @@ public class ChooseRaceFragment extends Fragment {
             @Override
             public void handleOnBackPressed() {
                 Log.d("OnBackPress","Back pressed in ChooseRaceFragment");
-                toolbar.setTitle(R.string.v_lg_karakter);
-                Fragment mFragment = new SelectFragment();
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.nav_host_fragment, mFragment).commit();
+                NavController navController = Navigation.findNavController(root);
+                navController.navigate(R.id.nav_char_select);
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
