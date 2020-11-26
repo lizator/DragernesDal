@@ -36,7 +36,7 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-    private final static int UPDATE_TIMER = 2000;
+    private final static int UPDATE_TIMER = 500;
     public static final String USER_ID_SAVESPACE = "currUserIDSave";
 
     @Override
