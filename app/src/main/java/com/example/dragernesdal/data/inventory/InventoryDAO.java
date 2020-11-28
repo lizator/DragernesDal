@@ -1,6 +1,7 @@
 package com.example.dragernesdal.data.inventory;
 
 import com.example.dragernesdal.data.Result;
+import com.example.dragernesdal.data.WebServerPointer;
 import com.example.dragernesdal.data.inventory.model.InventoryDTO;
 
 import java.io.IOException;
@@ -23,8 +24,7 @@ public class InventoryDAO {
     public InventoryDAO(){
         this.retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
-                //.baseUrl("http://10.16.172.233:25572")
-                .baseUrl("http://80.197.112.212:25572")
+                .baseUrl(WebServerPointer.getServerIP())
                 .build();
         this.service = retrofit.create(InventoryCallService.class);
     }

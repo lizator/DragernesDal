@@ -1,16 +1,21 @@
 package com.example.dragernesdal.ui.character.create;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,12 +23,14 @@ import com.example.dragernesdal.R;
 
 import java.util.ArrayList;
 
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+
 public class ChooseRaceFragment extends Fragment {
 
     private RaceAdapter raceAdapter = new RaceAdapter();
     private ArrayList<RaceChoiceCard> raceList = new ArrayList<>();
     private View root;
-
+    public static final String RACE_ID_SAVESPACE = "chosenRaceID";
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -43,6 +50,19 @@ public class ChooseRaceFragment extends Fragment {
         recyclerView.setAdapter(raceAdapter);
         raceAdapter.notifyDataSetChanged();
         //TODO make recycler be the size of view and scroll within, and not in genneral.
+
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.selectRace);
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            @Override
+            public void handleOnBackPressed() {
+                Log.d("OnBackPress","Back pressed in ChooseRaceFragment");
+                NavController navController = Navigation.findNavController(root);
+                navController.navigate(R.id.nav_char_select);
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+
         return root;
     }
 
@@ -63,11 +83,12 @@ public class ChooseRaceFragment extends Fragment {
 
         @Override
         public void onClick(View v){
-            final int position = super.getAdapterPosition(); // listeelementets position
-            Fragment mFragment = new CreateCharacterFragment(raceList.get(position).getRaceID());
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.nav_host_fragment, mFragment).commit();
+            SharedPreferences prefs = getDefaultSharedPreferences(root.getContext());
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putInt(RACE_ID_SAVESPACE, getAdapterPosition()+1);
+            editor.commit();
+            NavController navController = Navigation.findNavController(root);
+            navController.navigate(R.id.nav_createCharacterFragment);
         }
 
     }

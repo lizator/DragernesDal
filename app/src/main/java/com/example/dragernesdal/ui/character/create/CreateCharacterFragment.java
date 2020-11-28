@@ -1,9 +1,11 @@
 package com.example.dragernesdal.ui.character.create;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,25 +14,33 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.example.dragernesdal.R;
 import com.example.dragernesdal.data.character.CharacterDAO;
 import com.example.dragernesdal.data.character.model.CharacterDTO;
 import com.example.dragernesdal.ui.character.select.SelectFragment;
+import com.example.dragernesdal.ui.home.HomeFragment;
+import com.example.dragernesdal.ui.character.select.SelectViewModel;
 import com.example.dragernesdal.ui.main.MainActivity;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+
 public class CreateCharacterFragment extends Fragment implements View.OnClickListener {
 
-    private CreateCharacterViewModel createCharacterViewModel;
     private int raceID;
     private Button create;
     private int userID;
@@ -39,15 +49,18 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
     private EditText characterBackground;
     private TextChecker textChecker;
     private Handler uiThread = new Handler();
+    private NavController navController;
+    private View root2;
 
     public CreateCharacterFragment(int raceID) {
         this.raceID = raceID;
     }
+    public CreateCharacterFragment() {
+
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        createCharacterViewModel =
-                new ViewModelProvider(this).get(CreateCharacterViewModel.class);
         View root = inflater.inflate(R.layout.fragment_character_create, container, false);
 
         create = root.findViewById(R.id.create);
@@ -57,8 +70,11 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
         textChecker = new TextChecker("","","");
 
 
+
         create.setOnClickListener(this);
         create.setEnabled(false);
+        SharedPreferences prefs = getDefaultSharedPreferences(getContext());
+        raceID = prefs.getInt(ChooseRaceFragment.RACE_ID_SAVESPACE, 1);
         userID = Integer.parseInt(getActivity().getIntent().getStringExtra("id"));
 
         ImageView raceImageView = (ImageView) root.findViewById(R.id.raceImageView);
@@ -136,14 +152,26 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
             public void afterTextChanged(Editable s) {}
         });
 
-        createCharacterViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
 
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.opretKarakter);
+        Fragment fragment = this;
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            @Override
+            public void handleOnBackPressed() {
+                Log.d("OnBackPress","Back pressed in CreateCharacterFragment");
+                navController = Navigation.findNavController(root);
+                navController.popBackStack(R.id.nav_chooseRaceFragment,false);
             }
-        });
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+
+
+        root2 = root;
         return root;
     }
+
 
 
     @Override
@@ -162,10 +190,11 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
             characterDAO.createCharacter(characterDTO);
             uiThread.post(()-> {
                 Toast.makeText(getActivity(), "Karakter oprettet", Toast.LENGTH_SHORT).show();
-                Fragment mFragment = new SelectFragment();
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.nav_host_fragment, mFragment).commit();
+                SelectViewModel selectViewModel = SelectViewModel.getInstance();
+                selectViewModel.updateCurrentCharacters();
+                navController = Navigation.findNavController(root2);
+                navController.popBackStack(R.id.nav_home,false);
+
             });
         });
     }

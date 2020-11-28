@@ -3,6 +3,8 @@ package com.example.dragernesdal.data.user;
 import com.example.dragernesdal.data.Result;
 import com.example.dragernesdal.data.user.model.ProfileDTO;
 
+import java.io.IOException;
+
 /**
  * Class that requests authentication and user information from the remote data source and
  * maintains an in-memory cache of login status and user credentials information.
@@ -11,20 +13,20 @@ public class UserRepository {
 
     private static volatile UserRepository instance;
 
-    private PasswordHandler passwordHandler;
+    private ProfileDAO dao;
 
     // If user credentials will be cached in local storage, it is recommended it be encrypted
     // @see https://developer.android.com/training/articles/keystore
     private ProfileDTO user = null;
 
     // private constructor : singleton access
-    public UserRepository(PasswordHandler passwordHandler) {
-        this.passwordHandler = passwordHandler;
+    private UserRepository(ProfileDAO dao) {
+        this.dao = dao;
     }
 
-    public static UserRepository getInstance(PasswordHandler dataSource) {
+    public static UserRepository getInstance() {
         if (instance == null) {
-            instance = new UserRepository(dataSource);
+            instance = new UserRepository(new ProfileDAO());
         }
         return instance;
     }
@@ -35,7 +37,12 @@ public class UserRepository {
 
     public void logout() {
         user = null;
-        passwordHandler.logout();
+        try {
+            dao.logout();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void setLoggedInUser(ProfileDTO user) {
@@ -46,24 +53,34 @@ public class UserRepository {
 
     public Result<ProfileDTO> login(String username, String password) {
         // handle login
-        Result<ProfileDTO> result = passwordHandler.login(username, password);
-        if (result instanceof Result.Success) {
-            setLoggedInUser(((Result.Success<ProfileDTO>) result).getData());
+        try {
+            Result<ProfileDTO> result = dao.login(username, password);
+            if (result instanceof Result.Success) {
+                setLoggedInUser(((Result.Success<ProfileDTO>) result).getData());
+            }
+            return result;
+        } catch (IOException e){
+            e.printStackTrace();
+            return null;
         }
-        return result;
     }
 
-    public Result<ProfileDTO> autologin(String username, String passhash) {
-        // handle login
-        Result<ProfileDTO> result = passwordHandler.autologin(username, passhash);
-        if (result instanceof Result.Success) {
-            setLoggedInUser(((Result.Success<ProfileDTO>) result).getData());
+    public Result<ProfileDTO> autoLogin(String username, String passhash) {
+        // handle autologin
+        try {
+            Result<ProfileDTO> result = dao.autoLogin(username, passhash);
+            if (result instanceof Result.Success) {
+                setLoggedInUser(((Result.Success<ProfileDTO>) result).getData());
+            }
+            return result;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new Result.Error(e);
         }
-        return result;
     }
 
     public Result<ProfileDTO> createUser(ProfileDTO user) {
-        Result<ProfileDTO> res = passwordHandler.createUser(user);
+        Result<ProfileDTO> res = dao.createUser(user);
         return res;
     }
 }

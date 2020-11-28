@@ -1,7 +1,10 @@
 package com.example.dragernesdal.ui.home;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,10 +12,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,6 +29,7 @@ import com.example.dragernesdal.data.ability.model.AbilityDTO;
 import com.example.dragernesdal.data.character.model.CharacterDTO;
 import com.example.dragernesdal.data.inventory.model.InventoryDTO;
 import com.example.dragernesdal.ui.character.select.SelectFragment;
+import com.example.dragernesdal.ui.login.LoginActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +42,8 @@ public class HomeFragment extends Fragment {
     private AbilityAdapter abilityAdapter = new AbilityAdapter();
     private ArrayList<AbilityDTO> abilityList = new ArrayList<AbilityDTO>();
     private RecyclerView recyclerView;
+    private int imgRes;
+    private NavController navController;
 
     public static final String CHARACTER_ID_SAVESPACE = "currCharacterID";
     //TODO maybe make some animation thing for when logging to to have data loaded and setup made?
@@ -40,19 +51,27 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-
         SharedPreferences prefs = getDefaultSharedPreferences(getContext());
+        Bundle args = getArguments();
+        if (args != null) {
+            int selectedUserID = args.getInt(SelectFragment.CHARACTER_ID_ARGUMENT, -1);
+            if (selectedUserID != -1) {
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putInt(CHARACTER_ID_SAVESPACE, selectedUserID);
+                editor.commit();
+            }
+        }
         //Start testing
-        SharedPreferences.Editor editor = prefs.edit();
+        /*SharedPreferences.Editor editor = prefs.edit();
         editor.putInt(CHARACTER_ID_SAVESPACE, 2);
-        editor.commit();
+        editor.commit();*/
         //End testing
         int characterID = prefs.getInt(CHARACTER_ID_SAVESPACE, -1);
         if (characterID == -1){
-            Fragment mFragment = new SelectFragment();
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.nav_host_fragment, mFragment).commit();
+            NavHostFragment navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager()
+                    .findFragmentById(R.id.nav_host_fragment);
+            navController = navHostFragment.getNavController();
+            navController.navigate(R.id.nav_char_select);
         } else {
             homeViewModel = HomeViewModel.getInstance();
             homeViewModel.startGetThread(characterID);
@@ -70,14 +89,14 @@ public class HomeFragment extends Fragment {
                     ViewGroup.LayoutParams params = recyclerView.getLayoutParams();
                     ViewGroup.LayoutParams paramsImg = imgView.getLayoutParams();
                     int h = (int) Math.floor(root.getMeasuredHeight() * 5 / 9 - 200);
-                    int w = (int) Math.floor(root.getMeasuredWidth() * 5 / 13 + 25);
+                    int w = (int) Math.floor(root.getMeasuredWidth() * 5 / 12 + 15);
                     params.height = h;
                     params.width = w;
                     paramsImg.height = h;
                     paramsImg.width = w;
                     recyclerView.setLayoutParams(params);
                     imgView.setLayoutParams(paramsImg);
-                    imgView.setImageResource(R.drawable.rac_menneske);
+                    imgView.setImageResource(imgRes);
                 }
             });
 
@@ -89,7 +108,43 @@ public class HomeFragment extends Fragment {
                     EditText yearEdit = (EditText) root.findViewById(R.id.yearEdit);
                     TextView strengthTV = (TextView) root.findViewById(R.id.strengthTV); //Insert J, JJ, JJJ, JJJJ, JJJJJ
                     TextView kpTV = (TextView) root.findViewById(R.id.kpTV); //Insert A, AA, AAA, AAA\nA, AAA\nAA
-
+                    ImageView imgView = (ImageView) root.findViewById(R.id.characterPicView);
+                    switch (character.getIdrace()) {
+                        case 1:
+                            imgRes = R.drawable.rac_dvaerg;
+                            break;
+                        case 2:
+                            imgRes = R.drawable.rac_elver;
+                            break;
+                        case 3:
+                            imgRes = (R.drawable.rac_gobliner);
+                            break;
+                        case 4:
+                            imgRes = (R.drawable.rac_granitaner);
+                            break;
+                        case 5:
+                            imgRes = (R.drawable.rac_havfolk);
+                            break;
+                        case 6:
+                            imgRes = (R.drawable.rac_krysling);
+                            break;
+                        case 7:
+                            imgRes = (R.drawable.rac_menneske);
+                            break;
+                        case 8:
+                            imgRes = (R.drawable.rac_moerkskabt);
+                            break;
+                        case 9:
+                            imgRes = (R.drawable.rac_orker);
+                            break;
+                        case 10:
+                            imgRes = (R.drawable.rac_sortelver);
+                            break;
+                        default:
+                            imgRes = (R.drawable.rac_menneske);
+                            break;
+                    } //Switch for setting image resource
+                    imgView.setImageResource(imgRes);
                     characterNameEdit.setText(character.getName());
                     raceTV.setText(character.getRaceName());
                     yearEdit.setText(String.valueOf(character.getAge()));
@@ -131,6 +186,28 @@ public class HomeFragment extends Fragment {
                 }
             });
         }
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            @Override
+            public void handleOnBackPressed() {
+                Log.d("OnBackPress","Back pressed in HomeFragment");
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Log ud?")
+                        .setMessage("Er du sikker på at du vil logge ud?")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                Intent loginIntent = new Intent(getActivity(), LoginActivity.class);
+                                loginIntent.putExtra(getString(R.string.logout_command), true);
+                                startActivity(loginIntent);
+                                getActivity().finish();
+                            }})
+                        .setNegativeButton("Nej", null).show();
+            }
+        };requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+
+
         return root;
     }
 
@@ -164,7 +241,5 @@ public class HomeFragment extends Fragment {
             //TODO set onclick to show abilityList.get(position).getDesc()
 
         }
-
     }
-
 }
