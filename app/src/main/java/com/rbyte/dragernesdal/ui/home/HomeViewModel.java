@@ -1,5 +1,7 @@
 package com.rbyte.dragernesdal.ui.home;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -54,6 +56,9 @@ public class HomeViewModel extends ViewModel {
         if (mCharacter.getValue() != null) {
             ArrayList<InventoryDTO> tmpLst = (ArrayList<InventoryDTO>) repo.updateInventory(mCharacter.getValue().getIdcharacter());
             //We only want to show money here (ID's: 1 gold, 2 silver, 3 kobber)
+            if (tmpLst == null){
+                Log.d("HomeViewModel", "moneylist NULL");
+            }
             ArrayList<InventoryDTO> moneyLst = new ArrayList<InventoryDTO>();
             moneyLst.add(tmpLst.get(0));//Gold first
             moneyLst.add(tmpLst.get(1));//Silver next

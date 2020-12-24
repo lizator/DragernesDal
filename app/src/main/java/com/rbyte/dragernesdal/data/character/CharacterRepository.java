@@ -70,10 +70,11 @@ public class CharacterRepository { //Class for getting characters and saving the
             Result<List<CharacterDTO>> result = characterDAO.getCharacterByUserID(userID);
             if (result instanceof Result.Success) {
                 ArrayList<CharacterDTO> lst = (ArrayList<CharacterDTO>) ((Result.Success) result).getData();
-                if (lst.size() == 0) {
+                if (lst == null || lst.size() == 0) {
                     Log.i("GetCharacters Results", "c");
+                } else {
+                    charListList.put(userID, lst);
                 }
-                charListList.put(userID, lst);
             }
         }
 
@@ -99,7 +100,9 @@ public class CharacterRepository { //Class for getting characters and saving the
             if (result instanceof Result.Success) {
                 CharacterDTO character = (CharacterDTO) ((Result.Success) result).getData();
                 //Checking if update is needed
-                if (character.getDate() != charList.get(characterID).getDate() || character.getTimestamp() != charList.get(characterID).getTimestamp()) {
+                if (character == null) {
+                    Log.d("CharacterRepo", "Character NULL");
+                } else if (character.getDate() != charList.get(characterID).getDate() || character.getTimestamp() != charList.get(characterID).getTimestamp()) {
                     charList.put(characterID, character);
                 }
             }
