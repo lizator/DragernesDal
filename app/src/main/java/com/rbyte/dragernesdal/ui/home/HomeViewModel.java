@@ -22,7 +22,6 @@ public class HomeViewModel extends ViewModel {
     private MutableLiveData<List<InventoryDTO>> mMoney;
     private CharacterRepository repo;
     private static HomeViewModel instance;
-    //TODO Make singleton, so i doens't load character in again
 
     public static HomeViewModel getInstance(){
         if (instance == null) instance = new HomeViewModel();
@@ -39,7 +38,7 @@ public class HomeViewModel extends ViewModel {
 
     public void updateCurrentCharacter(){
         if (mCharacter.getValue() != null)
-        mCharacter.postValue(repo.updateCharacter(mCharacter.getValue().getIdcharacter())); //TODO Could maybe check to see if is the same? might not be needed
+        mCharacter.postValue(repo.updateSavedCharacter(mCharacter.getValue().getIdcharacter())); //TODO Could maybe check to see if is the same? might not be needed
     }
 
     public void updateCurrentAbilities(){
