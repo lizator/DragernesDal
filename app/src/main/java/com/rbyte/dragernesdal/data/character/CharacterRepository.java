@@ -10,18 +10,19 @@ import com.rbyte.dragernesdal.data.inventory.InventoryDAO;
 import com.rbyte.dragernesdal.data.inventory.model.InventoryDTO;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class CharacterRepository { //Class for getting characters and saving them for use
     private CharacterDAO characterDAO;
     private AbilityDAO abilityDAO;
     private InventoryDAO inventoryDAO;
-    private HashMap<Integer, CharacterDTO> charList;
-    private HashMap<Integer, List<CharacterDTO>> charListList;
-    private HashMap<Integer, List<AbilityDTO>> abilitiesList; //character id to their List of abilities
-    private HashMap<Integer, List<InventoryDTO>> inventoryList; //character id to their List of abilities
-
+    private CharacterDTO currentChar;
+    private ArrayList<CharacterDTO> currentCharList;
+    private ArrayList<AbilityDTO> abilitiesList; //character id to their List of abilities
+    private ArrayList<InventoryDTO> inventoryList; //character id to their List of abilities
+    private boolean updateNeeded = true;
+    private int userID = -1;
+    private int characterID = -1;
 
     private static CharacterRepository instance;
 
@@ -34,127 +35,58 @@ public class CharacterRepository { //Class for getting characters and saving the
         this.characterDAO = new CharacterDAO();
         this.abilityDAO = new AbilityDAO();
         this.inventoryDAO = new InventoryDAO();
-        this.charList = new HashMap<>();
-        this.charListList = new HashMap<>();
-        this.abilitiesList = new HashMap<>();
-        this.inventoryList = new HashMap<>();
+        this.currentCharList = new ArrayList<>();
+        this.abilitiesList = new ArrayList<>();
+        this.inventoryList = new ArrayList<>();
     }
 
     public Result<List<CharacterDTO>> getCharactersByUserID(int userID){
-        Result<List<CharacterDTO>> result;
-        if (charListList.containsKey(userID)){
-            result = new Result.Success<List<CharacterDTO>>(charListList.get(userID));
-            Log.i("GetCharacters Results", "a");
-        } else {
-            result = characterDAO.getCharacterByUserID(userID);
+        if (updateNeeded || userID != this.userID) {
+            Result<List<CharacterDTO>> result;
+            result = characterDAO.getCharactersByUserID(userID);
             if (result instanceof Result.Success) {
-                ArrayList<CharacterDTO> lst = (ArrayList<CharacterDTO>) ((Result.Success) result).getData();
-                charListList.put(userID, lst);
+                this.currentCharList = (ArrayList<CharacterDTO>) ((Result.Success) result).getData();
                 Log.i("GetCharacters Results", "b");
             }
+            return result;
         }
-        ArrayList<CharacterDTO> lst = (ArrayList<CharacterDTO>) ((Result.Success) result).getData();
-        if (lst.size() == 0) {
-            result = characterDAO.getCharacterByUserID(userID);
-            if (result instanceof Result.Success) {
-                ArrayList<CharacterDTO> lst2 = (ArrayList<CharacterDTO>) ((Result.Success) result).getData();
-                charListList.put(userID, lst2);
-                Log.i("GetCharacters Results", "b");
-            }
-        }
-        return result;
-    }
-
-    public List<CharacterDTO> updateCharacterList(int currUserID){
-        for (int userID : charListList.keySet()) {
-            Result<List<CharacterDTO>> result = characterDAO.getCharacterByUserID(userID);
-            if (result instanceof Result.Success) {
-                ArrayList<CharacterDTO> lst = (ArrayList<CharacterDTO>) ((Result.Success) result).getData();
-                if (lst.size() == 0) {
-                    Log.i("GetCharacters Results", "c");
-                }
-                charListList.put(userID, lst);
-            }
-        }
-
-        return charListList.get(currUserID);
+        return new Result.Success<List<CharacterDTO>>(this.currentCharList);
     }
 
     public Result<CharacterDTO> getCharacterByID(int characterID){
-        if (charList.containsKey(characterID)){
-            Result<CharacterDTO> result = new Result.Success<CharacterDTO>(charList.get(characterID));
-            return result;
-        }
-        Result<CharacterDTO> result = characterDAO.getCharacterByID(characterID);
-        if (result instanceof Result.Success){
-            CharacterDTO character = (CharacterDTO) ((Result.Success) result).getData();
-            charList.put(characterID, character) ;
-        }
-        return result;
-    }
-
-    public CharacterDTO updateCharacter(int currCharacterID){
-        for (int characterID : charList.keySet()) {
+        if (updateNeeded || characterID != this.characterID) {
             Result<CharacterDTO> result = characterDAO.getCharacterByID(characterID);
             if (result instanceof Result.Success) {
                 CharacterDTO character = (CharacterDTO) ((Result.Success) result).getData();
-                //Checking if update is needed
-                if (character.getDate() != charList.get(characterID).getDate() || character.getTimestamp() != charList.get(characterID).getTimestamp()) {
-                    charList.put(characterID, character);
-                }
+                currentChar = character;
             }
+            return result;
         }
-        return charList.get(currCharacterID);
+        return new Result.Success<CharacterDTO>(this.currentChar);
     }
 
     public Result<List<AbilityDTO>> getAbilitiesByCharacterID(int characterID){
-        if (abilitiesList.containsKey(characterID)){
-            Result<List<AbilityDTO>> result = new Result.Success<List<AbilityDTO>>(abilitiesList.get(characterID));
-            return result;
-        }
-        Result<List<AbilityDTO>> result = abilityDAO.getAbilitiesByCharacterID(characterID);
-        if (result instanceof Result.Success){
-            ArrayList<AbilityDTO> abilities = (ArrayList<AbilityDTO>) ((Result.Success) result).getData();
-            abilitiesList.put(characterID, abilities);
-        }
-        return result;
-    }
-
-    public List<AbilityDTO> updateAbilities(int currCharacterID){
-        for (int characterID : abilitiesList.keySet()) {
+        if (updateNeeded || characterID != this.characterID) {
             Result<List<AbilityDTO>> result = abilityDAO.getAbilitiesByCharacterID(characterID);
             if (result instanceof Result.Success) {
-                List<AbilityDTO> abilities = (List<AbilityDTO>) ((Result.Success) result).getData();
-                //Checking if update is needed
-                abilitiesList.put(characterID, abilities);
+                ArrayList<AbilityDTO> abilities = (ArrayList<AbilityDTO>) ((Result.Success) result).getData();
+                abilitiesList = abilities;
             }
+            return result;
         }
-        return abilitiesList.get(currCharacterID);
+        return new Result.Success<List<AbilityDTO>>(this.abilitiesList);
     }
 
     public Result<List<InventoryDTO>> getInventoryByCharacterID(int characterID){
-        if (inventoryList.containsKey(characterID)){
-            Result<List<InventoryDTO>> result = new Result.Success<List<InventoryDTO>>(inventoryList.get(characterID));
-            return result;
-        }
-        Result<List<InventoryDTO>> result = inventoryDAO.getInventoryByCharacterID(characterID);
-        if (result instanceof Result.Success){
-            ArrayList<InventoryDTO> inventory = (ArrayList<InventoryDTO>) ((Result.Success) result).getData();
-            inventoryList.put(characterID, inventory);
-        }
-        return result;
-    }
-
-    public List<InventoryDTO> updateInventory(int currCharacterID){
-        for (int characterID : inventoryList.keySet()) {
+        if (updateNeeded || characterID != this.characterID) {
             Result<List<InventoryDTO>> result = inventoryDAO.getInventoryByCharacterID(characterID);
             if (result instanceof Result.Success) {
-                List<InventoryDTO> inventory = (List<InventoryDTO>) ((Result.Success) result).getData();
-                //Checking if update is needed
-                inventoryList.put(characterID, inventory);
+                ArrayList<InventoryDTO> inventory = (ArrayList<InventoryDTO>) ((Result.Success) result).getData();
+                inventoryList = inventory;
             }
+            return result;
         }
-        return inventoryList.get(currCharacterID);
+        return new Result.Success<List<InventoryDTO>>(this.inventoryList);
     }
 
 }

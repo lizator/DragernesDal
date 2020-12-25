@@ -54,7 +54,7 @@ public class CharacterDAO {
         }
     }
 
-    Result<List<CharacterDTO>> getCharacterByUserID(int userID) {
+    Result<List<CharacterDTO>> getCharactersByUserID(int userID) {
         try {
             Call<List<CharacterDTO>> call = service.getByUserID(userID);
             respList = call.execute();

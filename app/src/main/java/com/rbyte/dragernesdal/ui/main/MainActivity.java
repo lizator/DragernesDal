@@ -62,8 +62,8 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-        UpdaterThread updater = new UpdaterThread();
-        updater.run();
+        /*UpdaterThread updater = new UpdaterThread();
+        updater.run();*/
 
 
     }
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
     HashMap<String, String> tableTimes = new HashMap<>();
     MainDAO dao = new MainDAO();
 
-    class UpdaterThread extends Thread { //Thread for checking for if changes  and starting threads to update
+    /*class UpdaterThread extends Thread { //Thread for checking for if changes  and starting threads to update
 
 
         public UpdaterThread(){
@@ -170,5 +170,5 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-    }
+    }*/
 }

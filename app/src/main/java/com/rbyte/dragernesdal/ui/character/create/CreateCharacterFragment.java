@@ -42,6 +42,7 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
     private TextChecker textChecker;
     private Handler uiThread = new Handler();
     private NavController navController;
+    private View root;
     private View root2;
 
     public CreateCharacterFragment(int raceID) {
@@ -53,7 +54,7 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_character_create, container, false);
+        root = inflater.inflate(R.layout.fragment_character_create, container, false);
 
         create = root.findViewById(R.id.create);
         characterName = root.findViewById(R.id.characterName);
@@ -184,6 +185,11 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
                 Toast.makeText(getActivity(), "Karakter oprettet", Toast.LENGTH_SHORT).show();
                 SelectViewModel selectViewModel = SelectViewModel.getInstance();
                 selectViewModel.updateCurrentCharacters();
+                SharedPreferences prefs = getDefaultSharedPreferences(getContext());
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putInt(ChooseRaceFragment.RACE_ID_SAVESPACE, characterDTO.getIdcharacter());
+                editor.commit();
+                Toast.makeText(getContext(), "test", Toast.LENGTH_SHORT).show();
                 navController = Navigation.findNavController(root2);
                 navController.popBackStack(R.id.nav_home,false);
 

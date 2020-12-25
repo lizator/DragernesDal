@@ -63,4 +63,5 @@
     <string name="Background">Baggrund:</string>
     <string name="selectRace">Vælg Race</string>
     <string name="opretKarakter">Opret Karakter</string>
+    <string name="mainPrefFile">Main_Preferences_File</string>
 </resources>
