@@ -23,8 +23,10 @@ import androidx.navigation.Navigation;
 
 import com.rbyte.dragernesdal.R;
 import com.rbyte.dragernesdal.data.character.CharacterDAO;
+import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
 import com.rbyte.dragernesdal.ui.character.select.SelectViewModel;
+import com.rbyte.dragernesdal.ui.home.HomeFragment;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -42,6 +44,7 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
     private TextChecker textChecker;
     private Handler uiThread = new Handler();
     private NavController navController;
+    private View root;
     private View root2;
 
     public CreateCharacterFragment(int raceID) {
@@ -53,7 +56,7 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_character_create, container, false);
+        root = inflater.inflate(R.layout.fragment_character_create, container, false);
 
         create = root.findViewById(R.id.create);
         characterName = root.findViewById(R.id.characterName);
@@ -164,7 +167,7 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
         return root;
     }
 
-
+    //TODO implement SwipeRefreshLayout
 
     @Override
     public void onClick(View v) {
@@ -175,15 +178,22 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
         characterDTO.setIdrace(raceID);
         characterDTO.setIduser(userID);
 
-        CharacterDAO characterDAO = new CharacterDAO();
+        CharacterRepository charRepo = CharacterRepository.getInstance();
 
         Executor bgThread = Executors.newSingleThreadExecutor();
         bgThread.execute(() ->{
-            characterDAO.createCharacter(characterDTO);
+            charRepo.createCharacter(characterDTO);
             uiThread.post(()-> {
                 Toast.makeText(getActivity(), "Karakter oprettet", Toast.LENGTH_SHORT).show();
                 SelectViewModel selectViewModel = SelectViewModel.getInstance();
                 selectViewModel.updateCurrentCharacters();
+                SharedPreferences prefs = getDefaultSharedPreferences(getContext());
+                SharedPreferences.Editor editor = prefs.edit();
+                CharacterDTO foundDTO = charRepo.getCurrentChar();
+                editor.putInt(HomeFragment.CHARACTER_ID_SAVESPACE, foundDTO.getIdcharacter());
+                editor.commit();
+
+                Toast.makeText(getContext(), "test", Toast.LENGTH_SHORT).show();
                 navController = Navigation.findNavController(root2);
                 navController.popBackStack(R.id.nav_home,false);
 

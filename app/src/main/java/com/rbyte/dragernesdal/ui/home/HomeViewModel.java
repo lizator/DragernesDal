@@ -36,7 +36,7 @@ public class HomeViewModel extends ViewModel {
         //initialing observers
     }
 
-    public void updateCurrentCharacter(){
+    /*public void updateCurrentCharacter(){
         if (mCharacter.getValue() != null)
         mCharacter.postValue(repo.updateSavedCharacter(mCharacter.getValue().getIdcharacter())); //TODO Could maybe check to see if is the same? might not be needed
     }
@@ -60,7 +60,7 @@ public class HomeViewModel extends ViewModel {
 
             mMoney.postValue(moneyLst); //TODO Could maybe check to see if is the same? might not be needed
         }
-    }
+    }*/
 
     public void startGetThread(int characterID){
         GetCharacterThread thread = new GetCharacterThread(characterID);

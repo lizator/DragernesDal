@@ -102,7 +102,7 @@ public class SelectFragment extends Fragment{
                 public void onClick(View v){
                     Log.i("test", "Running");
                     final int position = getAdapterPosition(); // listeelementets position
-                    SharedPreferences prefs = getDefaultSharedPreferences(root2.getContext());
+                    SharedPreferences prefs = getDefaultSharedPreferences(getContext());;
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putInt(HomeFragment.CHARACTER_ID_SAVESPACE, characterList.get(position).getIdcharacter());
                     editor.commit();
