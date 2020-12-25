@@ -167,7 +167,7 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
         return root;
     }
 
-
+    //TODO implement SwipeRefreshLayout
 
     @Override
     public void onClick(View v) {
