@@ -40,6 +40,10 @@ public class CharacterRepository { //Class for getting characters and saving the
         this.inventoryList = new ArrayList<>();
     }
 
+    public CharacterDTO getCurrentChar(){
+        return currentChar;
+    }
+
     public Result<List<CharacterDTO>> getCharactersByUserID(int userID){
         if (updateNeeded || userID != this.userID) {
             Result<List<CharacterDTO>> result;
@@ -75,6 +79,14 @@ public class CharacterRepository { //Class for getting characters and saving the
             return result;
         }
         return new Result.Success<List<AbilityDTO>>(this.abilitiesList);
+    }
+
+    public Result<CharacterDTO> createCharacter(CharacterDTO dto){
+        Result<CharacterDTO> resp = characterDAO.createCharacter(dto);
+        if (resp instanceof Result.Success){
+            currentChar = ((Result.Success<CharacterDTO>) resp).getData();
+        }
+        return resp;
     }
 
     public Result<List<InventoryDTO>> getInventoryByCharacterID(int characterID){

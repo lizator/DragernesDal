@@ -23,8 +23,10 @@ import androidx.navigation.Navigation;
 
 import com.rbyte.dragernesdal.R;
 import com.rbyte.dragernesdal.data.character.CharacterDAO;
+import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
 import com.rbyte.dragernesdal.ui.character.select.SelectViewModel;
+import com.rbyte.dragernesdal.ui.home.HomeFragment;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -176,19 +178,21 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
         characterDTO.setIdrace(raceID);
         characterDTO.setIduser(userID);
 
-        CharacterDAO characterDAO = new CharacterDAO();
+        CharacterRepository charRepo = CharacterRepository.getInstance();
 
         Executor bgThread = Executors.newSingleThreadExecutor();
         bgThread.execute(() ->{
-            characterDAO.createCharacter(characterDTO);
+            charRepo.createCharacter(characterDTO);
             uiThread.post(()-> {
                 Toast.makeText(getActivity(), "Karakter oprettet", Toast.LENGTH_SHORT).show();
                 SelectViewModel selectViewModel = SelectViewModel.getInstance();
                 selectViewModel.updateCurrentCharacters();
                 SharedPreferences prefs = getDefaultSharedPreferences(getContext());
                 SharedPreferences.Editor editor = prefs.edit();
-                editor.putInt(ChooseRaceFragment.RACE_ID_SAVESPACE, characterDTO.getIdcharacter());
+                CharacterDTO foundDTO = charRepo.getCurrentChar();
+                editor.putInt(HomeFragment.CHARACTER_ID_SAVESPACE, foundDTO.getIdcharacter());
                 editor.commit();
+
                 Toast.makeText(getContext(), "test", Toast.LENGTH_SHORT).show();
                 navController = Navigation.findNavController(root2);
                 navController.popBackStack(R.id.nav_home,false);
