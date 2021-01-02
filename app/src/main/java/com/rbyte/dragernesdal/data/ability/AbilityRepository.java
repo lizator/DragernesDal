@@ -59,6 +59,16 @@ public class AbilityRepository {
                 case "REGEN":
                     confirmBuy(characterID, abilityID); //first ability
                     confirmBuy(characterID, 90); //Regen
+                    break;
+                case "HÅNDVÆRK":
+                    //TODO: make popup with Håndværk choice
+                    break;
+                case "VALG":
+                    //TODO: make popup with appropriate choice
+                case "KRYS3EP":
+                    //TODO: make get both start abilities of races
+                case "KRYS4EP":
+                    //TODO: make get both 2ep abilities of races
                 default: // NULL or new
                     confirmBuy(characterID, abilityID);
                     break;
