@@ -64,4 +64,5 @@
     <string name="selectRace">Vælg Race</string>
     <string name="opretKarakter">Opret Karakter</string>
     <string name="mainPrefFile">Main_Preferences_File</string>
+    <string name="event_info">Event Info</string>
 </resources>

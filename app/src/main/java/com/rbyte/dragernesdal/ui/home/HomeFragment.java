@@ -101,7 +101,6 @@ public class HomeFragment extends Fragment {
             homeViewModel.getCharacter().observe(getViewLifecycleOwner(), new Observer<CharacterDTO>() {
                 @Override
                 public void onChanged(CharacterDTO character) {
-<<<<<<< HEAD:app/src/main/java/com/example/dragernesdal/ui/home/HomeFragment.java
                     if (character != null) {
                         EditText characterNameEdit = (EditText) root.findViewById(R.id.characterNameEdit);
                         TextView raceTV = (TextView) root.findViewById(R.id.raceTV);
