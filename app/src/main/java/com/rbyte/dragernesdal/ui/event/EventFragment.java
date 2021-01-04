@@ -16,6 +16,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -24,9 +25,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rbyte.dragernesdal.R;
+import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
+import com.rbyte.dragernesdal.data.event.model.EventDTO;
 import com.rbyte.dragernesdal.ui.character.create.ChooseRaceFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
@@ -40,10 +44,8 @@ public class EventFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        eventViewModel =
-                new ViewModelProvider(this).get(EventViewModel.class);
         View root = inflater.inflate(R.layout.fragment_event, container, false);
-        eventCards.add(new EventCard("Nu","Det gamle hus ved stranden","Kl. 13:00",false));
+        /*eventCards.add(new EventCard("Nu","Det gamle hus ved stranden","Kl. 13:00",false));
         eventCards.add(new EventCard("I morgen","Det nye hus ved stranden","Kl. 14:00", true));
         eventCards.add(new EventCard());
         eventCards.add(new EventCard());
@@ -51,12 +53,26 @@ public class EventFragment extends Fragment {
         eventCards.add(new EventCard());
         eventCards.add(new EventCard());
         eventCards.add(new EventCard());
-        eventCards.add(new EventCard());
+        eventCards.add(new EventCard());*/
+
+        eventViewModel = EventViewModel.getInstance();
+        eventViewModel.startGetThread();
 
         RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.eventRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
         recyclerView.setAdapter(eventAdapter);
         eventAdapter.notifyDataSetChanged();
+
+        eventViewModel.getEvents().observe(getViewLifecycleOwner(), new Observer<List<EventDTO>>() {
+            @Override
+            public void onChanged(List<EventDTO> eventDTOS) {
+                eventCards.clear();
+                eventDTOS.forEach((n)-> {
+                    eventCards.add(new EventCard(n.getStartDate().toString(),n.getInfo(),n.getStartDate().getTime()+"",false));
+                });
+                eventAdapter.notifyDataSetChanged();
+            }
+        });
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
