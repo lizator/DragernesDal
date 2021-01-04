@@ -56,12 +56,14 @@
     <string name="baggrundtext">Baggrund (max 5000 tegn)</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="characterName" >Navn</string>
-    <string name="charcterAge" >Alder</string>
+    <string name="characterName">Navn</string>
+    <string name="charcterAge">Alder</string>
     <string name="Name">Navn:</string>
     <string name="Age">Alder:</string>
     <string name="Background">Baggrund:</string>
     <string name="selectRace">Vælg Race</string>
     <string name="opretKarakter">Opret Karakter</string>
     <string name="mainPrefFile">Main_Preferences_File</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>
