@@ -71,7 +71,7 @@ public class EventFragment extends Fragment {
                 eventDTOS.forEach((n)-> {
                     SimpleDateFormat ft = new SimpleDateFormat("HH:mm:ss");
                     SimpleDateFormat dom = new SimpleDateFormat("E: dd-MM-yyyy");
-                    eventCards.add(new EventCard(dom.format(n.getStartDate()),n.getInfo(),"Klokken: "+ft.format(n.getStartDate()),false));
+                    eventCards.add(new EventCard(dom.format(n.getStartDate()),n.getInfo(),"Klokken: "+ft.format(n.getStartDate()),false)); //TODO: Tjek om man er tilmeldt eventet
                 });
                 eventAdapter.notifyDataSetChanged();
             }
