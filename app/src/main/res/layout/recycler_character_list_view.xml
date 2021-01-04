@@ -16,7 +16,9 @@
         android:layout_width="match_parent"
         android:background="@color/colorBackgroundGreen"
         android:layout_height="100dp"
-        app:cardCornerRadius="4dp">
+        app:cardCornerRadius="4dp"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground">
 
         <TextView
             android:id="@+id/characterName"
