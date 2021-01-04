@@ -45,7 +45,7 @@ public class HomeFragment extends Fragment {
     private int imgRes;
     private NavController navController;
 
-    public static final String CHARACTER_ID_SAVESPACE = "currCharacterID";
+    public static final String CHARACTER_ID_SAVESPACE = "currCharacterID"; //TODO check if new login or clear when logout.
     //TODO maybe make some animation thing for when logging to to have data loaded and setup made?
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -106,7 +106,7 @@ public class HomeFragment extends Fragment {
                     EditText characterNameEdit = (EditText) root.findViewById(R.id.characterNameEdit);
                     TextView raceTV = (TextView) root.findViewById(R.id.raceTV);
                     EditText yearEdit = (EditText) root.findViewById(R.id.yearEdit);
-                    TextView strengthTV = (TextView) root.findViewById(R.id.strengthTV); //Insert J, JJ, JJJ, JJJJ, JJJJJ
+                    TextView strengthTV = (TextView) root.findViewById(R.id.strengthTV); //Insert J, JJ, JJJ, JJJJ, JJJJJ, JJJJJJ
                     TextView kpTV = (TextView) root.findViewById(R.id.kpTV); //Insert A, AA, AAA, AAA\nA, AAA\nAA
                     ImageView imgView = (ImageView) root.findViewById(R.id.characterPicView);
                     switch (character.getIdrace()) {

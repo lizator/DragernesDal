@@ -49,8 +49,6 @@ public class ChooseRaceFragment extends Fragment {
         recyclerView.setLayoutManager(new GridLayoutManager(root.getContext(), 2));
         recyclerView.setAdapter(raceAdapter);
         raceAdapter.notifyDataSetChanged();
-        //TODO make recycler be the size of view and scroll within, and not in genneral.
-
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.selectRace);
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
@@ -85,7 +83,7 @@ public class ChooseRaceFragment extends Fragment {
         public void onClick(View v){
             SharedPreferences prefs = getDefaultSharedPreferences(root.getContext());
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putInt(RACE_ID_SAVESPACE, getAdapterPosition()+1);
+            editor.putInt(RACE_ID_SAVESPACE, raceList.get(getAdapterPosition()).getRaceID());
             editor.commit();
             NavController navController = Navigation.findNavController(root);
             navController.navigate(R.id.nav_createCharacterFragment);
