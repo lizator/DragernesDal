@@ -92,26 +92,31 @@ public class ChooseRaceFragment extends Fragment {
             builder.setTitle("Vil du vælge denne seje race");
             View viewInflated = LayoutInflater.from(root.getContext()).inflate(R.layout.alert_race_info, (ViewGroup)root.getRootView(),false);
             final EditText input = (EditText) viewInflated.findViewById(R.id.input);
+            input.setText("Elvere er nogle grimmerter");
             builder.setView(viewInflated);
-            builder.setPositiveButton("vælg!", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton("Vælg!", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            System.out.println("heste er gode!");
+                            SharedPreferences prefs = getDefaultSharedPreferences(root.getContext());
+                            SharedPreferences.Editor editor = prefs.edit();
+                            editor.putInt(RACE_ID_SAVESPACE, raceList.get(getAdapterPosition()).getRaceID());
+                            editor.commit();
+                            NavController navController = Navigation.findNavController(root);
+                            navController.navigate(R.id.nav_chooseRaceFragment);
                         }
                     });
+
+            builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+
+            });
             builder.show();
 
 
 
-/*
-            SharedPreferences prefs = getDefaultSharedPreferences(root.getContext());
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putInt(RACE_ID_SAVESPACE, raceList.get(getAdapterPosition()).getRaceID());
-            editor.commit();
-            NavController navController = Navigation.findNavController(root);
-            navController.navigate(R.id.nav_chooseRaceFragment);
-
- */
         }
 
     }
