@@ -43,8 +43,15 @@ public class EventFragment extends Fragment {
         eventViewModel =
                 new ViewModelProvider(this).get(EventViewModel.class);
         View root = inflater.inflate(R.layout.fragment_event, container, false);
-        eventCards.add(new EventCard("Nu","Det gamle hus ved stranden"));
-        eventCards.add(new EventCard("I morgen","Det nye hus ved stranden"));
+        eventCards.add(new EventCard("Nu","Det gamle hus ved stranden","Kl. 13:00",false));
+        eventCards.add(new EventCard("I morgen","Det nye hus ved stranden","Kl. 14:00", true));
+        eventCards.add(new EventCard());
+        eventCards.add(new EventCard());
+        eventCards.add(new EventCard());
+        eventCards.add(new EventCard());
+        eventCards.add(new EventCard());
+        eventCards.add(new EventCard());
+        eventCards.add(new EventCard());
 
         RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.eventRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
@@ -65,16 +72,17 @@ public class EventFragment extends Fragment {
 
     class EventViewHolder extends RecyclerView.ViewHolder{
         CardView cardView;
-        TextView date;
-        TextView info;
+        TextView date,info,time,attending;
         public EventViewHolder(View eventViews) {
             super(eventViews);
             cardView = eventViews.findViewById(R.id.event_card_view);
             date = eventViews.findViewById(R.id.textDate);
             info = eventViews.findViewById(R.id.textEventInfo);
+            time = eventViews.findViewById(R.id.textTime);
+            attending = eventViews.findViewById(R.id.textAttending);
 
             // Gør listeelementer klikbare og vis det ved at deres baggrunsfarve ændrer sig ved berøring
-            cardView.setBackgroundResource(android.R.drawable.list_selector_background);
+            //cardView.setBackgroundResource(android.R.drawable.list_selector_background);
         }
     }
 
@@ -95,17 +103,26 @@ public class EventFragment extends Fragment {
         public void onBindViewHolder(EventViewHolder vh, int position) {
             vh.date.setText(eventCards.get(position).getDate());
             vh.info.setText(eventCards.get(position).getInfo());
+            vh.time.setText(eventCards.get(position).getTime());
+            vh.attending.setText(eventCards.get(position).getAttending()?"Deltager":"Deltager ikke");
         }
 
     }
 
     private class EventCard {
-        private String date;
-        private String info;
+        private String date = "";
+        private String info = "";
+        private String time = "";
+        private Boolean attending = false;
 
-        public EventCard(String date, String info) {
+        public EventCard(String date, String info,String time, Boolean attending ) {
             this.date = date;
             this.info = info;
+            this.time = time;
+            this.attending = attending;
+        }
+        public EventCard(){
+
         }
 
         public String getDate() {
@@ -124,5 +141,20 @@ public class EventFragment extends Fragment {
             this.info = info;
         }
 
+        public String getTime() {
+            return time;
+        }
+
+        public void setTime(String time) {
+            this.time = time;
+        }
+
+        public Boolean getAttending() {
+            return attending;
+        }
+
+        public void setAttending(Boolean attending) {
+            this.attending = attending;
+        }
     }
 }
