@@ -29,6 +29,7 @@ import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
 import com.rbyte.dragernesdal.data.event.model.EventDTO;
 import com.rbyte.dragernesdal.ui.character.create.ChooseRaceFragment;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,7 +69,9 @@ public class EventFragment extends Fragment {
             public void onChanged(List<EventDTO> eventDTOS) {
                 eventCards.clear();
                 eventDTOS.forEach((n)-> {
-                    eventCards.add(new EventCard(n.getStartDate().toString(),n.getInfo(),n.getStartDate().getTime()+"",false));
+                    SimpleDateFormat ft = new SimpleDateFormat("HH:mm:ss");
+                    SimpleDateFormat dom = new SimpleDateFormat("E: dd-MM-yyyy");
+                    eventCards.add(new EventCard(dom.format(n.getStartDate()),n.getInfo(),"Klokken: "+ft.format(n.getStartDate()),false));
                 });
                 eventAdapter.notifyDataSetChanged();
             }

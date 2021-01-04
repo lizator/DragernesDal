@@ -52,7 +52,9 @@ public class EventViewModel extends ViewModel {
 
         @Override
         public void run() {
-            getEvents();
+            Result result = eventDAO.getEvents();
+            ArrayList<EventDTO> lst = ((Result.Success<ArrayList<EventDTO>>) result).getData();
+            mEvents.postValue(lst);
         }
     }
 }
