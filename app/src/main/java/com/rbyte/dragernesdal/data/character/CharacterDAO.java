@@ -65,6 +65,17 @@ public class CharacterDAO {
         }
     }
 
+    Result<CharacterDTO> updateCharacter(CharacterDTO dto) {
+        try {
+            Call<CharacterDTO> call = service.updateCharacter(dto);
+            resp = call.execute();
+            return new Result.Success<CharacterDTO>(resp.body());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new Result.Error(new IOException("Error connection to database"));
+        }
+    }
+
 
     public interface CharacterCallService {
         @GET("/character/byID/{characterid}")
@@ -75,5 +86,8 @@ public class CharacterDAO {
 
         @POST("/character/create")
         Call<CharacterDTO> createCharacter(@Body CharacterDTO character);
+
+        @POST("/character/update")
+        Call<CharacterDTO> updateCharacter(@Body CharacterDTO character);
     }
 }

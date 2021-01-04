@@ -41,16 +41,52 @@ public class AbilityDAO {
         }
     }
 
+    public Result<List<AbilityDTO>> getAbilitiesByRaceID(int raceID){
+        try {
+            Call<List<AbilityDTO>> call = service.getByRaceID(raceID);
+            respList = call.execute();
+            return new Result.Success<List<AbilityDTO>>(respList.body());
+        } catch (IOException e){
+            e.printStackTrace();
+            return new Result.Error(new IOException("Error connection to database"));
+        }
+    }
+
+    public Result<AbilityDTO> getAbilityByID(int abilityID){
+        try {
+            Call<AbilityDTO> call = service.getByID(abilityID);
+            resp = call.execute();
+            return new Result.Success<AbilityDTO>(resp.body());
+        } catch (IOException e){
+            e.printStackTrace();
+            return new Result.Error(new IOException("Error connection to database"));
+        }
+    }
+
+    public Result<AbilityDTO> buyAbility(int characterID, int abilityID){
+        try {
+            Call<AbilityDTO> call = service.buyAbility(characterID, abilityID);
+            resp = call.execute();
+            return new Result.Success<AbilityDTO>(resp.body());
+        } catch (IOException e){
+            e.printStackTrace();
+            return new Result.Error(new IOException("Error connection to database"));
+        }
+    }
+
 
 
     public interface AbilityCallService {
-        @GET("/ability/byCharacterID/{characterid}")
-        Call<List<AbilityDTO>> getByCharacterID(@Path(value = "characterid") int characterid);
+        @GET("/ability/byCharacterID/{characterID}")
+        Call<List<AbilityDTO>> getByCharacterID(@Path(value = "characterID") int characterID);
 
-        /*@GET("/character/byUserID/{userid}")
-        Call<List<CharacterDTO>> getByUserID(@Path(value = "userid") int userid);
+        @GET("/ability/byRaceID/{raceID}")
+        Call<List<AbilityDTO>> getByRaceID(@Path(value = "raceID") int raceID);
 
-        @POST("/character/create")
-        Call<CharacterDTO> createCharacter(@Body CharacterDTO character);*/
+        @GET("/ability/byID/{abilityID}")
+        Call<AbilityDTO> getByID(@Path(value = "abilityID") int abilityID);
+
+        @GET("ability/buy/{characterID}/{abilityID}")
+        Call<AbilityDTO> buyAbility(@Path(value = "characterID") int characterID, @Path(value = "abilityID") int abilityID);
     }
 }
