@@ -1,5 +1,6 @@
 package com.rbyte.dragernesdal.ui.character.create;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -87,22 +88,32 @@ public class ChooseRaceFragment extends Fragment {
 
         }
 
+        @SuppressLint("ResourceType")
         @Override
         public void onClick(View v){
+
+            SharedPreferences prefs = getDefaultSharedPreferences(root.getContext());
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putInt(RACE_ID_SAVESPACE, raceList.get(getAdapterPosition()).getRaceID());
+            editor.commit();
+
             builder.setTitle("Vil du vælge denne seje race");
             View viewInflated = LayoutInflater.from(root.getContext()).inflate(R.layout.alert_race_info, (ViewGroup)root.getRootView(),false);
             final EditText input = (EditText) viewInflated.findViewById(R.id.input);
             input.setText("Elvere er nogle grimmerter");
             builder.setView(viewInflated);
+
+            int raceID = prefs.getInt(ChooseRaceFragment.RACE_ID_SAVESPACE, 1);
+
+
+
             builder.setPositiveButton("Vælg!", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            SharedPreferences prefs = getDefaultSharedPreferences(root.getContext());
-                            SharedPreferences.Editor editor = prefs.edit();
-                            editor.putInt(RACE_ID_SAVESPACE, raceList.get(getAdapterPosition()).getRaceID());
-                            editor.commit();
+
                             NavController navController = Navigation.findNavController(root);
                             navController.navigate(R.id.nav_chooseRaceFragment);
+
                         }
                     });
 
