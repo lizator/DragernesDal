@@ -22,7 +22,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class EventFragment extends Fragment implements View.OnClickListener {
+public class EventFragment extends Fragment {
 
     private EventViewModel eventViewModel;
     private CalendarView calendar;
@@ -33,16 +33,8 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         eventViewModel =
                 new ViewModelProvider(this).get(EventViewModel.class);
         View root = inflater.inflate(R.layout.fragment_event, container, false);
-        calendar = root.findViewById(R.id.calendarView);
-        button_event_info = root.findViewById(R.id.button_event_info);
-        calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
 
-            @Override
-            public void onSelectedDayChange(CalendarView view, int year,
-                                            int month, int dayOfMonth) {
-                Log.d("dateChange","Changed date to:"+String.valueOf(year)+"/" +String.valueOf(month+1)+"/" +String.valueOf(dayOfMonth));
-            }
-        });
+
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
@@ -57,16 +49,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
     }
 
 
-    @Override
-    public void onClick(View v) {
-        System.out.println(calendar.getDate());
-    }
 
-    class EventHandler {
-        private void setEvents(CalendarView calendarView) {
-            ArrayList<Date> dates = new ArrayList<>();
 
-        }
-    }
 
 }
