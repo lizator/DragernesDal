@@ -1,5 +1,7 @@
 package com.rbyte.dragernesdal.ui;
 
+import androidx.appcompat.app.AlertDialog;
+
 public class PopupHandler {
     private static PopupHandler instance;
 
@@ -9,9 +11,12 @@ public class PopupHandler {
     }
 
     private PopupHandler(){
-
     }
 
+    public void buildAbilityPopup(android.content.Context context, String command){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+    }
 
     
 
