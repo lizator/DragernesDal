@@ -7,7 +7,9 @@ import androidx.lifecycle.ViewModel;
 import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
+import com.rbyte.dragernesdal.data.event.AttendingDAO;
 import com.rbyte.dragernesdal.data.event.EventDAO;
+import com.rbyte.dragernesdal.data.event.model.AttendingDTO;
 import com.rbyte.dragernesdal.data.event.model.EventDTO;
 import com.rbyte.dragernesdal.ui.character.select.SelectViewModel;
 import com.rbyte.dragernesdal.ui.home.HomeViewModel;
@@ -19,9 +21,11 @@ import java.util.List;
 public class EventViewModel extends ViewModel {
 
     private EventDAO eventDAO;
+    private AttendingDAO attendingDAO;
     private MutableLiveData<List<EventDTO>> mEvents;
-    private MutableLiveData<List<Boolean>> mAttending;
+    private MutableLiveData<List<AttendingDTO>> mAttending;
     private static EventViewModel instance;
+
 
     public static EventViewModel getInstance() {
         if (instance == null) instance = new EventViewModel();
@@ -30,7 +34,9 @@ public class EventViewModel extends ViewModel {
 
     private EventViewModel() {
         eventDAO = new EventDAO();
+        attendingDAO = new AttendingDAO();
         mEvents = new MutableLiveData<>();
+        mAttending = new MutableLiveData<>();
     }
 
     /*public LiveData<List<CharacterDTO>> getCharacters() {
@@ -40,13 +46,30 @@ public class EventViewModel extends ViewModel {
         return mEvents;
     }
 
-    public LiveData<List<Boolean>> getAttending() {
+    public LiveData<List<AttendingDTO>> getAttending(int charID) {
         return mAttending;
     }
 
-    public void startGetThread() {
+    public void startGetThread(int charID) {
         EventViewModel.GetEventsThread thread = new EventViewModel.GetEventsThread();
+        EventViewModel.GetAttendingThread threadA = new EventViewModel.GetAttendingThread(charID);
+
         thread.start();
+    }
+
+
+    class GetAttendingThread extends Thread {
+        private int charID;
+        public GetAttendingThread(int charID) {
+            this.charID = charID;
+        }
+
+        @Override
+        public void run() {
+            Result result = attendingDAO.getAttending(charID);
+            ArrayList<AttendingDTO> lst = ((Result.Success<ArrayList<AttendingDTO>>) result).getData();
+            mAttending.postValue(lst);
+        }
     }
 
     class GetEventsThread extends Thread {
@@ -57,11 +80,8 @@ public class EventViewModel extends ViewModel {
         @Override
         public void run() {
             Result result = eventDAO.getEvents();
-            Result resultA = eventDAO.getAttending();
             ArrayList<EventDTO> lst = ((Result.Success<ArrayList<EventDTO>>) result).getData();
-            ArrayList<Boolean> lstA = ((Result.Success<ArrayList<Boolean>>) resultA).getData();
             mEvents.postValue(lst);
-            mAttending.postValue(lstA);
         }
     }
 }

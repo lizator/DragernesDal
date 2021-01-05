@@ -26,8 +26,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.rbyte.dragernesdal.R;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
+import com.rbyte.dragernesdal.data.event.model.AttendingDTO;
 import com.rbyte.dragernesdal.data.event.model.EventDTO;
 import com.rbyte.dragernesdal.ui.character.create.ChooseRaceFragment;
+import com.rbyte.dragernesdal.ui.home.HomeFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,6 +44,7 @@ public class EventFragment extends Fragment {
     private CalendarView calendar;
     private Button button_event_info;
     private ArrayList<EventCard> eventCards = new ArrayList<>();
+    SharedPreferences prefs;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -55,9 +58,10 @@ public class EventFragment extends Fragment {
         eventCards.add(new EventCard());
         eventCards.add(new EventCard());
         eventCards.add(new EventCard());*/
+        prefs = getDefaultSharedPreferences(root.getContext());
 
         eventViewModel = EventViewModel.getInstance();
-        eventViewModel.startGetThread();
+        eventViewModel.startGetThread(prefs.getInt(HomeFragment.CHARACTER_ID_SAVESPACE, -1));
 
         RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.eventRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
@@ -77,13 +81,11 @@ public class EventFragment extends Fragment {
             }
         });
 
-        eventViewModel.getAttending().observe(getViewLifecycleOwner(), new Observer<List<Boolean>>() {
+        eventViewModel.getAttending(prefs.getInt(HomeFragment.CHARACTER_ID_SAVESPACE, -1)).observe(getViewLifecycleOwner(), new Observer<List<AttendingDTO>>() {
             @Override
-            public void onChanged(List<Boolean> attending) {
-                int i = 0;
-                for (Boolean n : attending) {
-                    eventCards.get(i).setAttending(n);
-                    i++;
+            public void onChanged(List<AttendingDTO> attending) {
+                for(int i = 0; i < attending.size();i++){
+                    eventCards.get(attending.get(i).getIdEvent()).setAttending(true);
                 }
                 eventAdapter.notifyDataSetChanged();
             }
