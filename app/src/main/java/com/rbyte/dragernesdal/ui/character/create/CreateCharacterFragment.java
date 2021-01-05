@@ -22,7 +22,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.rbyte.dragernesdal.R;
-import com.rbyte.dragernesdal.data.character.CharacterDAO;
+import com.rbyte.dragernesdal.data.ability.AbilityRepository;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
 import com.rbyte.dragernesdal.ui.character.select.SelectViewModel;
@@ -179,6 +179,7 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
         characterDTO.setIduser(userID);
 
         CharacterRepository charRepo = CharacterRepository.getInstance();
+        AbilityRepository abilityRepo = AbilityRepository.getInstance();
 
         Executor bgThread = Executors.newSingleThreadExecutor();
         bgThread.execute(() ->{
@@ -191,14 +192,35 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
                 SharedPreferences.Editor editor = prefs.edit();
                 CharacterDTO foundDTO = charRepo.getCurrentChar();
                 editor.putInt(HomeFragment.CHARACTER_ID_SAVESPACE, foundDTO.getIdcharacter());
-                editor.commit();
+                editor.apply();
 
-                Toast.makeText(getContext(), "test", Toast.LENGTH_SHORT).show();
-                navController = Navigation.findNavController(root2);
-                navController.popBackStack(R.id.nav_home,false);
-
+                Executor bgThread2 = Executors.newSingleThreadExecutor();
+                bgThread2.execute(() ->{
+                    int startAbilityID = abilityRepo.getStartAbilityID(characterDTO.getIdrace());
+                    uiThread.post(()-> {
+                        Executor bgThread3 = Executors.newSingleThreadExecutor();
+                        bgThread3.execute(() ->{
+                            String commandType = abilityRepo.tryBuy(foundDTO.getIdcharacter(), startAbilityID);
+                            uiThread.post(()-> {
+                                switch (commandType) {
+                                    case "auto": //do nothing
+                                        Log.d("CharacterCreation", "correct auto getting ability");
+                                        break;
+                                    default: //Error
+                                        Log.d("CharacterCreation", "error getting ability");
+                                        //TODO: handle error
+                                        break;
+                                }
+                                navController = Navigation.findNavController(root2);
+                                navController.popBackStack(R.id.nav_home,false);
+                            });
+                        });
+                    });
+                });
             });
         });
+
+
     }
 
     class TextChecker{

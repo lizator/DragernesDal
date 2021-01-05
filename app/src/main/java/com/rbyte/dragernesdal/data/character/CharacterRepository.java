@@ -57,6 +57,14 @@ public class CharacterRepository { //Class for getting characters and saving the
         return new Result.Success<List<CharacterDTO>>(this.currentCharList);
     }
 
+
+    public Result<CharacterDTO> updateCharacter(CharacterDTO dto){
+        Result<CharacterDTO> result = characterDAO.updateCharacter(dto);
+        return result;
+    }
+
+
+
     public Result<CharacterDTO> getCharacterByID(int characterID){
         if (updateNeeded || characterID != this.characterID) {
             Result<CharacterDTO> result = characterDAO.getCharacterByID(characterID);

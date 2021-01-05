@@ -69,4 +69,6 @@
     <string name="currentEventInfo">Hus med by</string>
     <string name="textTime">Kl. 13:00</string>
     <string name="textAttending">Du er tilmeldt</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

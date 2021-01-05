@@ -1,11 +1,15 @@
 package com.rbyte.dragernesdal.ui.character.create;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,6 +35,7 @@ public class ChooseRaceFragment extends Fragment {
     private ArrayList<RaceChoiceCard> raceList = new ArrayList<>();
     private View root;
     public static final String RACE_ID_SAVESPACE = "chosenRaceID";
+    AlertDialog.Builder builder;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -68,6 +73,7 @@ public class ChooseRaceFragment extends Fragment {
         CardView cardViewLeft;
         ImageView raceImgLeft;
         TextView raceNameTVLeft;
+
         public RaceViewHolder(View charViews) {
             super(charViews);
             cardViewLeft = (CardView) charViews.findViewById(R.id.card_view_left);
@@ -77,8 +83,12 @@ public class ChooseRaceFragment extends Fragment {
             // Gør listeelementer klikbare og vis det ved at deres baggrunsfarve ændrer sig ved berøring
             cardViewLeft.setBackgroundResource(android.R.drawable.list_selector_background);
             cardViewLeft.setOnClickListener(this);
+
+            builder = new AlertDialog.Builder(root.getContext());
+
         }
 
+        @SuppressLint("ResourceType")
         @Override
         public void onClick(View v){
 
@@ -86,8 +96,38 @@ public class ChooseRaceFragment extends Fragment {
             SharedPreferences.Editor editor = prefs.edit();
             editor.putInt(RACE_ID_SAVESPACE, raceList.get(getAdapterPosition()).getRaceID());
             editor.commit();
-            NavController navController = Navigation.findNavController(root);
-            navController.navigate(R.id.nav_createCharacterFragment);
+
+            builder.setTitle("Vil du vælge denne seje race");
+            View viewInflated = LayoutInflater.from(root.getContext()).inflate(R.layout.alert_race_info, (ViewGroup)root.getRootView(),false);
+            final EditText input = (EditText) viewInflated.findViewById(R.id.input);
+            input.setText("Elvere er nogle grimmerter");
+            builder.setView(viewInflated);
+
+            int raceID = prefs.getInt(ChooseRaceFragment.RACE_ID_SAVESPACE, 1);
+
+
+
+            builder.setPositiveButton("Vælg!", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            NavController navController = Navigation.findNavController(root);
+                            navController.navigate(R.id.nav_chooseRaceFragment);
+
+                        }
+                    });
+
+            builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+
+            });
+            builder.show();
+
+
+
         }
 
     }
