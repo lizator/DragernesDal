@@ -7,4 +7,10 @@
     <color name="colorAccent">#03DAC5</color>
     <color name="colorLink">#0645AD</color>
     <color name="colorBackgroundGreen">#81954B</color>
+    <color name="colorKamp">#FF9800</color>
+    <color name="colorSniger">#9C27B0</color>
+    <color name="colorViden">#2196F3</color>
+    <color name="colorAlle">#4CAF50</color>
+    <color name="colorTableLine1">#EEEEEE</color>
+    <color name="colorTableLine2">#CECECE</color>
 </resources>
