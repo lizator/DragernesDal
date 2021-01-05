@@ -18,8 +18,8 @@ public class CharacterRepository { //Class for getting characters and saving the
     private InventoryDAO inventoryDAO;
     private CharacterDTO currentChar;
     private ArrayList<CharacterDTO> currentCharList;
-    private ArrayList<AbilityDTO> abilitiesList; //character id to their List of abilities
-    private ArrayList<InventoryDTO> inventoryList; //character id to their List of abilities
+    private ArrayList<AbilityDTO> abilitiesList; //current characters List of abilities
+    private ArrayList<InventoryDTO> inventoryList; //current characters List of inventory
     private boolean updateNeeded = true;
     private int userID = -1;
     private int characterID = -1;
@@ -42,6 +42,10 @@ public class CharacterRepository { //Class for getting characters and saving the
 
     public CharacterDTO getCurrentChar(){
         return currentChar;
+    }
+
+    public ArrayList<AbilityDTO> getCurrentAbilitiesList() {
+        return abilitiesList;
     }
 
     public Result<List<CharacterDTO>> getCharactersByUserID(int userID){

@@ -205,7 +205,8 @@ public class HomeFragment extends Fragment {
                             }})
                         .setNegativeButton("Nej", null).show();
             }
-        };requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
 
 
         return root;

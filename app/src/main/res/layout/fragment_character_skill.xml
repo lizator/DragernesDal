@@ -63,7 +63,11 @@
                 android:layout_weight="1.70"
                 android:animateLayoutChanges="true"
                 android:background="@drawable/tab_kamp"
+                android:text="Kamp"
+                style="@style/text"
                 android:checked="true"
+                android:button="@android:color/transparent"
+                android:gravity="center"
                 android:elevation="10dp"
                 tools:layout_editor_absoluteX="122dp"
                 tools:layout_editor_absoluteY="154dp" />
@@ -73,27 +77,39 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1.0"
+                android:text="Sniger"
+                android:button="@android:color/transparent"
+                style="@style/text"
                 android:animateLayoutChanges="true"
                 android:background="@drawable/tab_sniger"
+                android:gravity="center"
                 tools:layout_editor_absoluteX="122dp"
                 tools:layout_editor_absoluteY="154dp" />
 
             <RadioButton
                 android:id="@+id/tab_viden"
+                android:text="Viden"
+                style="@style/text"
                 android:layout_width="0dp"
+                android:button="@android:color/transparent"
                 android:layout_height="match_parent"
                 android:layout_weight="1.0"
                 android:animateLayoutChanges="true"
                 android:background="@drawable/tab_viden"
+                android:gravity="center"
                 tools:layout_editor_absoluteX="122dp"
                 tools:layout_editor_absoluteY="154dp" />
 
             <RadioButton
                 android:id="@+id/tab_alle"
+                android:text="Andre"
+                style="@style/text"
+                android:button="@android:color/transparent"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1.0"
                 android:animateLayoutChanges="true"
+                android:gravity="center"
                 android:background="@drawable/tab_alle"
                 tools:layout_editor_absoluteX="122dp"
                 tools:layout_editor_absoluteY="154dp" />

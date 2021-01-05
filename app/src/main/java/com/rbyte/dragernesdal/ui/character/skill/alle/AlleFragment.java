@@ -5,11 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
-import android.widget.LinearLayout.LayoutParams;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -19,13 +14,13 @@ import androidx.navigation.Navigation;
 
 import com.rbyte.dragernesdal.R;
 
-public class alleFragment extends Fragment {
+public class AlleFragment extends Fragment {
 
-    private alleViewModel alleViewModel;
+    private AlleViewModel alleViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_character_skill, container, false);
+        View root = inflater.inflate(R.layout.fragment_skill_alle, container, false);
 
 
 

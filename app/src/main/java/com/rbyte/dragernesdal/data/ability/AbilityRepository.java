@@ -26,7 +26,7 @@ public class AbilityRepository {
     public int getStartAbilityID(int raceID){
         Result<List<AbilityDTO>> raceAbilitiesRes = getRaceAbilities(raceID);
         if (raceAbilitiesRes instanceof Result.Success){
-            ArrayList<AbilityDTO> raceAbilities = (ArrayList<AbilityDTO>) ((Result.Success) raceAbilitiesRes).getData();
+            ArrayList<AbilityDTO> raceAbilities = (ArrayList<AbilityDTO>) ((Result.Success<List<AbilityDTO>>) raceAbilitiesRes).getData();
             return raceAbilities.get(0).getId();
         }
         return -1; //TODO: handle errors
@@ -34,6 +34,10 @@ public class AbilityRepository {
     
     public Result<List<AbilityDTO>> getRaceAbilities(int raceID){
         return abilityDAO.getAbilitiesByRaceID(raceID);
+    }
+
+    public Result<List<AbilityDTO>> getTypeAbilities(String type){
+        return abilityDAO.getAbilitiesByType(type);
     }
 
     public String tryBuy(int characterID, int abilityID){

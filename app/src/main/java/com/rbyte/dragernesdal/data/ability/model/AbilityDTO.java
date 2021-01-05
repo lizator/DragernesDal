@@ -8,13 +8,14 @@ public class AbilityDTO {
     private String type;
     private int pagenumber;
     private String command;
+    private int idparent;
 
     public AbilityDTO (String name, String desc){
         this.name = name;
         this.desc = desc;
     }
 
-    public AbilityDTO (int id, String name, int cost, String desc, String type, int pagenumber, String command) {
+    public AbilityDTO (int id, String name, int cost, String desc, String type, int pagenumber, String command, int idparent) {
         this.id = id;
         this.name = name;
         this.cost = cost;
@@ -22,7 +23,10 @@ public class AbilityDTO {
         this.type = type;
         this.pagenumber = pagenumber;
         this.command = command;
+        this.idparent = idparent;
     }
+
+    public AbilityDTO() {}
 
     public int getId() {
         return id;
@@ -80,4 +84,11 @@ public class AbilityDTO {
         this.command = command;
     }
 
+    public int getIdparent() {
+        return idparent;
+    }
+
+    public void setIdparent(int idparent) {
+        this.idparent = idparent;
+    }
 }

@@ -25,7 +25,7 @@ public class VidenFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_character_skill, container, false);
+        View root = inflater.inflate(R.layout.fragment_skill_viden, container, false);
 
 
 
