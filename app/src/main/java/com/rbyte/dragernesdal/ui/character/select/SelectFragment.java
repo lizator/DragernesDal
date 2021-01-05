@@ -95,8 +95,8 @@ public class SelectFragment extends Fragment{
             cardView = charViews.findViewById(R.id.card_view);
             name = charViews.findViewById(R.id.characterName);
             img = charViews.findViewById(R.id.characterRecyclerImageView);
-            // Gør listeelementer klikbare og vis det ved at deres baggrunsfarve ændrer sig ved berøring
-            name.setBackgroundResource(android.R.drawable.list_selector_background);
+            /*// Gør listeelementer klikbare og vis det ved at deres baggrunsfarve ændrer sig ved berøring
+            name.setBackgroundResource(android.R.drawable.list_selector_background);*/
             charViews.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v){

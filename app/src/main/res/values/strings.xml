@@ -64,4 +64,9 @@
     <string name="selectRace">Vælg Race</string>
     <string name="opretKarakter">Opret Karakter</string>
     <string name="mainPrefFile">Main_Preferences_File</string>
+    <string name="event_info">Event Info</string>
+    <string name="currentEventDate">01/01/2021</string>
+    <string name="currentEventInfo">Hus med by</string>
+    <string name="textTime">Kl. 13:00</string>
+    <string name="textAttending">Du er tilmeldt</string>
 </resources>

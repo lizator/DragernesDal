@@ -81,6 +81,7 @@ public class ChooseRaceFragment extends Fragment {
 
         @Override
         public void onClick(View v){
+
             SharedPreferences prefs = getDefaultSharedPreferences(root.getContext());
             SharedPreferences.Editor editor = prefs.edit();
             editor.putInt(RACE_ID_SAVESPACE, raceList.get(getAdapterPosition()).getRaceID());
