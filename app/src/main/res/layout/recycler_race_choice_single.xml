@@ -15,7 +15,6 @@
         android:layout_gravity="center"
         android:background="@color/colorBackgroundGreen"
         app:cardCornerRadius="4dp"
-        android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground">
 
         <ImageView

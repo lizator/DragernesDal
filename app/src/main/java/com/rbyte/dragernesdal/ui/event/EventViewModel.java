@@ -25,6 +25,7 @@ public class EventViewModel extends ViewModel {
     private MutableLiveData<List<EventDTO>> mEvents;
     private MutableLiveData<List<AttendingDTO>> mAttending;
     private static EventViewModel instance;
+    EventViewModel.GetAttendingThread threadA;
 
 
     public static EventViewModel getInstance() {
@@ -52,9 +53,10 @@ public class EventViewModel extends ViewModel {
 
     public void startGetThread(int charID) {
         EventViewModel.GetEventsThread thread = new EventViewModel.GetEventsThread();
-        EventViewModel.GetAttendingThread threadA = new EventViewModel.GetAttendingThread(charID);
+        threadA = new EventViewModel.GetAttendingThread(charID);
 
         thread.start();
+
     }
 
 
@@ -82,6 +84,7 @@ public class EventViewModel extends ViewModel {
             Result result = eventDAO.getEvents();
             ArrayList<EventDTO> lst = ((Result.Success<ArrayList<EventDTO>>) result).getData();
             mEvents.postValue(lst);
+            threadA.start();
         }
     }
 }

@@ -31,6 +31,7 @@ import com.rbyte.dragernesdal.data.event.model.EventDTO;
 import com.rbyte.dragernesdal.ui.character.create.ChooseRaceFragment;
 import com.rbyte.dragernesdal.ui.home.HomeFragment;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,10 +40,9 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 public class EventFragment extends Fragment {
 
+    //TODO: Gem gamle events.
     private EventViewModel eventViewModel;
     private EventAdapter eventAdapter = new EventAdapter();
-    private CalendarView calendar;
-    private Button button_event_info;
     private ArrayList<EventCard> eventCards = new ArrayList<>();
     SharedPreferences prefs;
 
@@ -75,7 +75,7 @@ public class EventFragment extends Fragment {
                 eventDTOS.forEach((n)-> {
                     SimpleDateFormat ft = new SimpleDateFormat("HH:mm:ss");
                     SimpleDateFormat dom = new SimpleDateFormat("E: dd-MM-yyyy");
-                    eventCards.add(new EventCard(dom.format(n.getStartDate()),n.getInfo(),"Klokken: "+ft.format(n.getStartDate()),false)); //TODO: Tjek om man er tilmeldt eventet
+                    eventCards.add(new EventCard(dom.format(n.getStartDate()),n.getInfo(),"Klokken: "+ft.format(n.getStartDate()))); //TODO: Tjek om man er tilmeldt eventet
                 });
                 eventAdapter.notifyDataSetChanged();
             }
@@ -84,12 +84,14 @@ public class EventFragment extends Fragment {
         eventViewModel.getAttending(prefs.getInt(HomeFragment.CHARACTER_ID_SAVESPACE, -1)).observe(getViewLifecycleOwner(), new Observer<List<AttendingDTO>>() {
             @Override
             public void onChanged(List<AttendingDTO> attending) {
+                if(attending == null || attending.size() == 0 || eventCards == null || eventCards.size() == 0)return;
                 for(int i = 0; i < attending.size();i++){
                     eventCards.get(attending.get(i).getIdEvent()).setAttending(true);
                 }
                 eventAdapter.notifyDataSetChanged();
             }
         });
+
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
@@ -113,9 +115,6 @@ public class EventFragment extends Fragment {
             info = eventViews.findViewById(R.id.textEventInfo);
             time = eventViews.findViewById(R.id.textTime);
             attending = eventViews.findViewById(R.id.textAttending);
-
-            // Gør listeelementer klikbare og vis det ved at deres baggrunsfarve ændrer sig ved berøring
-            //cardView.setBackgroundResource(android.R.drawable.list_selector_background);
         }
     }
 
@@ -148,11 +147,10 @@ public class EventFragment extends Fragment {
         private String time = "";
         private Boolean attending = false;
 
-        public EventCard(String date, String info,String time, Boolean attending ) {
+        public EventCard(String date, String info,String time) {
             this.date = date;
             this.info = info;
             this.time = time;
-            this.attending = attending;
         }
         public EventCard(){
 
