@@ -17,7 +17,7 @@ public class EventDAO {
     private Retrofit retrofit;
     private EventCallService service;
 
-    Response<EventDTO> resp;
+    Response<List<Boolean>> respAttending;
     Response<List<EventDTO>> respList;
 
     public EventDAO(){
@@ -39,10 +39,22 @@ public class EventDAO {
         }
     }
 
+    public Result<Boolean> getAttending(){
+        try{
+            Call<List<Boolean>> call = service.getAttending();
+            respAttending = call.execute();
+            return new Result.Success<List<Boolean>>(respAttending.body());
+        } catch (IOException e){
+            return new Result.Error(new IOException("Error connection to database"));
+        }
+    }
+
 
     public interface EventCallService {
         @GET("/event/events")
         Call<List<EventDTO>> getEvents();
-
+        @GET("/event/attending/{charID}")
+        Call<List<Boolean>> getAttending();
     }
+
 }

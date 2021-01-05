@@ -77,6 +77,18 @@ public class EventFragment extends Fragment {
             }
         });
 
+        eventViewModel.getAttending().observe(getViewLifecycleOwner(), new Observer<List<Boolean>>() {
+            @Override
+            public void onChanged(List<Boolean> attending) {
+                int i = 0;
+                for (Boolean n : attending) {
+                    eventCards.get(i).setAttending(n);
+                    i++;
+                }
+                eventAdapter.notifyDataSetChanged();
+            }
+        });
+
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
             public void handleOnBackPressed() {

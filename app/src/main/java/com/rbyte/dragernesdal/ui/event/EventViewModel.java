@@ -19,11 +19,11 @@ import java.util.List;
 public class EventViewModel extends ViewModel {
 
     private EventDAO eventDAO;
-    private ArrayList<EventDTO> events;
     private MutableLiveData<List<EventDTO>> mEvents;
+    private MutableLiveData<List<Boolean>> mAttending;
     private static EventViewModel instance;
 
-    public static EventViewModel getInstance(){
+    public static EventViewModel getInstance() {
         if (instance == null) instance = new EventViewModel();
         return instance;
     }
@@ -36,25 +36,32 @@ public class EventViewModel extends ViewModel {
     /*public LiveData<List<CharacterDTO>> getCharacters() {
         return mCharacters;
     }*/
-    public LiveData<List<EventDTO>> getEvents(){
-       return mEvents;
+    public LiveData<List<EventDTO>> getEvents() {
+        return mEvents;
     }
 
-    public void startGetThread(){
+    public LiveData<List<Boolean>> getAttending() {
+        return mAttending;
+    }
+
+    public void startGetThread() {
         EventViewModel.GetEventsThread thread = new EventViewModel.GetEventsThread();
         thread.start();
     }
 
-    class GetEventsThread extends Thread{
-        public GetEventsThread(){
+    class GetEventsThread extends Thread {
+        public GetEventsThread() {
 
         }
 
         @Override
         public void run() {
             Result result = eventDAO.getEvents();
+            Result resultA = eventDAO.getAttending();
             ArrayList<EventDTO> lst = ((Result.Success<ArrayList<EventDTO>>) result).getData();
+            ArrayList<Boolean> lstA = ((Result.Success<ArrayList<Boolean>>) resultA).getData();
             mEvents.postValue(lst);
+            mAttending.postValue(lstA);
         }
     }
 }
