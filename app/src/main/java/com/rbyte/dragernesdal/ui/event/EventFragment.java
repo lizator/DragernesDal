@@ -79,7 +79,7 @@ public class EventFragment extends Fragment {
         eventViewModel.getAttending(characterID).observe(getViewLifecycleOwner(), new Observer<List<AttendingDTO>>() {
             @Override
             public void onChanged(List<AttendingDTO> attending) {
-                if (attending == null || attending.size() == 0 || eventCards == null || eventCards.size() == 0)
+                if (attending == null ||  eventCards == null || eventCards.size() == 0)
                     return;
                 for(int i = 0; i < attending.size();i++){
                     eventCards.get(attending.get(i).getIdEvent()).setAttending(true);
@@ -117,15 +117,16 @@ public class EventFragment extends Fragment {
                 public void onClick(View v) {
                     final int position = getAdapterPosition();
                     if(!eventCards.get(position).getAttending()){
+                        eventCards.get(position).setAttending(true);
                         eventViewModel.startSetThread(characterID,position);
-                        System.out.println("Set attending");
                     } else {
                         eventCards.get(position).setAttending(false);
                         eventViewModel.startRemoveThread(characterID,position);
-                        System.out.println("Remove attending");
+
                     }
+                    /*System.out.println(eventCards.toString());
                     System.out.println("Attending: "+eventCards.get(position).getAttending());
-                    System.out.println("CharID: "+characterID +" Clicked: "+position);
+                    System.out.println("CharID: "+characterID +" Clicked: "+position);*/
                 }
             });
         }
@@ -200,6 +201,11 @@ public class EventFragment extends Fragment {
 
         public void setAttending(Boolean attending) {
             this.attending = attending;
+        }
+
+        @Override
+        public String toString(){
+            return date+"\n"+info+"\n"+time+"\n"+attending;
         }
     }
 }
