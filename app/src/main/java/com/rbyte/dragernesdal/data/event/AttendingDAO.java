@@ -54,10 +54,23 @@ public class AttendingDAO {
         }
     }
 
+    public Result<AttendingDTO> removeAttending(AttendingDTO attendingDTO){
+        try {
+            Call<AttendingDTO> call = service.removeAttending(attendingDTO);
+            resp = call.execute();
+            return new Result.Success<AttendingDTO>(resp.body());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new Result.Error(new IOException("Error connection to database"));
+        }
+    }
+
     public interface EventCallService {
         @GET("/event/attending/{charID}")
         Call<List<AttendingDTO>> getAttending(@Path(value = "charID")int charID);
         @POST("/event/attending/set")
         Call<AttendingDTO> setAttending(@Body AttendingDTO attendingDTO);
+        @POST("/event/attending/remove")
+        Call<AttendingDTO> removeAttending(@Body AttendingDTO attendingDTO);
         }
 }

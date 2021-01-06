@@ -64,6 +64,26 @@ public class EventViewModel extends ViewModel {
         thread.start();
     }
 
+    public void startRemoveThread(int charID, int eventID){
+        EventViewModel.RemoveAttendingThread thread = new EventViewModel.RemoveAttendingThread(charID, eventID);
+        thread.start();
+    }
+
+    class RemoveAttendingThread extends Thread{
+        private int charID,eventID;
+
+        public RemoveAttendingThread(int charID, int eventID){
+            this.charID = charID;
+            this.eventID = eventID;
+
+        }
+        @Override
+        public void run() {
+            attendingDAO.removeAttending(new AttendingDTO(charID,eventID));
+            EventViewModel.GetAttendingThread thread = new EventViewModel.GetAttendingThread(charID);
+            thread.start();
+        }
+    }
 
     class SetAttendingThread extends Thread{
         private int charID,eventID;
@@ -92,6 +112,7 @@ public class EventViewModel extends ViewModel {
             Result result = attendingDAO.getAttending(charID);
             ArrayList<AttendingDTO> lst = ((Result.Success<ArrayList<AttendingDTO>>) result).getData();
             mAttending.postValue(lst);
+            System.out.println("Getting attending");
         }
     }
 

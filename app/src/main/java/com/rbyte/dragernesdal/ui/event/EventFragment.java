@@ -116,7 +116,15 @@ public class EventFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     final int position = getAdapterPosition();
-                    eventViewModel.startSetThread(characterID,position);
+                    if(!eventCards.get(position).getAttending()){
+                        eventViewModel.startSetThread(characterID,position);
+                        System.out.println("Set attending");
+                    } else {
+                        eventCards.get(position).setAttending(false);
+                        eventViewModel.startRemoveThread(characterID,position);
+                        System.out.println("Remove attending");
+                    }
+                    System.out.println("Attending: "+eventCards.get(position).getAttending());
                     System.out.println("CharID: "+characterID +" Clicked: "+position);
                 }
             });
