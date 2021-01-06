@@ -41,6 +41,7 @@ public class AttendingDAO {
     }
 
 
+
     public interface EventCallService {
         @GET("/event/attending/{charID}")
         Call<List<AttendingDTO>> getAttending(@Path(value = "charID")int charID);

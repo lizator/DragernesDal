@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
@@ -49,15 +50,6 @@ public class EventFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_event, container, false);
-        /*eventCards.add(new EventCard("Nu","Det gamle hus ved stranden","Kl. 13:00",false));
-        eventCards.add(new EventCard("I morgen","Det nye hus ved stranden","Kl. 14:00", true));
-        eventCards.add(new EventCard());
-        eventCards.add(new EventCard());
-        eventCards.add(new EventCard());
-        eventCards.add(new EventCard());
-        eventCards.add(new EventCard());
-        eventCards.add(new EventCard());
-        eventCards.add(new EventCard());*/
         prefs = getDefaultSharedPreferences(root.getContext());
 
         eventViewModel = EventViewModel.getInstance();
@@ -75,6 +67,10 @@ public class EventFragment extends Fragment {
                 eventDTOS.forEach((n)-> {
                     SimpleDateFormat ft = new SimpleDateFormat("HH:mm:ss");
                     SimpleDateFormat dom = new SimpleDateFormat("E: dd-MM-yyyy");
+                    ft.setTimeZone(TimeZone.getTimeZone("CET-1"));
+                    dom.setTimeZone(TimeZone.getTimeZone("CET-1"));
+                    System.out.println(TimeZone.getDefault());
+                    System.out.println(n.getStartDate());
                     eventCards.add(new EventCard(dom.format(n.getStartDate()),n.getInfo(),"Klokken: "+ft.format(n.getStartDate()))); //TODO: Tjek om man er tilmeldt eventet
                 });
                 eventAdapter.notifyDataSetChanged();
