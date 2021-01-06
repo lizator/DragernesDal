@@ -29,6 +29,8 @@ import java.util.concurrent.Executors;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
+
+//https://stackoverflow.com/questions/31954993/hide-a-navigation-drawer-menu-item-android for hiding menu items
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;

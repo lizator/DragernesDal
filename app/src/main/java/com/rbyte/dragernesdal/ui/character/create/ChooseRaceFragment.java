@@ -61,7 +61,7 @@ public class ChooseRaceFragment extends Fragment {
             public void handleOnBackPressed() {
                 Log.d("OnBackPress","Back pressed in ChooseRaceFragment");
                 NavController navController = Navigation.findNavController(root);
-                navController.navigate(R.id.nav_char_select);
+                navController.popBackStack();
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);

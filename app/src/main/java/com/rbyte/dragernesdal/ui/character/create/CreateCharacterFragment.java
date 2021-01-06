@@ -157,7 +157,7 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
             public void handleOnBackPressed() {
                 Log.d("OnBackPress","Back pressed in CreateCharacterFragment");
                 navController = Navigation.findNavController(root);
-                navController.popBackStack(R.id.nav_chooseRaceFragment,false);
+                navController.popBackStack();
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
