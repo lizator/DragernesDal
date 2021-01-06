@@ -1,5 +1,7 @@
 package com.rbyte.dragernesdal.ui.character.skill.kamp;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,6 +34,7 @@ import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.ability.AbilityRepository;
 import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
+import com.rbyte.dragernesdal.ui.PopupHandler;
 import com.rbyte.dragernesdal.ui.character.skill.SkillViewModel;
 import com.rbyte.dragernesdal.ui.home.HomeFragment;
 
@@ -52,6 +55,7 @@ public class KampFragment extends Fragment {
     private RecyclerView recyclerView;
     private AbilityAdapter abilityAdapter = new AbilityAdapter();
     private ArrayList<Integer> currentAbilityIDs = new ArrayList<>();
+    private PopupHandler popHandler;
     private Handler uiThread = new Handler();
     private View root2;
 
@@ -61,6 +65,7 @@ public class KampFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_skill_kamp, container, false);
         abilityrepo = AbilityRepository.getInstance();
         charRepo = CharacterRepository.getInstance();
+        popHandler = new PopupHandler(getContext());
 
         recyclerView = (RecyclerView) root.findViewById(R.id.kampRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
@@ -71,6 +76,7 @@ public class KampFragment extends Fragment {
         }
 
         abilityList = skillViewModel.getKampAbilities();
+        abilityAdapter.notifyDataSetChanged();
 
         kampViewModel.getCurrAbilitys().observe(getViewLifecycleOwner(), new Observer<ArrayList<Integer>>() {
             @Override
@@ -79,6 +85,8 @@ public class KampFragment extends Fragment {
                 abilityAdapter.notifyDataSetChanged();
             }
         });
+
+
 
 
 
@@ -177,6 +185,17 @@ public class KampFragment extends Fragment {
                         @Override
                         public void onClick(View v) {
                             //TODO: make popup, buy ability and refresh
+                            popHandler.getConfirmBuyAlert(root2,
+                                    abilityList.get(position).getName(),
+                                    abilityList.get(position).getCost(),
+                                    charRepo.getCurrentChar().getCurrentep(),
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                            Toast.makeText(getContext(),"testing and works", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }).show();
                         }
                     });
                 } else {
