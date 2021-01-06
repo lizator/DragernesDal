@@ -110,8 +110,8 @@ public class SkillFragment extends Fragment {
 
                         break;
                     case R.id.tab_alle:
-                        if (state != 2) {
-                            state = 2;
+                        if (state != 3) {
+                            state = 3;
                             kampRadio.setLayoutParams(uncheckedParam);
                             snigerRadio.setLayoutParams(uncheckedParam);
                             videnRadio.setLayoutParams(uncheckedParam);
