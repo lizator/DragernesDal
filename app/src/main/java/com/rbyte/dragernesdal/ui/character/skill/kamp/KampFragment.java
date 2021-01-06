@@ -1,6 +1,5 @@
 package com.rbyte.dragernesdal.ui.character.skill.kamp;
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,23 +8,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout.LayoutParams;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -75,8 +65,17 @@ public class KampFragment extends Fragment {
             currentAbilityIDs.add(dto.getId());
         }
 
-        abilityList = skillViewModel.getKampAbilities();
-        abilityAdapter.notifyDataSetChanged();
+        if (skillViewModel.getKampAbilities() == null) {
+            Log.d("KampFragment", "onCreateView: kampabillity is null");
+        }
+
+        skillViewModel.getKampAbilities().observe(getViewLifecycleOwner(), new Observer<ArrayList<AbilityDTO>>() {
+            @Override
+            public void onChanged(ArrayList<AbilityDTO> abilityDTOS) {
+                abilityList = abilityDTOS;
+                abilityAdapter.notifyDataSetChanged();
+            }
+        });
 
         kampViewModel.getCurrAbilitys().observe(getViewLifecycleOwner(), new Observer<ArrayList<Integer>>() {
             @Override
@@ -85,9 +84,6 @@ public class KampFragment extends Fragment {
                 abilityAdapter.notifyDataSetChanged();
             }
         });
-
-
-
 
 
         SharedPreferences prefs = getDefaultSharedPreferences(getContext());
