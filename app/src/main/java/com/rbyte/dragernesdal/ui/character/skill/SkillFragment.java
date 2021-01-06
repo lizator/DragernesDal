@@ -5,8 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.RadioButton;
@@ -18,15 +16,19 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.rbyte.dragernesdal.R;
+import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.ui.character.skill.alle.AlleFragment;
 import com.rbyte.dragernesdal.ui.character.skill.kamp.KampFragment;
 import com.rbyte.dragernesdal.ui.character.skill.sniger.SnigerFragment;
 import com.rbyte.dragernesdal.ui.character.skill.viden.VidenFragment;
+
+import java.util.ArrayList;
 
 public class SkillFragment extends Fragment {
 
@@ -70,6 +72,33 @@ public class SkillFragment extends Fragment {
         snigerRadio = root.findViewById(R.id.tab_sniger);
         videnRadio = root.findViewById(R.id.tab_viden);
         alleRadio = root.findViewById(R.id.tab_alle);
+
+        skillViewModel.getCurrentEP().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                TextView eptv = root.findViewById(R.id.abilityEPValueTV);
+                eptv.setText(integer+ "");
+            }
+        });
+
+        skillViewModel.getUpdate().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean){
+                    switchFrag(state);
+                    skillViewModel.setUpdate(false);
+                }
+            }
+        });
+
+        skillViewModel.getKampAbilities().observe(getViewLifecycleOwner(), new Observer<ArrayList<AbilityDTO>>() {
+            @Override
+            public void onChanged(ArrayList<AbilityDTO> abilityDTOS) {
+                switchFrag(state);
+            }
+        });
+
+        skillViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
 
         TextView eptv = root.findViewById(R.id.abilityEPValueTV);
         eptv.setText(charRepo.getCurrentChar().getCurrentep() + "");
@@ -157,15 +186,58 @@ public class SkillFragment extends Fragment {
         return root;
     }
 
-    public void scaleView(View v, float startScale, float endScale) {
-        Animation anim = new ScaleAnimation(
-                startScale, endScale, // Start and end values for the X axis scaling
-                1f, 1f, // Start and end values for the Y axis scaling
-                Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of X scaling
-                Animation.RELATIVE_TO_SELF, 1f); // Pivot point of Y scaling
-        anim.setFillAfter(true); // Needed to keep the result of the animation
-        anim.setDuration(3000);
-        v.startAnimation(anim);
+    private void switchFrag(int newState){
+        switch (newState){
+            case 0:
+                state = 0;
+                kampRadio.setLayoutParams(checkedParam);
+                snigerRadio.setLayoutParams(uncheckedParam);
+                videnRadio.setLayoutParams(uncheckedParam);
+                alleRadio.setLayoutParams(uncheckedParam);
+
+                FragmentTransaction transactionk = fm.beginTransaction();
+                Fragment kampFrag = new KampFragment();
+                transactionk.replace(R.id.innerLinear, kampFrag);
+                transactionk.commit();
+                break;
+            case 1:
+                state = 1;
+                kampRadio.setLayoutParams(uncheckedParam);
+                snigerRadio.setLayoutParams(checkedParam);
+                videnRadio.setLayoutParams(uncheckedParam);
+                alleRadio.setLayoutParams(uncheckedParam);
+
+                FragmentTransaction transactions = fm.beginTransaction();
+                Fragment snigerFrag = new SnigerFragment();
+                transactions.replace(R.id.innerLinear, snigerFrag);
+                transactions.commit();
+                break;
+            case 2:
+                state = 2;
+                kampRadio.setLayoutParams(uncheckedParam);
+                snigerRadio.setLayoutParams(uncheckedParam);
+                videnRadio.setLayoutParams(checkedParam);
+                alleRadio.setLayoutParams(uncheckedParam);
+
+                FragmentTransaction transactionv = fm.beginTransaction();
+                Fragment videnFrag = new VidenFragment();
+                transactionv.replace(R.id.innerLinear, videnFrag);
+                transactionv.commit();
+                break;
+            case 3:
+                state = 3;
+                kampRadio.setLayoutParams(uncheckedParam);
+                snigerRadio.setLayoutParams(uncheckedParam);
+                videnRadio.setLayoutParams(uncheckedParam);
+                alleRadio.setLayoutParams(checkedParam);
+
+                FragmentTransaction transactiona = fm.beginTransaction();
+                Fragment alleFrag = new AlleFragment();
+                transactiona.replace(R.id.innerLinear, alleFrag);
+                transactiona.commit();
+                break;
+
+        }
     }
 
 

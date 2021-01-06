@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -63,10 +62,6 @@ public class KampFragment extends Fragment {
 
         for (AbilityDTO dto : charRepo.getCurrentAbilitiesList()){
             currentAbilityIDs.add(dto.getId());
-        }
-
-        if (skillViewModel.getKampAbilities() == null) {
-            Log.d("KampFragment", "onCreateView: kampabillity is null");
         }
 
         skillViewModel.getKampAbilities().observe(getViewLifecycleOwner(), new Observer<ArrayList<AbilityDTO>>() {
@@ -163,7 +158,7 @@ public class KampFragment extends Fragment {
                 }
             }
             if(!bought){
-                int currEP = charRepo.getCurrentChar().getCurrentep();
+                int currEP = skillViewModel.getCurrentEP().getValue();
                 int parent = abilityList.get(position).getIdparent();
                 Boolean ownsParent = false;
                 if (parent != 0) {
@@ -189,7 +184,24 @@ public class KampFragment extends Fragment {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             dialog.dismiss();
-                                            Toast.makeText(getContext(),"testing and works", Toast.LENGTH_SHORT).show();
+                                            Executor bgThread1 = Executors.newSingleThreadExecutor();
+                                            bgThread1.execute(() -> {
+                                                String command = abilityrepo.tryBuy(charRepo.getCurrentChar().getIdcharacter(), abilityList.get(position).getId());
+                                                charRepo.getCharacterByID(charRepo.getCurrentChar().getIdcharacter());
+                                                uiThread.post(() -> {
+                                                    if (command != "auto") { //new popup needed
+                                                        //TODO: create more popups
+                                                    }
+                                                    skillViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
+                                                    abilityAdapter.notifyDataSetChanged();
+                                                    skillViewModel.getUpdate().postValue(true);
+                                                    ArrayList<Integer> ls = new ArrayList<>();
+                                                    for (AbilityDTO dto : charRepo.getCurrentAbilitiesList()){
+                                                        ls.add(dto.getId());
+                                                    }
+                                                    skillViewModel.getCurrentAbilityIDs().postValue(ls);
+                                                });
+                                            });
                                         }
                                     }).show();
                         }

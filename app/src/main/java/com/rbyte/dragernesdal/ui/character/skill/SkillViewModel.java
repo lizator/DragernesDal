@@ -17,11 +17,14 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class SkillViewModel extends ViewModel {
     private static SkillViewModel instace;
+    private MutableLiveData<Integer> currentEP;
+    private MutableLiveData<Boolean> update;
     private MutableLiveData<ArrayList<AbilityDTO>> kampAbilities;
     private MutableLiveData<ArrayList<AbilityDTO>> snigerAbilities;
     private MutableLiveData<ArrayList<AbilityDTO>> videnAbilities;
     private MutableLiveData<ArrayList<AbilityDTO>> alleAbilities;
     private MutableLiveData<ArrayList<AbilityDTO>> raceAbilities;
+    private MutableLiveData<ArrayList<Integer>> currentAbilityIDs;
     private boolean[] updatesNeededIn = new boolean[]{true, true, true, true};
     private Handler uiThread = new Handler();
     private AbilityRepository abilityRepo = AbilityRepository.getInstance();
@@ -32,12 +35,14 @@ public class SkillViewModel extends ViewModel {
     }
 
     private SkillViewModel() {
-
+        currentEP = new MutableLiveData<>();
+        update = new MutableLiveData<>();
         kampAbilities = new MutableLiveData<>();
         snigerAbilities = new MutableLiveData<>();
         videnAbilities = new MutableLiveData<>();
         alleAbilities = new MutableLiveData<>();
         raceAbilities = new MutableLiveData<>();
+        currentAbilityIDs = new MutableLiveData<>();
 
         Executor bgThread5 = Executors.newSingleThreadExecutor();
         bgThread5.execute(() -> {
@@ -167,5 +172,25 @@ public class SkillViewModel extends ViewModel {
 
     public MutableLiveData<ArrayList<AbilityDTO>> getRaceAbilities() {
         return raceAbilities;
+    }
+
+    public MutableLiveData<Integer> getCurrentEP() {
+        return currentEP;
+    }
+
+    public void setCurrentEP(int currentEP) {
+        this.currentEP.setValue(currentEP);
+    }
+
+    public MutableLiveData<Boolean> getUpdate() {
+        return update;
+    }
+
+    public void setUpdate(boolean update) {
+        this.update.setValue(update);
+    }
+
+    public MutableLiveData<ArrayList<Integer>> getCurrentAbilityIDs() {
+        return currentAbilityIDs;
     }
 }
