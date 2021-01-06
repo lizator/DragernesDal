@@ -12,7 +12,9 @@ import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public class AttendingDAO {
@@ -20,6 +22,7 @@ public class AttendingDAO {
     private EventCallService service;
 
     Response<List<AttendingDTO>> respAttending;
+    Response<AttendingDTO> resp;
 
     public AttendingDAO(){
         this.retrofit = new Retrofit.Builder()
@@ -40,10 +43,21 @@ public class AttendingDAO {
         }
     }
 
-
+    public Result<AttendingDTO> setAttending(AttendingDTO attendingDTO){
+        try {
+            Call<AttendingDTO> call = service.setAttending(attendingDTO);
+            resp = call.execute();
+            return new Result.Success<AttendingDTO>(resp.body());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new Result.Error(new IOException("Error connection to database"));
+        }
+    }
 
     public interface EventCallService {
         @GET("/event/attending/{charID}")
         Call<List<AttendingDTO>> getAttending(@Path(value = "charID")int charID);
+        @POST("/event/attending/set")
+        Call<AttendingDTO> setAttending(@Body AttendingDTO attendingDTO);
         }
 }

@@ -59,6 +59,27 @@ public class EventViewModel extends ViewModel {
 
     }
 
+    public void startSetThread(int charID, int eventID){
+        EventViewModel.SetAttendingThread thread = new EventViewModel.SetAttendingThread(charID, eventID);
+        thread.start();
+    }
+
+
+    class SetAttendingThread extends Thread{
+        private int charID,eventID;
+
+        public SetAttendingThread(int charID, int eventID){
+            this.charID = charID;
+            this.eventID = eventID;
+
+        }
+        @Override
+        public void run() {
+            attendingDAO.setAttending(new AttendingDTO(charID,eventID));
+            EventViewModel.GetAttendingThread thread = new EventViewModel.GetAttendingThread(charID);
+            thread.start();
+        }
+    }
 
     class GetAttendingThread extends Thread {
         private int charID;

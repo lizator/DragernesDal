@@ -46,14 +46,15 @@ public class EventFragment extends Fragment {
     private EventAdapter eventAdapter = new EventAdapter();
     private ArrayList<EventCard> eventCards = new ArrayList<>();
     SharedPreferences prefs;
+    private int characterID;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_event, container, false);
         prefs = getDefaultSharedPreferences(root.getContext());
-
+        characterID = prefs.getInt(HomeFragment.CHARACTER_ID_SAVESPACE, -1);
         eventViewModel = EventViewModel.getInstance();
-        eventViewModel.startGetThread(prefs.getInt(HomeFragment.CHARACTER_ID_SAVESPACE, -1));
+        eventViewModel.startGetThread(characterID);
 
         RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.eventRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
@@ -64,23 +65,22 @@ public class EventFragment extends Fragment {
             @Override
             public void onChanged(List<EventDTO> eventDTOS) {
                 eventCards.clear();
-                eventDTOS.forEach((n)-> {
+                eventDTOS.forEach((n) -> {
                     SimpleDateFormat ft = new SimpleDateFormat("HH:mm:ss");
                     SimpleDateFormat dom = new SimpleDateFormat("E: dd-MM-yyyy");
                     ft.setTimeZone(TimeZone.getTimeZone("CET-1"));
                     dom.setTimeZone(TimeZone.getTimeZone("CET-1"));
-                    System.out.println(TimeZone.getDefault());
-                    System.out.println(n.getStartDate());
-                    eventCards.add(new EventCard(dom.format(n.getStartDate()),n.getInfo(),"Klokken: "+ft.format(n.getStartDate()))); //TODO: Tjek om man er tilmeldt eventet
+                    eventCards.add(new EventCard(dom.format(n.getStartDate()), n.getInfo(), "Klokken: " + ft.format(n.getStartDate()))); //TODO: Tjek om man er tilmeldt eventet
                 });
                 eventAdapter.notifyDataSetChanged();
             }
         });
 
-        eventViewModel.getAttending(prefs.getInt(HomeFragment.CHARACTER_ID_SAVESPACE, -1)).observe(getViewLifecycleOwner(), new Observer<List<AttendingDTO>>() {
+        eventViewModel.getAttending(characterID).observe(getViewLifecycleOwner(), new Observer<List<AttendingDTO>>() {
             @Override
             public void onChanged(List<AttendingDTO> attending) {
-                if(attending == null || attending.size() == 0 || eventCards == null || eventCards.size() == 0)return;
+                if (attending == null || attending.size() == 0 || eventCards == null || eventCards.size() == 0)
+                    return;
                 for(int i = 0; i < attending.size();i++){
                     eventCards.get(attending.get(i).getIdEvent()).setAttending(true);
                 }
@@ -101,9 +101,10 @@ public class EventFragment extends Fragment {
         return root;
     }
 
-    class EventViewHolder extends RecyclerView.ViewHolder{
+    class EventViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
-        TextView date,info,time,attending;
+        TextView date, info, time, attending;
+
         public EventViewHolder(View eventViews) {
             super(eventViews);
             cardView = eventViews.findViewById(R.id.event_card_view);
@@ -111,6 +112,14 @@ public class EventFragment extends Fragment {
             info = eventViews.findViewById(R.id.textEventInfo);
             time = eventViews.findViewById(R.id.textTime);
             attending = eventViews.findViewById(R.id.textAttending);
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final int position = getAdapterPosition();
+                    eventViewModel.startSetThread(characterID,position);
+                    System.out.println("CharID: "+characterID +" Clicked: "+position);
+                }
+            });
         }
     }
 
@@ -132,7 +141,7 @@ public class EventFragment extends Fragment {
             vh.date.setText(eventCards.get(position).getDate());
             vh.info.setText(eventCards.get(position).getInfo());
             vh.time.setText(eventCards.get(position).getTime());
-            vh.attending.setText(eventCards.get(position).getAttending()?"Deltager":"Deltager ikke");
+            vh.attending.setText(eventCards.get(position).getAttending() ? "Deltager" : "Deltager ikke");
         }
 
     }
@@ -143,12 +152,13 @@ public class EventFragment extends Fragment {
         private String time = "";
         private Boolean attending = false;
 
-        public EventCard(String date, String info,String time) {
+        public EventCard(String date, String info, String time) {
             this.date = date;
             this.info = info;
             this.time = time;
         }
-        public EventCard(){
+
+        public EventCard() {
 
         }
 
