@@ -34,7 +34,10 @@ public class AbilityDAO {
         try {
             Call<List<AbilityDTO>> call = service.getByCharacterID(characterID);
             respList = call.execute();
-            return new Result.Success<List<AbilityDTO>>(respList.body());
+            if (respList.code() == 200) {
+                return new Result.Success<List<AbilityDTO>>(respList.body());
+            }
+            return new Result.Error(new IOException("Error connection to database"));
         } catch (IOException e){
             e.printStackTrace();
             return new Result.Error(new IOException("Error connection to database"));

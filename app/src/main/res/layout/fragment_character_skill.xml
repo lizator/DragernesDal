@@ -119,11 +119,11 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <fragment android:id="@+id/innerFragment"
-    android:name="com.rbyte.dragernesdal.ui.character.skill.kamp.KampFragment"
+    <LinearLayout android:id="@+id/innerLinear"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/abilityRadioGroup" />
+    app:layout_constraintTop_toBottomOf="@+id/abilityRadioGroup"
+        android:orientation="horizontal"/>
 </LinearLayout>

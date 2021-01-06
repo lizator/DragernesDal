@@ -15,6 +15,7 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -31,6 +32,7 @@ import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.ability.AbilityRepository;
 import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
+import com.rbyte.dragernesdal.ui.character.skill.SkillViewModel;
 import com.rbyte.dragernesdal.ui.home.HomeFragment;
 
 import java.util.ArrayList;
@@ -43,6 +45,7 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 public class KampFragment extends Fragment {
 
     private KampViewModel kampViewModel = new KampViewModel();
+    private SkillViewModel skillViewModel = SkillViewModel.getInstance();
     private AbilityRepository abilityrepo;
     private CharacterRepository charRepo;
     private ArrayList<AbilityDTO> abilityList = new ArrayList<>();
@@ -50,6 +53,7 @@ public class KampFragment extends Fragment {
     private AbilityAdapter abilityAdapter = new AbilityAdapter();
     private ArrayList<Integer> currentAbilityIDs = new ArrayList<>();
     private Handler uiThread = new Handler();
+    private View root2;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -57,10 +61,6 @@ public class KampFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_skill_kamp, container, false);
         abilityrepo = AbilityRepository.getInstance();
         charRepo = CharacterRepository.getInstance();
-
-        SharedPreferences prefs = getDefaultSharedPreferences(getContext());
-        int currCharacterID = prefs.getInt(HomeFragment.CHARACTER_ID_SAVESPACE, -1);
-        if (currCharacterID != -1) kampViewModel.startGetThread(0); //TO-DO: error handle (not ever likely to happen, nvm)
 
         recyclerView = (RecyclerView) root.findViewById(R.id.kampRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
@@ -70,6 +70,8 @@ public class KampFragment extends Fragment {
             currentAbilityIDs.add(dto.getId());
         }
 
+        abilityList = skillViewModel.getKampAbilities();
+
         kampViewModel.getCurrAbilitys().observe(getViewLifecycleOwner(), new Observer<ArrayList<Integer>>() {
             @Override
             public void onChanged(ArrayList<Integer> integers) {
@@ -78,18 +80,31 @@ public class KampFragment extends Fragment {
             }
         });
 
-        Executor bgThread = Executors.newSingleThreadExecutor();
-        bgThread.execute(() ->{
-            Result<List<AbilityDTO>> res = abilityrepo.getTypeAbilities("kamp");
-            uiThread.post(() -> {
-                if (res instanceof Result.Success){
-                    abilityList = ((Result.Success<ArrayList<AbilityDTO>>) res).getData();
-                    abilityAdapter.notifyDataSetChanged();
-                }
+
+
+        SharedPreferences prefs = getDefaultSharedPreferences(getContext());
+        int currCharacterID = prefs.getInt(HomeFragment.CHARACTER_ID_SAVESPACE, -1);
+        if (currCharacterID != -1) { //TO-DO: error handle (not ever likely to happen, nvm)
+            Executor bgThread2 = Executors.newSingleThreadExecutor();
+            bgThread2.execute(() -> {
+                Result<List<AbilityDTO>> res = charRepo.getAbilitiesByCharacterID(currCharacterID);
+                uiThread.post(() -> {
+                    if (res instanceof Result.Success) {
+                        ArrayList<AbilityDTO> data = ((Result.Success<ArrayList<AbilityDTO>>) res).getData();
+                        if (data == null){
+                            Log.d("KampFragment", "data null");
+                        }
+                        currentAbilityIDs.clear();
+                        for (AbilityDTO dto : data){
+                            currentAbilityIDs.add(dto.getId());
+                        }
+                        //abilityAdapter.notifyDataSetChanged();
+                    }
+                });
+
             });
-
-        });
-
+        }
+        root2 = root;
         return root;
     }
 
@@ -115,7 +130,7 @@ public class KampFragment extends Fragment {
 
     }
 
-    class AbilityAdapter extends RecyclerView.Adapter<AbilityViewHolder> { //TODO make use onclick
+    class AbilityAdapter extends RecyclerView.Adapter<AbilityViewHolder> {
         @Override
         public int getItemCount() {
             if (abilityList != null) return abilityList.size();
@@ -145,7 +160,18 @@ public class KampFragment extends Fragment {
             }
             if(!bought){
                 int currEP = charRepo.getCurrentChar().getCurrentep();
-                if (abilityList.get(position).getCost() <= currEP){
+                int parent = abilityList.get(position).getIdparent();
+                Boolean ownsParent = false;
+                if (parent != 0) {
+                    for (int id : currentAbilityIDs){
+                        if (id == parent){
+                            ownsParent = true;
+                                    break;
+                        }
+                    }
+                }
+                if (abilityList.get(position).getCost() <= currEP && (
+                        parent == 0 || ownsParent)){ //correcte statement (testet with toasts)
                     vh.buybtn.setClickable(true);
                     vh.buybtn.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -153,6 +179,8 @@ public class KampFragment extends Fragment {
                             //TODO: make popup, buy ability and refresh
                         }
                     });
+                } else {
+                    vh.buybtn.setVisibility(View.GONE);
                 }
             }
 

@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -21,6 +22,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.rbyte.dragernesdal.R;
+import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.ui.character.skill.alle.AlleFragment;
 import com.rbyte.dragernesdal.ui.character.skill.kamp.KampFragment;
 import com.rbyte.dragernesdal.ui.character.skill.sniger.SnigerFragment;
@@ -28,7 +30,8 @@ import com.rbyte.dragernesdal.ui.character.skill.viden.VidenFragment;
 
 public class SkillFragment extends Fragment {
 
-    private SkillViewModel skillViewModel;
+    private SkillViewModel skillViewModel = SkillViewModel.getInstance();
+    private CharacterRepository charRepo = CharacterRepository.getInstance();
     private FragmentManager fm;
     private int state = 0;
 
@@ -53,11 +56,23 @@ public class SkillFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_character_skill, container, false);
+
+        skillViewModel.setRaceAbilities(charRepo.getCurrentChar().getIdrace());
+
         fm = getActivity().getSupportFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+        Fragment kampFrag = new KampFragment();
+        transaction.replace(R.id.innerLinear, kampFrag);
+        transaction.commit();
+
+
         kampRadio = root.findViewById(R.id.tab_kamp);
         snigerRadio = root.findViewById(R.id.tab_sniger);
         videnRadio = root.findViewById(R.id.tab_viden);
         alleRadio = root.findViewById(R.id.tab_alle);
+
+        TextView eptv = root.findViewById(R.id.abilityEPValueTV);
+        eptv.setText(charRepo.getCurrentChar().getCurrentep() + "");
 
         RadioGroup abilityRadioGroup = (RadioGroup) root.findViewById(R.id.abilityRadioGroup);
         abilityRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -74,7 +89,7 @@ public class SkillFragment extends Fragment {
 
                             FragmentTransaction transaction = fm.beginTransaction();
                             Fragment kampFrag = new KampFragment();
-                            transaction.replace(R.id.innerFragment, kampFrag);
+                            transaction.replace(R.id.innerLinear, kampFrag);
                             transaction.commit();
                         }
 
@@ -89,7 +104,7 @@ public class SkillFragment extends Fragment {
 
                             FragmentTransaction transaction = fm.beginTransaction();
                             Fragment snigerFrag = new SnigerFragment();
-                            transaction.replace(R.id.innerFragment, snigerFrag);
+                            transaction.replace(R.id.innerLinear, snigerFrag);
                             transaction.commit();
                         };
 
@@ -104,7 +119,7 @@ public class SkillFragment extends Fragment {
 
                             FragmentTransaction transaction = fm.beginTransaction();
                             Fragment videnFrag = new VidenFragment();
-                            transaction.replace(R.id.innerFragment, videnFrag);
+                            transaction.replace(R.id.innerLinear, videnFrag);
                             transaction.commit();
                         }
 
@@ -119,7 +134,7 @@ public class SkillFragment extends Fragment {
 
                             FragmentTransaction transaction = fm.beginTransaction();
                             Fragment alleFrag = new AlleFragment();
-                            transaction.replace(R.id.innerFragment, alleFrag);
+                            transaction.replace(R.id.innerLinear, alleFrag);
                             transaction.commit();
                         }
 
