@@ -12,4 +12,10 @@
     <color name="light_blue_A200">#FF40C4FF</color>
     <color name="light_blue_A400">#FF00B0FF</color>
     <color name="black_overlay">#66000000</color>
+    <color name="colorKamp">#FF9800</color>
+    <color name="colorSniger">#9C27B0</color>
+    <color name="colorViden">#2196F3</color>
+    <color name="colorAlle">#4CAF50</color>
+    <color name="colorTableLine1">#EEEEEE</color>
+    <color name="colorTableLine2">#CECECE</color>
 </resources>

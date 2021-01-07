@@ -1,23 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
-    tools:context=".ui.main.MainActivity">
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/text_home"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:background="@color/colorBackground"
+        tools:context=".ui.main.MainActivity">
+
+        <TextView
+            android:id="@+id/abilityTitleTV"
+            style="@style/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Evneoversigt"
+            android:textSize="24dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/abilityEPValueTV"
+            style="@style/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            android:text="5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/abilityEPTitle"
+            style="@style/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tilgængelige EP: "
+
+            app:layout_constraintEnd_toStartOf="@+id/abilityEPValueTV"
+            app:layout_constraintTop_toTopOf="@+id/abilityEPValueTV" />
+
+        <RadioGroup
+            android:id="@+id/abilityRadioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/abilityTitleTV">
+
+            <RadioButton
+                android:id="@+id/tab_kamp"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.70"
+                android:animateLayoutChanges="true"
+                android:background="@drawable/tab_kamp"
+                android:text="Kamp"
+                style="@style/text"
+                android:checked="true"
+                android:button="@android:color/transparent"
+                android:gravity="center"
+                android:elevation="10dp"
+                tools:layout_editor_absoluteX="122dp"
+                tools:layout_editor_absoluteY="154dp" />
+
+            <RadioButton
+                android:id="@+id/tab_sniger"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:text="Sniger"
+                android:button="@android:color/transparent"
+                style="@style/text"
+                android:animateLayoutChanges="true"
+                android:background="@drawable/tab_sniger"
+                android:gravity="center"
+                tools:layout_editor_absoluteX="122dp"
+                tools:layout_editor_absoluteY="154dp" />
+
+            <RadioButton
+                android:id="@+id/tab_viden"
+                android:text="Viden"
+                style="@style/text"
+                android:layout_width="0dp"
+                android:button="@android:color/transparent"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:animateLayoutChanges="true"
+                android:background="@drawable/tab_viden"
+                android:gravity="center"
+                tools:layout_editor_absoluteX="122dp"
+                tools:layout_editor_absoluteY="154dp" />
+
+            <RadioButton
+                android:id="@+id/tab_alle"
+                android:text="Andre"
+                style="@style/text"
+                android:button="@android:color/transparent"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:animateLayoutChanges="true"
+                android:gravity="center"
+                android:background="@drawable/tab_alle"
+                tools:layout_editor_absoluteX="122dp"
+                tools:layout_editor_absoluteY="154dp" />
+
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/testRefreshingBtn"
+            android:layout_width="73dp"
+            android:layout_height="35dp"
+            android:text="Button"
+            app:layout_constraintBottom_toTopOf="@+id/abilityRadioGroup"
+            app:layout_constraintEnd_toStartOf="@+id/abilityEPTitle"
+            app:layout_constraintStart_toEndOf="@+id/abilityTitleTV"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout android:id="@+id/innerLinear"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/abilityRadioGroup"
+        android:orientation="horizontal"/>
+</LinearLayout>

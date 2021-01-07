@@ -34,7 +34,10 @@ public class AbilityDAO {
         try {
             Call<List<AbilityDTO>> call = service.getByCharacterID(characterID);
             respList = call.execute();
-            return new Result.Success<List<AbilityDTO>>(respList.body());
+            if (respList.code() == 200) {
+                return new Result.Success<List<AbilityDTO>>(respList.body());
+            }
+            return new Result.Error(new IOException("Error connection to database"));
         } catch (IOException e){
             e.printStackTrace();
             return new Result.Error(new IOException("Error connection to database"));
@@ -44,6 +47,17 @@ public class AbilityDAO {
     public Result<List<AbilityDTO>> getAbilitiesByRaceID(int raceID){
         try {
             Call<List<AbilityDTO>> call = service.getByRaceID(raceID);
+            respList = call.execute();
+            return new Result.Success<List<AbilityDTO>>(respList.body());
+        } catch (IOException e){
+            e.printStackTrace();
+            return new Result.Error(new IOException("Error connection to database"));
+        }
+    }
+
+    public Result<List<AbilityDTO>> getAbilitiesByType(String type){
+        try {
+            Call<List<AbilityDTO>> call = service.getByType(type);
             respList = call.execute();
             return new Result.Success<List<AbilityDTO>>(respList.body());
         } catch (IOException e){
@@ -85,6 +99,9 @@ public class AbilityDAO {
 
         @GET("/ability/byID/{abilityID}")
         Call<AbilityDTO> getByID(@Path(value = "abilityID") int abilityID);
+
+        @GET("/ability/byType/{type}")
+        Call<List<AbilityDTO>> getByType(@Path(value = "type") String type);
 
         @GET("ability/buy/{characterID}/{abilityID}")
         Call<AbilityDTO> buyAbility(@Path(value = "characterID") int characterID, @Path(value = "abilityID") int abilityID);

@@ -18,8 +18,8 @@ public class CharacterRepository { //Class for getting characters and saving the
     private InventoryDAO inventoryDAO;
     private CharacterDTO currentChar;
     private ArrayList<CharacterDTO> currentCharList;
-    private ArrayList<AbilityDTO> abilitiesList; //character id to their List of abilities
-    private ArrayList<InventoryDTO> inventoryList; //character id to their List of abilities
+    private ArrayList<AbilityDTO> abilitiesList; //current characters List of abilities
+    private ArrayList<InventoryDTO> inventoryList; //current characters List of inventory
     private boolean updateNeeded = true;
     private int userID = -1;
     private int characterID = -1;
@@ -44,6 +44,10 @@ public class CharacterRepository { //Class for getting characters and saving the
         return currentChar;
     }
 
+    public ArrayList<AbilityDTO> getCurrentAbilitiesList() {
+        return abilitiesList;
+    }
+
     public Result<List<CharacterDTO>> getCharactersByUserID(int userID){
         if (updateNeeded || userID != this.userID) {
             Result<List<CharacterDTO>> result;
@@ -66,27 +70,22 @@ public class CharacterRepository { //Class for getting characters and saving the
 
 
     public Result<CharacterDTO> getCharacterByID(int characterID){
-        if (updateNeeded || characterID != this.characterID) {
-            Result<CharacterDTO> result = characterDAO.getCharacterByID(characterID);
-            if (result instanceof Result.Success) {
-                CharacterDTO character = (CharacterDTO) ((Result.Success) result).getData();
-                currentChar = character;
-            }
-            return result;
+        Result<CharacterDTO> result = characterDAO.getCharacterByID(characterID);
+        getAbilitiesByCharacterID(characterID);
+        if (result instanceof Result.Success) {
+            CharacterDTO character = (CharacterDTO) ((Result.Success) result).getData();
+            currentChar = character;
         }
-        return new Result.Success<CharacterDTO>(this.currentChar);
+        return result;
     }
 
     public Result<List<AbilityDTO>> getAbilitiesByCharacterID(int characterID){
-        if (updateNeeded || characterID != this.characterID) {
-            Result<List<AbilityDTO>> result = abilityDAO.getAbilitiesByCharacterID(characterID);
-            if (result instanceof Result.Success) {
-                ArrayList<AbilityDTO> abilities = (ArrayList<AbilityDTO>) ((Result.Success) result).getData();
-                abilitiesList = abilities;
-            }
-            return result;
+        Result<List<AbilityDTO>> result = abilityDAO.getAbilitiesByCharacterID(characterID);
+        if (result instanceof Result.Success) {
+            ArrayList<AbilityDTO> abilities = (ArrayList<AbilityDTO>) ((Result.Success) result).getData();
+            abilitiesList = abilities;
         }
-        return new Result.Success<List<AbilityDTO>>(this.abilitiesList);
+        return result;
     }
 
     public Result<CharacterDTO> createCharacter(CharacterDTO dto){
