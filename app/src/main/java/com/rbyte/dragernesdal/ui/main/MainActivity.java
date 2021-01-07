@@ -56,7 +56,8 @@ public class MainActivity extends AppCompatActivity {
         // menu should be considered as top level destinations.
         if (!isAdmin) {
             mAppBarConfiguration = new AppBarConfiguration.Builder(
-                    R.id.nav_home, R.id.nav_char_skill, R.id.nav_char_magic, R.id.nav_char_inventory, R.id.nav_char_background, R.id.nav_char_select, R.id.nav_rules, R.id.nav_event, R.id.nav_createCharacterFragment, R.id.nav_chooseRaceFragment, R.id.nav_admin)
+                    R.id.nav_home, R.id.nav_char_skill, R.id.nav_char_magic, R.id.nav_char_inventory, R.id.nav_char_background, R.id.nav_char_select,
+                    R.id.nav_rules, R.id.nav_event, R.id.nav_createCharacterFragment, R.id.nav_chooseRaceFragment, R.id.nav_admin)
                     .setDrawerLayout(drawer)
                     .build();
         } else {
