@@ -63,7 +63,8 @@ public class EditEventFragment extends Fragment {
                     SimpleDateFormat dom = new SimpleDateFormat("E: dd-MM-yyyy");
                     ft.setTimeZone(TimeZone.getTimeZone("CET-1"));
                     dom.setTimeZone(TimeZone.getTimeZone("CET-1"));
-                    eventCards.add(new EventCard(dom.format(n.getStartDate()), n.getInfo(), "Klokken: " + ft.format(n.getStartDate()))); //TODO: Tjek om man er tilmeldt eventet
+                    eventCards.add(new EventCard(dom.format(n.getStartDate()), n.getInfo(),
+                            "Klokken: " + ft.format(n.getStartDate()),ft.format(n.getEndDate()),n.getAddress())); //TODO: Tjek om man er tilmeldt eventet
                 });
                 eventAdapter.notifyDataSetChanged();
             }
@@ -83,7 +84,7 @@ public class EditEventFragment extends Fragment {
 
     class EventViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
-        TextView date, info, time, attending;
+        TextView date, info, time, attending, address;
 
         public EventViewHolder(View eventViews) {
             super(eventViews);
@@ -92,6 +93,7 @@ public class EditEventFragment extends Fragment {
             info = eventViews.findViewById(R.id.textEventInfo);
             time = eventViews.findViewById(R.id.textTime);
             attending = eventViews.findViewById(R.id.textAttending);
+            address = eventViews.findViewById(R.id.textAddress);
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -119,7 +121,8 @@ public class EditEventFragment extends Fragment {
         public void onBindViewHolder(EventViewHolder vh, int position) {
             vh.date.setText(eventCards.get(position).getDate());
             vh.info.setText(eventCards.get(position).getInfo());
-            vh.time.setText(eventCards.get(position).getTime());
+            vh.time.setText(eventCards.get(position).getStartTime()+"-"+eventCards.get(position).getEndTime());
+            vh.address.setText("Addresse: "+eventCards.get(position).getAddress());
             vh.attending.setVisibility(View.INVISIBLE);
         }
     }
@@ -127,13 +130,17 @@ public class EditEventFragment extends Fragment {
     private class EventCard {
         private String date = "";
         private String info = "";
-        private String time = "";
+        private String startTime = "";
+        private String endTime = "";
         private Boolean attending = false;
+        private String address = "";
 
-        public EventCard(String date, String info, String time) {
+        public EventCard(String date, String info, String startTime, String endTime, String address) {
             this.date = date;
             this.info = info;
-            this.time = time;
+            this.startTime = startTime;
+            this.endTime = endTime;
+            this.address = address;
         }
 
         public EventCard() {
@@ -156,16 +163,32 @@ public class EditEventFragment extends Fragment {
             this.info = info;
         }
 
-        public String getTime() {
-            return time;
+        public String getStartTime() {
+            return startTime;
         }
 
-        public void setTime(String time) {
-            this.time = time;
+        public void setStartTime(String startTime) {
+            this.startTime = startTime;
         }
 
         public Boolean getAttending() {
             return attending;
+        }
+
+        public String getEndTime() {
+            return endTime;
+        }
+
+        public void setEndTime(String endTime) {
+            this.endTime = endTime;
+        }
+
+        public String getAddress() {
+            return address;
+        }
+
+        public void setAddress(String address) {
+            this.address = address;
         }
 
         public void setAttending(Boolean attending) {
@@ -173,8 +196,8 @@ public class EditEventFragment extends Fragment {
         }
 
         @Override
-        public String toString() {
-            return date + "\n" + info + "\n" + time + "\n" + attending;
+        public String toString(){
+            return date+"\n"+info+"\n"+ startTime +"\n"+attending;
         }
     }
 }
