@@ -67,6 +67,7 @@
     <string name="event_info">Event Info</string>
     <string name="currentEventDate">01/01/2021</string>
     <string name="currentEventInfo">Hus med by</string>
+    <string name="currentEventAddress">Addresse: Vejnavn 10, Originalby 1234</string>
     <string name="textTime">Kl. 13:00</string>
     <string name="textAttending">Du er tilmeldt</string>
     <string name="dummy_button">Dummy Button</string>

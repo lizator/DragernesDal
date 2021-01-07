@@ -2,14 +2,10 @@ package com.rbyte.dragernesdal.ui.event;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.EventLog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CalendarView;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
@@ -17,21 +13,16 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rbyte.dragernesdal.R;
-import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
 import com.rbyte.dragernesdal.data.event.model.AttendingDTO;
 import com.rbyte.dragernesdal.data.event.model.EventDTO;
-import com.rbyte.dragernesdal.ui.character.create.ChooseRaceFragment;
 import com.rbyte.dragernesdal.ui.home.HomeFragment;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +61,8 @@ public class EventFragment extends Fragment {
                     SimpleDateFormat dom = new SimpleDateFormat("E: dd-MM-yyyy");
                     ft.setTimeZone(TimeZone.getTimeZone("CET-1"));
                     dom.setTimeZone(TimeZone.getTimeZone("CET-1"));
-                    eventCards.add(new EventCard(dom.format(n.getStartDate()), n.getInfo(), "Klokken: " + ft.format(n.getStartDate()))); //TODO: Tjek om man er tilmeldt eventet
+                    eventCards.add(new EventCard(dom.format(n.getStartDate()), n.getInfo(),
+                            "Klokken: " + ft.format(n.getStartDate()),ft.format(n.getEndDate()),n.getAddress())); //TODO: Tjek om man er tilmeldt eventet
                 });
                 eventAdapter.notifyDataSetChanged();
             }
@@ -103,7 +95,7 @@ public class EventFragment extends Fragment {
 
     class EventViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
-        TextView date, info, time, attending;
+        TextView date, info, time, attending, address;
 
         public EventViewHolder(View eventViews) {
             super(eventViews);
@@ -112,6 +104,7 @@ public class EventFragment extends Fragment {
             info = eventViews.findViewById(R.id.textEventInfo);
             time = eventViews.findViewById(R.id.textTime);
             attending = eventViews.findViewById(R.id.textAttending);
+            address = eventViews.findViewById(R.id.textAddress);
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -149,7 +142,8 @@ public class EventFragment extends Fragment {
         public void onBindViewHolder(EventViewHolder vh, int position) {
             vh.date.setText(eventCards.get(position).getDate());
             vh.info.setText(eventCards.get(position).getInfo());
-            vh.time.setText(eventCards.get(position).getTime());
+            vh.time.setText(eventCards.get(position).getStartTime()+"-"+eventCards.get(position).getEndTime());
+            vh.address.setText("Addresse: "+eventCards.get(position).getAddress());
             vh.attending.setText(eventCards.get(position).getAttending() ? "Deltager" : "Deltager ikke");
         }
 
@@ -158,13 +152,17 @@ public class EventFragment extends Fragment {
     private class EventCard {
         private String date = "";
         private String info = "";
-        private String time = "";
+        private String startTime = "";
+        private String endTime = "";
         private Boolean attending = false;
+        private String address = "";
 
-        public EventCard(String date, String info, String time) {
+        public EventCard(String date, String info, String startTime, String endTime, String address) {
             this.date = date;
             this.info = info;
-            this.time = time;
+            this.startTime = startTime;
+            this.endTime = endTime;
+            this.address = address;
         }
 
         public EventCard() {
@@ -187,16 +185,32 @@ public class EventFragment extends Fragment {
             this.info = info;
         }
 
-        public String getTime() {
-            return time;
+        public String getStartTime() {
+            return startTime;
         }
 
-        public void setTime(String time) {
-            this.time = time;
+        public void setStartTime(String startTime) {
+            this.startTime = startTime;
         }
 
         public Boolean getAttending() {
             return attending;
+        }
+
+        public String getEndTime() {
+            return endTime;
+        }
+
+        public void setEndTime(String endTime) {
+            this.endTime = endTime;
+        }
+
+        public String getAddress() {
+            return address;
+        }
+
+        public void setAddress(String address) {
+            this.address = address;
         }
 
         public void setAttending(Boolean attending) {
@@ -205,7 +219,7 @@ public class EventFragment extends Fragment {
 
         @Override
         public String toString(){
-            return date+"\n"+info+"\n"+time+"\n"+attending;
+            return date+"\n"+info+"\n"+ startTime +"\n"+attending;
         }
     }
 }
