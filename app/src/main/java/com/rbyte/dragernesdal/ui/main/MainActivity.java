@@ -17,15 +17,9 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.rbyte.dragernesdal.R;
 import com.rbyte.dragernesdal.data.main.MainDAO;
-import com.rbyte.dragernesdal.data.Result;
-import com.rbyte.dragernesdal.data.main.model.MainDTO;
-import com.rbyte.dragernesdal.ui.character.select.SelectViewModel;
-import com.rbyte.dragernesdal.ui.home.HomeViewModel;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.HashMap;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
@@ -67,7 +61,10 @@ public class MainActivity extends AppCompatActivity {
                     .build();
         } else {
             mAppBarConfiguration = new AppBarConfiguration.Builder(
-                    R.id.nav_home, R.id.nav_char_skill, R.id.nav_char_magic, R.id.nav_char_inventory, R.id.nav_char_background, R.id.nav_char_select, R.id.nav_rules, R.id.nav_event, R.id.nav_createCharacterFragment, R.id.nav_chooseRaceFragment, R.id.nav_admin, R.id.nav_admin_event_create)
+                    R.id.nav_home, R.id.nav_char_skill, R.id.nav_char_magic, R.id.nav_char_inventory, R.id.nav_char_background,
+                    R.id.nav_char_select, R.id.nav_rules, R.id.nav_event, R.id.nav_createCharacterFragment, R.id.nav_chooseRaceFragment,
+                    R.id.nav_admin, R.id.nav_admin_event_create, R.id.nav_admin_event_edit, R.id.nav_admin_checkout, R.id.nav_admin_user_edit,
+                    R.id.nav_admin_skill_create, R.id.nav_admin_skill_edit, R.id.nav_admin_race_create, R.id.nav_admin_race_edit)
                     .setDrawerLayout(drawer)
                     .build();
         }

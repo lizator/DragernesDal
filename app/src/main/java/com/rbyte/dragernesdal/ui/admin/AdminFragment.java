@@ -68,40 +68,47 @@ public class AdminFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
+        NavController navController = Navigation.findNavController(root2);
         switch (v.getId()){
             case R.id.button_create_skill:
                 clickedOnToast("Opret evne");
                 Log.d("AdminView","Clicked on create skill");
+                navController.navigate(R.id.nav_admin_skill_create);
                 break;
             case R.id.button_edit_skill:
                 clickedOnToast("Rediger evne");
                 Log.d("AdminView","Clicked on edit skill");
+                navController.navigate(R.id.nav_admin_skill_edit);
                 break;
             case R.id.button_create_race:
                 clickedOnToast("Opret race");
                 Log.d("AdminView","Clicked on create race");
+                navController.navigate(R.id.nav_admin_race_create);
                 break;
             case R.id.button_edit_race:
                 clickedOnToast("Rediger race");
                 Log.d("AdminView","Clicked on edit race");
+                navController.navigate(R.id.nav_admin_race_edit);
                 break;
             case R.id.button_create_event:
                 clickedOnToast("Opret event");
                 Log.d("AdminView","Clicked on create event");
-                NavController navController = Navigation.findNavController(root2);
                 navController.navigate(R.id.nav_admin_event_create);
                 break;
             case R.id.button_edit_event:
                 clickedOnToast("Rediger event");
                 Log.d("AdminView","Clicked on edit event");
+                navController.navigate(R.id.nav_admin_event_edit);
                 break;
             case R.id.button_checkout:
                 clickedOnToast("Check ud");
                 Log.d("AdminView","Clicked on check out");
+                navController.navigate(R.id.nav_admin_checkout);
                 break;
             case R.id.button_edit_user:
                 clickedOnToast("Rediger bruger");
                 Log.d("AdminView","Clicked on edit user");
+                navController.navigate(R.id.nav_admin_user_edit);
                 break;
         }
     }
