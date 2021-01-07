@@ -44,14 +44,18 @@ public class AlleFragment extends Fragment {
     private CharacterRepository charRepo;
     private ArrayList<AbilityDTO> abilityList = new ArrayList<>();
     private ArrayList<AbilityDTO> raceAbilityList = new ArrayList<>();
+    private ArrayList<AbilityDTO> otherAbilityList = new ArrayList<>();
     private RecyclerView recyclerView;
     private RecyclerView raceRecyclerView;
+    private RecyclerView otherRecyclerView;
     private AbilityAdapter abilityAdapter = new AbilityAdapter();
     private RaceAbilityAdapter raceAbilityAdapter = new RaceAbilityAdapter();
+    private OtherAbilityAdapter otherAbilityAdapter = new OtherAbilityAdapter();
     private ArrayList<Integer> currentAbilityIDs = new ArrayList<>();
     private PopupHandler popHandler;
     private Handler uiThread = new Handler();
     private View root2;
+    private String[] normalTypes = new String[]{"Kamp", "Viden", "Sniger", "Race"};
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -71,7 +75,21 @@ public class AlleFragment extends Fragment {
 
         for (AbilityDTO dto : charRepo.getCurrentAbilitiesList()){
             currentAbilityIDs.add(dto.getId());
+            boolean special = true;
+            for (String type : normalTypes){
+                if (dto.getType().equals(type)){
+                    special = false;
+                    break;
+                }
+            }
+            if (special){
+                otherAbilityList.add(dto);
+            }
         }
+
+        otherRecyclerView = (RecyclerView) root.findViewById(R.id.otherRecycler);
+        otherRecyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+        otherRecyclerView.setAdapter(otherAbilityAdapter);
 
         skillViewModel.getAlleAbilities().observe(getViewLifecycleOwner(), new Observer<ArrayList<AbilityDTO>>() {
             @Override
@@ -199,6 +217,24 @@ public class AlleFragment extends Fragment {
                                                 charRepo.getCharacterByID(charRepo.getCurrentChar().getIdcharacter());
                                                 uiThread.post(() -> {
                                                     if (command != "auto") { //new popup needed
+                                                        switch (command){
+                                                            case "HÅNDVÆRK":
+                                                                popHandler.getCraftsAlert(root2, getContext(), charRepo.getCurrentChar().getIdcharacter(), uiThread).show();
+                                                                break;
+                                                            case "3EP":
+                                                                break;
+                                                            case "4EP":
+                                                                break;
+                                                            case "EVNE":
+                                                                break;
+                                                            case "EKSTRAMAGI":
+                                                                break;
+                                                            case "KRYS2EP":
+                                                                break;
+                                                            case "STARTEVNE":
+                                                                break;
+                                                        }
+
                                                         //TODO: create more popups
                                                     }
                                                     skillViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
@@ -306,6 +342,31 @@ public class AlleFragment extends Fragment {
                     vh.buybtn.setVisibility(View.GONE);
                 }
             }
+
+        }
+    }
+
+    private class OtherAbilityAdapter extends RecyclerView.Adapter<AbilityViewHolder> {
+        @Override
+        public int getItemCount() {
+            if (otherAbilityList != null) return otherAbilityList.size();
+            return 0;
+        }
+
+        @Override
+        public AbilityViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View listElementViews = getLayoutInflater().inflate(R.layout.recycler_skill_line, parent, false);
+            AbilityViewHolder vh = new AbilityViewHolder(listElementViews);
+            return vh;
+        }
+
+        @Override
+        public void onBindViewHolder(AbilityViewHolder vh, int position) {
+            vh.name.setText(otherAbilityList.get(position).getName());
+            vh.cost.setText(otherAbilityList.get(position).getCost() + "");
+            if (position % 2 == (otherAbilityList.size() + 1) % 2) vh.view.setBackgroundColor(getResources().getColor(R.color.colorTableLine1));
+            vh.buybtn.setVisibility(View.GONE);
+            vh.checkimg.setVisibility(View.VISIBLE);
 
         }
     }

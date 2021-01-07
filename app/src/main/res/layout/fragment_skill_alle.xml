@@ -16,10 +16,17 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/otherRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/back_table"/>
+
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/raceRecycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/back_table"/>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/alleRecycler"

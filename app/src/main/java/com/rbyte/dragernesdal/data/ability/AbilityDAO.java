@@ -89,6 +89,17 @@ public class AbilityDAO {
     }
 
 
+    public Result<AbilityDTO> addCraft(int characterID, String craft){
+        try {
+            Call<AbilityDTO> call = service.addCraft(characterID, craft);
+            resp = call.execute();
+            return new Result.Success<AbilityDTO>(resp.body());
+        } catch (IOException e){
+            e.printStackTrace();
+            return new Result.Error(new IOException("Error connection to database"));
+        }
+    }
+
 
     public interface AbilityCallService {
         @GET("/ability/byCharacterID/{characterID}")
@@ -105,5 +116,8 @@ public class AbilityDAO {
 
         @GET("ability/buy/{characterID}/{abilityID}")
         Call<AbilityDTO> buyAbility(@Path(value = "characterID") int characterID, @Path(value = "abilityID") int abilityID);
+
+        @GET("ability/craft/{characterID}/{craft}")
+        Call<AbilityDTO> addCraft(@Path(value = "characterID") int characterID, @Path(value = "craft") String craft);
     }
 }

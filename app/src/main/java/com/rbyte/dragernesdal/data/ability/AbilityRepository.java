@@ -80,13 +80,14 @@ public class AbilityRepository {
                     confirmBuy(characterID, 90); //Regen
                     break;
                 case "HÅNDVÆRK": //should return a string to init a popup
-                    //TODO: make popup with Håndværk choice
-                    break;
+                    return "HÅNDVÆRK";
                 case "VALG": //should return a string to init a popup
-                    //TODO: make popup with appropriate choice
+                    return dto.getCommand().split(",")[1];
                 case "KRYS3EP":
+                    return "KRYS3EP";
                     //TODO: make get both start abilities of races
                 case "KRYS4EP":
+                    return "KRYS4EP";
                     //TODO: make get both 2ep abilities of races
                 default: // NULL or new
                     confirmBuy(characterID, abilityID);
@@ -99,6 +100,10 @@ public class AbilityRepository {
 
     public void confirmBuy(int characterID, int abilityID){
         Result res = abilityDAO.buyAbility(characterID, abilityID);
+    }
 
+    public Result<AbilityDTO> craftBuy(int characterID, String craft){
+        Result res = abilityDAO.addCraft(characterID, craft);
+        return res;
     }
 }
