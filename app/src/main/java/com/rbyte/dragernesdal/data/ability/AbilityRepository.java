@@ -98,12 +98,23 @@ public class AbilityRepository {
         return "auto";
     }
 
-    public void confirmBuy(int characterID, int abilityID){
+    public Result confirmBuy(int characterID, int abilityID){
         Result res = abilityDAO.buyAbility(characterID, abilityID);
+        return res;
+    }
+
+    public Result<List<AbilityDTO>> confirmBuyWithFree(int characterID, int abilityID, int freeAbilityID){
+        Result res = abilityDAO.buyAndGetFreeAbility(characterID, abilityID, freeAbilityID);
+        return res;
     }
 
     public Result<AbilityDTO> craftBuy(int characterID, String craft){
         Result res = abilityDAO.addCraft(characterID, craft);
+        return res;
+    }
+
+    public Result<AbilityDTO> freeGet(int characterID, int freeAbilityID){
+        Result res = abilityDAO.getFreeAbility(characterID,freeAbilityID);
         return res;
     }
 }

@@ -34,10 +34,8 @@ public class AbilityDAO {
         try {
             Call<List<AbilityDTO>> call = service.getByCharacterID(characterID);
             respList = call.execute();
-            if (respList.code() == 200) {
-                return new Result.Success<List<AbilityDTO>>(respList.body());
-            }
-            return new Result.Error(new IOException("Error connection to database"));
+            if (respList.code() == 200) return new Result.Success<List<AbilityDTO>>(respList.body());
+            return new Result.Error(new IOException(respList.message()));
         } catch (IOException e){
             e.printStackTrace();
             return new Result.Error(new IOException("Error connection to database"));
@@ -48,7 +46,8 @@ public class AbilityDAO {
         try {
             Call<List<AbilityDTO>> call = service.getByRaceID(raceID);
             respList = call.execute();
-            return new Result.Success<List<AbilityDTO>>(respList.body());
+            if (respList.code() == 200) return new Result.Success<List<AbilityDTO>>(respList.body());
+            return new Result.Error(new IOException(respList.message()));
         } catch (IOException e){
             e.printStackTrace();
             return new Result.Error(new IOException("Error connection to database"));
@@ -59,7 +58,8 @@ public class AbilityDAO {
         try {
             Call<List<AbilityDTO>> call = service.getByType(type);
             respList = call.execute();
-            return new Result.Success<List<AbilityDTO>>(respList.body());
+            if (respList.code() == 200) return new Result.Success<List<AbilityDTO>>(respList.body());
+            return new Result.Error(new IOException(respList.message()));
         } catch (IOException e){
             e.printStackTrace();
             return new Result.Error(new IOException("Error connection to database"));
@@ -70,7 +70,8 @@ public class AbilityDAO {
         try {
             Call<AbilityDTO> call = service.getByID(abilityID);
             resp = call.execute();
-            return new Result.Success<AbilityDTO>(resp.body());
+            if (resp.code() == 200) return new Result.Success<AbilityDTO>(resp.body());
+            return new Result.Error(new IOException(resp.message()));
         } catch (IOException e){
             e.printStackTrace();
             return new Result.Error(new IOException("Error connection to database"));
@@ -81,7 +82,32 @@ public class AbilityDAO {
         try {
             Call<AbilityDTO> call = service.buyAbility(characterID, abilityID);
             resp = call.execute();
-            return new Result.Success<AbilityDTO>(resp.body());
+            if (resp.code() == 200) return new Result.Success<AbilityDTO>(resp.body());
+            return new Result.Error(new IOException(resp.message()));
+        } catch (IOException e){
+            e.printStackTrace();
+            return new Result.Error(new IOException("Error connection to database"));
+        }
+    }
+
+    public Result<AbilityDTO> getFreeAbility(int characterID, int abilityID){
+        try {
+            Call<AbilityDTO> call = service.getFreeAbility(characterID, abilityID);
+            resp = call.execute();
+            if (resp.code() == 200) return new Result.Success<AbilityDTO>(resp.body());
+            return new Result.Error(new IOException(resp.message()));
+        } catch (IOException e){
+            e.printStackTrace();
+            return new Result.Error(new IOException("Error connection to database"));
+        }
+    }
+
+    public Result<AbilityDTO> buyAndGetFreeAbility(int characterID, int abilityID, int freeID){
+        try {
+            Call<List<AbilityDTO>> call = service.buyAndGetFreeAbility(characterID, abilityID, freeID);
+            respList = call.execute();
+            if (respList.code() == 200) return new Result.Success<List<AbilityDTO>>(respList.body());
+            return new Result.Error(new IOException(resp.message()));
         } catch (IOException e){
             e.printStackTrace();
             return new Result.Error(new IOException("Error connection to database"));
@@ -93,7 +119,8 @@ public class AbilityDAO {
         try {
             Call<AbilityDTO> call = service.addCraft(characterID, craft);
             resp = call.execute();
-            return new Result.Success<AbilityDTO>(resp.body());
+            if (resp.code() == 200) return new Result.Success<AbilityDTO>(resp.body());
+            return new Result.Error(new IOException(resp.message()));
         } catch (IOException e){
             e.printStackTrace();
             return new Result.Error(new IOException("Error connection to database"));
@@ -114,10 +141,16 @@ public class AbilityDAO {
         @GET("/ability/byType/{type}")
         Call<List<AbilityDTO>> getByType(@Path(value = "type") String type);
 
-        @GET("ability/buy/{characterID}/{abilityID}")
+        @GET("/ability/buy/{characterID}/{abilityID}")
         Call<AbilityDTO> buyAbility(@Path(value = "characterID") int characterID, @Path(value = "abilityID") int abilityID);
 
-        @GET("ability/craft/{characterID}/{craft}")
+        @GET("/ability/getfree/{characterID}/{abilityID}")
+        Call<AbilityDTO> getFreeAbility(@Path(value = "characterID") int characterID, @Path(value = "abilityID") int abilityID);
+
+        @GET("/ability/buyAndGetFree/{characterID}/{abilityID}/{freeAbilityID}")
+        Call<List<AbilityDTO>> buyAndGetFreeAbility(@Path(value = "characterID") int characterID, @Path(value = "abilityID") int abilityID, @Path(value = "freeAbilityID") int freeAbilityID);
+
+        @GET("/ability/craft/{characterID}/{craft}")
         Call<AbilityDTO> addCraft(@Path(value = "characterID") int characterID, @Path(value = "craft") String craft);
     }
 }

@@ -65,6 +65,10 @@ public class AlleFragment extends Fragment {
         charRepo = CharacterRepository.getInstance();
         popHandler = new PopupHandler(getContext());
 
+        if (skillViewModel.getRaceAbilities().getValue() == null || skillViewModel.getRaceAbilities().getValue().size() == 0){
+            skillViewModel.setRaceAbilities(charRepo.getCurrentChar().getIdrace());
+        }
+
         recyclerView = (RecyclerView) root.findViewById(R.id.alleRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
         recyclerView.setAdapter(abilityAdapter);
@@ -219,11 +223,13 @@ public class AlleFragment extends Fragment {
                                                     if (command != "auto") { //new popup needed
                                                         switch (command){
                                                             case "HÅNDVÆRK":
-                                                                popHandler.getCraftsAlert(root2, getContext(), charRepo.getCurrentChar().getIdcharacter(), uiThread).show();
+                                                                popHandler.getCraftsAlert(root2, getContext(), uiThread).show();
                                                                 break;
                                                             case "3EP":
+                                                                popHandler.get3EPChoiceAlert(root2, getContext(), uiThread, currentAbilityIDs).show();
                                                                 break;
                                                             case "4EP":
+                                                                popHandler.get4EPChoiceAlert(root2, getContext(), uiThread, currentAbilityIDs).show();
                                                                 break;
                                                             case "EVNE":
                                                                 break;
@@ -231,7 +237,7 @@ public class AlleFragment extends Fragment {
                                                                 break;
                                                             case "KRYS2EP":
                                                                 break;
-                                                            case "STARTEVNE":
+                                                            case "STARTEVNE": //only happens in create character and should be handled there
                                                                 break;
                                                         }
 
@@ -321,6 +327,26 @@ public class AlleFragment extends Fragment {
                                                 charRepo.getCharacterByID(charRepo.getCurrentChar().getIdcharacter());
                                                 uiThread.post(() -> {
                                                     if (command != "auto") { //new popup needed
+                                                        switch (command){
+                                                            case "HÅNDVÆRK":
+                                                                popHandler.getCraftsAlert(root2, getContext(), uiThread).show();
+                                                                break;
+                                                            case "3EP":
+                                                                popHandler.get3EPChoiceAlert(root2, getContext(), uiThread, currentAbilityIDs).show();
+                                                                break;
+                                                            case "4EP":
+                                                                popHandler.get4EPChoiceAlert(root2, getContext(), uiThread, currentAbilityIDs).show();
+                                                                break;
+                                                            case "EVNE":
+                                                                break;
+                                                            case "EKSTRAMAGI":
+                                                                break;
+                                                            case "KRYS2EP":
+                                                                break;
+                                                            case "STARTEVNE": //only happens in create character and should be handled there
+                                                                break;
+                                                        }
+
                                                         //TODO: create more popups
                                                     }
                                                     skillViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
