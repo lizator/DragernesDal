@@ -14,7 +14,7 @@
         android:id="@+id/nav_char_skill"
         android:name="com.rbyte.dragernesdal.ui.character.skill.SkillFragment"
         android:label="Evner"
-        android:layout="@layout/fragment_character_skill" >
+        android:layout="@layout/fragment_character_skill">
         <action
             android:id="@+id/action_nav_char_skill_to_nav_home"
             app:destination="@id/nav_home" />
@@ -23,7 +23,7 @@
         android:id="@+id/nav_char_magic"
         android:name="com.rbyte.dragernesdal.ui.character.magic.MagicFragment"
         android:label="Magi"
-        android:layout="@layout/fragment_character_magic" >
+        android:layout="@layout/fragment_character_magic">
         <action
             android:id="@+id/action_nav_char_magic_to_nav_home"
             app:destination="@id/nav_home" />
@@ -32,7 +32,7 @@
         android:id="@+id/nav_char_inventory"
         android:name="com.rbyte.dragernesdal.ui.character.inventory.InventoryFragment"
         android:label="Inventar"
-        android:layout="@layout/fragment_character_inventory" >
+        android:layout="@layout/fragment_character_inventory">
         <action
             android:id="@+id/action_nav_char_inventory_to_nav_home"
             app:destination="@id/nav_home" />
@@ -41,7 +41,7 @@
         android:id="@+id/nav_char_background"
         android:name="com.rbyte.dragernesdal.ui.character.background.BackgroundFragment"
         android:label="Baggrund"
-        android:layout="@layout/fragment_character_background" >
+        android:layout="@layout/fragment_character_background">
         <action
             android:id="@+id/action_nav_char_background_to_nav_home"
             app:destination="@id/nav_home" />
@@ -50,7 +50,7 @@
         android:id="@+id/nav_char_select"
         android:name="com.rbyte.dragernesdal.ui.character.select.SelectFragment"
         android:label="Vælg Karakter"
-        android:layout="@layout/fragment_character_select" >
+        android:layout="@layout/fragment_character_select">
         <action
             android:id="@+id/action_nav_char_select_to_nav_home"
             app:destination="@id/nav_home" />
@@ -59,7 +59,7 @@
         android:id="@+id/nav_rules"
         android:name="com.rbyte.dragernesdal.ui.rules.RulesFragment"
         android:label="Regelbog"
-        android:layout="@layout/fragment_rules" >
+        android:layout="@layout/fragment_rules">
         <action
             android:id="@+id/action_nav_rules_to_nav_home"
             app:destination="@id/nav_home" />
@@ -68,7 +68,7 @@
         android:id="@+id/nav_event"
         android:name="com.rbyte.dragernesdal.ui.event.EventFragment"
         android:label="Event"
-        android:layout="@layout/fragment_event" >
+        android:layout="@layout/fragment_event">
         <action
             android:id="@+id/action_nav_event_to_nav_home"
             app:destination="@id/nav_home" />
@@ -80,7 +80,7 @@
         <action
             android:id="@+id/action_chooseRaceFragment_to_nav_char_select"
             app:destination="@id/nav_char_select"
-            app:popUpTo="@id/nav_char_select"/>
+            app:popUpTo="@id/nav_char_select" />
     </fragment>
     <fragment
         android:id="@+id/nav_createCharacterFragment"
@@ -89,7 +89,86 @@
         <action
             android:id="@+id/action_createCharacterFragment_to_chooseRaceFragment"
             app:destination="@id/nav_chooseRaceFragment"
-            app:popUpTo="@id/nav_chooseRaceFragment"/>
+            app:popUpTo="@id/nav_chooseRaceFragment" />
     </fragment>
 
+    <fragment
+        android:id="@+id/nav_admin"
+        android:name="com.rbyte.dragernesdal.ui.admin.AdminFragment"
+        android:label="Admin">
+        <action
+            android:id="@+id/action_mobile_navigation_to_nav_home"
+            app:destination="@id/nav_home" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_admin_event_create"
+        android:name="com.rbyte.dragernesdal.ui.admin.event.CreateEventFragment"
+        android:label="Opret Event">
+        <action
+            android:id="@+id/action_mobile_navigation_to_nav_admin"
+            app:destination="@id/nav_admin" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_admin_event_edit"
+        android:name="com.rbyte.dragernesdal.ui.admin.event.EditEventFragment"
+        android:label="Rediger Event">
+        <action
+            android:id="@+id/action_mobile_navigation_to_nav_admin"
+            app:destination="@id/nav_admin" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_admin_race_create"
+        android:name="com.rbyte.dragernesdal.ui.admin.race.CreateRaceFragment"
+        android:label="Opret Race">
+        <action
+            android:id="@+id/action_mobile_navigation_to_nav_admin"
+            app:destination="@id/nav_admin" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_admin_race_edit"
+        android:name="com.rbyte.dragernesdal.ui.admin.race.EditRaceFragment"
+        android:label="Rediger Race">
+        <action
+            android:id="@+id/action_mobile_navigation_to_nav_admin"
+            app:destination="@id/nav_admin" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_admin_skill_create"
+        android:name="com.rbyte.dragernesdal.ui.admin.skill.CreateSkillFragment"
+        android:label="Opret Evne">
+        <action
+            android:id="@+id/action_mobile_navigation_to_nav_admin"
+            app:destination="@id/nav_admin" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_admin_skill_edit"
+        android:name="com.rbyte.dragernesdal.ui.admin.skill.EditSkillFragment"
+        android:label="Rediger Evne">
+        <action
+            android:id="@+id/action_mobile_navigation_to_nav_admin"
+            app:destination="@id/nav_admin" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_admin_checkout"
+        android:name="com.rbyte.dragernesdal.ui.admin.CheckOutFragment"
+        android:label="Check Ud">
+        <action
+            android:id="@+id/action_mobile_navigation_to_nav_admin"
+            app:destination="@id/nav_admin" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_admin_user_edit"
+        android:name="com.rbyte.dragernesdal.ui.admin.EditUserFragment"
+        android:label="Rediger Bruger">
+        <action
+            android:id="@+id/action_mobile_navigation_to_nav_admin"
+            app:destination="@id/nav_admin" />
+    </fragment>
 </navigation>

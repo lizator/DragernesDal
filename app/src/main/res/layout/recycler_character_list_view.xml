@@ -20,7 +20,7 @@
         android:foreground="?android:attr/selectableItemBackground">
 
         <TextView
-            android:id="@+id/characterName"
+            android:id="@+id/editText_Title"
             style="@style/text"
             android:textSize="20dp"
             android:layout_width="match_parent"

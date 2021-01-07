@@ -17,15 +17,9 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.rbyte.dragernesdal.R;
 import com.rbyte.dragernesdal.data.main.MainDAO;
-import com.rbyte.dragernesdal.data.Result;
-import com.rbyte.dragernesdal.data.main.model.MainDTO;
-import com.rbyte.dragernesdal.ui.character.select.SelectViewModel;
-import com.rbyte.dragernesdal.ui.home.HomeViewModel;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.HashMap;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
@@ -36,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private final static int UPDATE_TIMER = 500;
     public static final String USER_ID_SAVESPACE = "currUserIDSave";
+    private NavigationView navigationView;
+    private boolean isAdmin = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,24 +46,46 @@ public class MainActivity extends AppCompatActivity {
         TextView userEmail = headerView.findViewById(R.id.userEmail);
         username.setText(getIntent().getStringExtra("username"));
         userEmail.setText(getIntent().getStringExtra("email"));
-        Log.d("UserID",getIntent().getStringExtra("id"));
+        isAdmin = getIntent().getBooleanExtra("admin", false);
+        Log.d("UserID", getIntent().getStringExtra("id"));
         SharedPreferences prefs = getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt(USER_ID_SAVESPACE, Integer.parseInt(getIntent().getStringExtra("id")));
         editor.commit();
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home,R.id.nav_char_skill,R.id.nav_char_magic,R.id.nav_char_inventory,R.id.nav_char_background,R.id.nav_char_select,R.id.nav_rules,R.id.nav_event,R.id.nav_createCharacterFragment,R.id.nav_chooseRaceFragment)
-                .setDrawerLayout(drawer)
-                .build();
+        if (!isAdmin) {
+            mAppBarConfiguration = new AppBarConfiguration.Builder(
+                    R.id.nav_home, R.id.nav_char_skill, R.id.nav_char_magic, R.id.nav_char_inventory, R.id.nav_char_background, R.id.nav_char_select,
+                    R.id.nav_rules, R.id.nav_event, R.id.nav_createCharacterFragment, R.id.nav_chooseRaceFragment, R.id.nav_admin)
+                    .setDrawerLayout(drawer)
+                    .build();
+        } else {
+            mAppBarConfiguration = new AppBarConfiguration.Builder(
+                    R.id.nav_home, R.id.nav_char_skill, R.id.nav_char_magic, R.id.nav_char_inventory, R.id.nav_char_background,
+                    R.id.nav_char_select, R.id.nav_rules, R.id.nav_event, R.id.nav_createCharacterFragment, R.id.nav_chooseRaceFragment,
+                    R.id.nav_admin, R.id.nav_admin_event_create, R.id.nav_admin_event_edit, R.id.nav_admin_checkout, R.id.nav_admin_user_edit,
+                    R.id.nav_admin_skill_create, R.id.nav_admin_skill_edit, R.id.nav_admin_race_create, R.id.nav_admin_race_edit)
+                    .setDrawerLayout(drawer)
+                    .build();
+        }
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+        navigationView = findViewById(R.id.nav_view);
+        Menu nav_Menu = navigationView.getMenu();
+        nav_Menu.findItem(R.id.nav_admin).setVisible(false);
+        if (isAdmin) showAdmin();
         /*UpdaterThread updater = new UpdaterThread();
         updater.run();*/
 
 
+    }
+
+    private void showAdmin() {
+        navigationView = findViewById(R.id.nav_view);
+        Menu nav_Menu = navigationView.getMenu();
+        nav_Menu.findItem(R.id.nav_admin).setVisible(true);
     }
 
 
@@ -102,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+
     HashMap<String, String> tableTimes = new HashMap<>();
     MainDAO dao = new MainDAO();
 

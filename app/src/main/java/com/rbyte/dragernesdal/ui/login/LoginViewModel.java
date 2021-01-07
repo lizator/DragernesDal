@@ -40,7 +40,7 @@ public class LoginViewModel extends ViewModel {
 
         if (result instanceof Result.Success) {
             ProfileDTO data = ((Result.Success<ProfileDTO>) result).getData();
-            loginResult.postValue(new LoginResult(new LoggedInUserView(data.getFirstName() + " " + data.getLastName(), data.getEmail(), data.getPassHash(),data.getId())));
+            loginResult.postValue(new LoginResult(new LoggedInUserView(data.getFirstName() + " " + data.getLastName(), data.getEmail(), data.getPassHash(),data.getId(),data.isAdmin())));
         } else {
             loginResult.postValue(new LoginResult(R.string.login_failed));
         }

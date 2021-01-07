@@ -61,6 +61,7 @@ public class LoginActivity extends AppCompatActivity {
                     myIntent.putExtra("username",loginResult.getSuccess().getDisplayName());
                     myIntent.putExtra("email",loginResult.getSuccess().getEmail());
                     myIntent.putExtra("id",loginResult.getSuccess().getId()+"");
+                    myIntent.putExtra("admin",loginResult.getSuccess().getAdmin());
                     startActivity(myIntent);
                     finish();
                 }

@@ -71,4 +71,13 @@
     <string name="textAttending">Du er tilmeldt</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="admin">Admin</string>
+    <string name="opret_evne">Opret Evne</string>
+    <string name="rediger_evne">Rediger evne</string>
+    <string name="opret_race">Opret race</string>
+    <string name="opret_event">Opret event</string>
+    <string name="check_ud">Check ud</string>
+    <string name="rediger_bruger">Rediger bruger</string>
+    <string name="rediger_event">Rediger event</string>
+    <string name="rediger_race">Rediger race</string>
 </resources>
