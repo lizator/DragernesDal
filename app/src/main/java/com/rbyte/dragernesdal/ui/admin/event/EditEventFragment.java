@@ -98,7 +98,7 @@ public class EditEventFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     final int position = getAdapterPosition();
-
+                    //TODO: Rediger event
                 }
             });
         }
