@@ -13,7 +13,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.rbyte.dragernesdal.R;
-
+//TODO: HUSK ADMIN SKAL KUNNE GØRE ANDRE TIL ADMIN /caps :^)
 public class EditUserFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
