@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.RadioButton;
@@ -42,6 +43,11 @@ public class SkillFragment extends Fragment {
     RadioButton videnRadio;
     RadioButton alleRadio;
 
+    private KampFragment kampFrag;
+    private SnigerFragment snigerFrag;
+    private VidenFragment videnFrag;
+    private AlleFragment alleFrag;
+
     LayoutParams checkedParam = new LinearLayout.LayoutParams(
             LayoutParams.MATCH_PARENT,
             LayoutParams.MATCH_PARENT,
@@ -62,11 +68,6 @@ public class SkillFragment extends Fragment {
         skillViewModel.setRaceAbilities(charRepo.getCurrentChar().getIdrace());
 
         fm = getActivity().getSupportFragmentManager();
-        FragmentTransaction transaction = fm.beginTransaction();
-        Fragment kampFrag = new KampFragment();
-        transaction.replace(R.id.innerLinear, kampFrag);
-        transaction.commit();
-
 
         kampRadio = root.findViewById(R.id.tab_kamp);
         snigerRadio = root.findViewById(R.id.tab_sniger);
@@ -91,13 +92,6 @@ public class SkillFragment extends Fragment {
             }
         });
 
-        skillViewModel.getKampAbilities().observe(getViewLifecycleOwner(), new Observer<ArrayList<AbilityDTO>>() {
-            @Override
-            public void onChanged(ArrayList<AbilityDTO> abilityDTOS) {
-                switchFrag(state);
-            }
-        });
-
         skillViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
 
         TextView eptv = root.findViewById(R.id.abilityEPValueTV);
@@ -111,62 +105,29 @@ public class SkillFragment extends Fragment {
                     case R.id.tab_kamp:
                         if (state != 0) {
                             state = 0;
-                            kampRadio.setLayoutParams(checkedParam);
-                            snigerRadio.setLayoutParams(uncheckedParam);
-                            videnRadio.setLayoutParams(uncheckedParam);
-                            alleRadio.setLayoutParams(uncheckedParam);
-
-                            FragmentTransaction transaction = fm.beginTransaction();
-                            Fragment kampFrag = new KampFragment();
-                            transaction.replace(R.id.innerLinear, kampFrag);
-                            transaction.commit();
+                            switchFrag(state);
                         }
 
                         break;
                     case R.id.tab_sniger:
                         if (state != 1) {
                             state = 1;
-                            kampRadio.setLayoutParams(uncheckedParam);
-                            snigerRadio.setLayoutParams(checkedParam);
-                            videnRadio.setLayoutParams(uncheckedParam);
-                            alleRadio.setLayoutParams(uncheckedParam);
-
-                            FragmentTransaction transaction = fm.beginTransaction();
-                            Fragment snigerFrag = new SnigerFragment();
-                            transaction.replace(R.id.innerLinear, snigerFrag);
-                            transaction.commit();
+                            switchFrag(state);
                         };
 
                         break;
                     case R.id.tab_viden:
                         if (state != 2) {
                             state = 2;
-                            kampRadio.setLayoutParams(uncheckedParam);
-                            snigerRadio.setLayoutParams(uncheckedParam);
-                            videnRadio.setLayoutParams(checkedParam);
-                            alleRadio.setLayoutParams(uncheckedParam);
-
-                            FragmentTransaction transaction = fm.beginTransaction();
-                            Fragment videnFrag = new VidenFragment();
-                            transaction.replace(R.id.innerLinear, videnFrag);
-                            transaction.commit();
+                            switchFrag(state);
                         }
 
                         break;
                     case R.id.tab_alle:
                         if (state != 3) {
                             state = 3;
-                            kampRadio.setLayoutParams(uncheckedParam);
-                            snigerRadio.setLayoutParams(uncheckedParam);
-                            videnRadio.setLayoutParams(uncheckedParam);
-                            alleRadio.setLayoutParams(checkedParam);
-
-                            FragmentTransaction transaction = fm.beginTransaction();
-                            Fragment alleFrag = new AlleFragment();
-                            transaction.replace(R.id.innerLinear, alleFrag);
-                            transaction.commit();
+                            switchFrag(state);
                         }
-
                         break;
                 }
             }
@@ -183,58 +144,83 @@ public class SkillFragment extends Fragment {
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+        switchFrag(state);
         return root;
     }
 
     private void switchFrag(int newState){
+        kampFrag = new KampFragment();
+        videnFrag = new VidenFragment();
+        snigerFrag = new SnigerFragment();
+        alleFrag = new AlleFragment();
         switch (newState){
             case 0:
                 state = 0;
+                if (skillViewModel.getKampAbilities().getValue() == null || skillViewModel.getKampAbilities().getValue().size() == 0) {
+                    Log.d("SkillFragment", "kampAbilities was null or size 0");
+                    skillViewModel.updateKamp();
+                }
+                FragmentTransaction transactionk = fm.beginTransaction();
+                if (kampFrag == null) kampFrag = new KampFragment();
+                transactionk.replace(R.id.innerLinear, kampFrag);
+                transactionk.commit();
+
                 kampRadio.setLayoutParams(checkedParam);
                 snigerRadio.setLayoutParams(uncheckedParam);
                 videnRadio.setLayoutParams(uncheckedParam);
                 alleRadio.setLayoutParams(uncheckedParam);
-
-                FragmentTransaction transactionk = fm.beginTransaction();
-                Fragment kampFrag = new KampFragment();
-                transactionk.replace(R.id.innerLinear, kampFrag);
-                transactionk.commit();
                 break;
             case 1:
                 state = 1;
+                if (skillViewModel.getSnigerAbilities().getValue() == null || skillViewModel.getSnigerAbilities().getValue().size() == 0) {
+                    Log.d("SkillFragment", "snigerAbilities was null or size 0");
+                    skillViewModel.updateSniger();
+                }
+                FragmentTransaction transactions = fm.beginTransaction();
+                if (snigerFrag == null) snigerFrag = new SnigerFragment();
+                transactions.replace(R.id.innerLinear, snigerFrag);
+                transactions.commit();
+
                 kampRadio.setLayoutParams(uncheckedParam);
                 snigerRadio.setLayoutParams(checkedParam);
                 videnRadio.setLayoutParams(uncheckedParam);
                 alleRadio.setLayoutParams(uncheckedParam);
-
-                FragmentTransaction transactions = fm.beginTransaction();
-                Fragment snigerFrag = new SnigerFragment();
-                transactions.replace(R.id.innerLinear, snigerFrag);
-                transactions.commit();
                 break;
             case 2:
                 state = 2;
+                if (skillViewModel.getVidenAbilities().getValue() == null || skillViewModel.getVidenAbilities().getValue().size() == 0) {
+                    Log.d("SkillFragment", "videnAbilities was null or size 0");
+                    skillViewModel.updateViden();
+                }
+                FragmentTransaction transactionv = fm.beginTransaction();
+                if (videnFrag == null) videnFrag = new VidenFragment();
+                transactionv.replace(R.id.innerLinear, videnFrag);
+                transactionv.commit();
+
                 kampRadio.setLayoutParams(uncheckedParam);
                 snigerRadio.setLayoutParams(uncheckedParam);
                 videnRadio.setLayoutParams(checkedParam);
                 alleRadio.setLayoutParams(uncheckedParam);
-
-                FragmentTransaction transactionv = fm.beginTransaction();
-                Fragment videnFrag = new VidenFragment();
-                transactionv.replace(R.id.innerLinear, videnFrag);
-                transactionv.commit();
                 break;
             case 3:
                 state = 3;
+                if (skillViewModel.getAlleAbilities().getValue() == null || skillViewModel.getAlleAbilities().getValue().size() == 0) {
+                    Log.d("SkillFragment", "alleAbilities was null or size 0");
+                    skillViewModel.updateAlle();
+                }
+                if (skillViewModel.getRaceAbilities().getValue() == null || skillViewModel.getRaceAbilities().getValue().size() == 0) {
+                    Log.d("SkillFragment", "RaceAbilities was null or size 0");
+                    skillViewModel.setRaceAbilities(charRepo.getCurrentChar().getIdrace());
+                }
+                FragmentTransaction transactiona = fm.beginTransaction();
+                if (alleFrag == null) alleFrag = new AlleFragment();
+                transactiona.replace(R.id.innerLinear, alleFrag);
+                transactiona.commit();
+
                 kampRadio.setLayoutParams(uncheckedParam);
                 snigerRadio.setLayoutParams(uncheckedParam);
                 videnRadio.setLayoutParams(uncheckedParam);
                 alleRadio.setLayoutParams(checkedParam);
-
-                FragmentTransaction transactiona = fm.beginTransaction();
-                Fragment alleFrag = new AlleFragment();
-                transactiona.replace(R.id.innerLinear, alleFrag);
-                transactiona.commit();
                 break;
 
         }

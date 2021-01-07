@@ -8,6 +8,10 @@ import androidx.lifecycle.ViewModel;
 import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.ability.AbilityRepository;
 import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
+import com.rbyte.dragernesdal.ui.character.skill.alle.AlleFragment;
+import com.rbyte.dragernesdal.ui.character.skill.kamp.KampFragment;
+import com.rbyte.dragernesdal.ui.character.skill.sniger.SnigerFragment;
+import com.rbyte.dragernesdal.ui.character.skill.viden.VidenFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +29,6 @@ public class SkillViewModel extends ViewModel {
     private MutableLiveData<ArrayList<AbilityDTO>> alleAbilities;
     private MutableLiveData<ArrayList<AbilityDTO>> raceAbilities;
     private MutableLiveData<ArrayList<Integer>> currentAbilityIDs;
-    private boolean[] updatesNeededIn = new boolean[]{true, true, true, true};
     private Handler uiThread = new Handler();
     private AbilityRepository abilityRepo = AbilityRepository.getInstance();
 
@@ -44,96 +47,72 @@ public class SkillViewModel extends ViewModel {
         raceAbilities = new MutableLiveData<>();
         currentAbilityIDs = new MutableLiveData<>();
 
-        Executor bgThread5 = Executors.newSingleThreadExecutor();
-        bgThread5.execute(() -> {
-            AtomicReference<Boolean> needUpdate = new AtomicReference<>(true);
-            while (needUpdate.get()) {
-                needUpdate.set(false);
-                if (updatesNeededIn[0]) {
-                    Executor bgThread = Executors.newSingleThreadExecutor();
-                    bgThread.execute(() -> {
-                        Result<List<AbilityDTO>> res = abilityRepo.getTypeAbilities("kamp");
-                        uiThread.post(() -> {
+        updateKamp();
+        updateSniger();
+        updateViden();
+        updateAlle();
 
-                            if (res instanceof Result.Success) {
-                                ArrayList<AbilityDTO> data = (ArrayList<AbilityDTO>) ((Result.Success) res).getData();
-                                if (data != null) {
-                                    kampAbilities.postValue(data);
-                                    updatesNeededIn[0] = false;
-                                } else {
-                                    needUpdate.set(true);
-                                    kampAbilities = null;
-                                }
-                            }
-                        });
-                    });
+    }
+
+    public void updateKamp(){
+        Executor bgThread = Executors.newSingleThreadExecutor();
+        bgThread.execute(() -> {
+            Result<List<AbilityDTO>> res = abilityRepo.getTypeAbilities("kamp");
+            uiThread.post(() -> {
+                if (res instanceof Result.Success) {
+                    ArrayList<AbilityDTO> data = (ArrayList<AbilityDTO>) ((Result.Success) res).getData();
+                    if (data != null) {
+                        kampAbilities.postValue(data);
+                    }
                 }
-
-                if (updatesNeededIn[1]) {
-                    Executor bgThread2 = Executors.newSingleThreadExecutor();
-                    bgThread2.execute(() -> {
-                        Result<List<AbilityDTO>> res = abilityRepo.getTypeAbilities("sniger");
-                        uiThread.post(() -> {
-
-                            if (res instanceof Result.Success) {
-                                ArrayList<AbilityDTO> data = (ArrayList<AbilityDTO>) ((Result.Success) res).getData();
-                                if (data != null) {
-                                    snigerAbilities.postValue(data);
-                                    updatesNeededIn[1] = false;
-                                } else {
-                                    needUpdate.set(true);
-                                    snigerAbilities = null;
-                                }
-                            }
-                        });
-                    });
-                }
-
-
-                if (updatesNeededIn[2]) {
-                    Executor bgThread3 = Executors.newSingleThreadExecutor();
-                    bgThread3.execute(() -> {
-                        Result<List<AbilityDTO>> res = abilityRepo.getTypeAbilities("viden");
-                        uiThread.post(() -> {
-
-                            if (res instanceof Result.Success) {
-                                ArrayList<AbilityDTO> data = (ArrayList<AbilityDTO>) ((Result.Success) res).getData();
-                                if (data != null) {
-                                    videnAbilities.postValue(data);
-                                    updatesNeededIn[2] = false;
-                                } else {
-                                    needUpdate.set(true);
-                                    videnAbilities = null;
-                                }
-                            }
-                        });
-                    });
-                }
-
-
-                if (updatesNeededIn[3]) {
-                    Executor bgThread4 = Executors.newSingleThreadExecutor();
-                    bgThread4.execute(() -> {
-                        Result<List<AbilityDTO>> res = abilityRepo.getTypeAbilities("allemand");
-                        uiThread.post(() -> {
-
-                            if (res instanceof Result.Success) {
-                                ArrayList<AbilityDTO> data = (ArrayList<AbilityDTO>) ((Result.Success) res).getData();
-                                if (data != null) {
-                                    alleAbilities.postValue(data);
-                                    updatesNeededIn[3] = false;
-                                } else {
-                                    needUpdate.set(true);
-                                    alleAbilities = null;
-                                }
-                            }
-                        });
-                    });
-                }
-
-            }
+            });
         });
+    }
 
+    public void updateSniger() {
+        Executor bgThread2 = Executors.newSingleThreadExecutor();
+        bgThread2.execute(() -> {
+            Result<List<AbilityDTO>> res = abilityRepo.getTypeAbilities("sniger");
+            uiThread.post(() -> {
+                if (res instanceof Result.Success) {
+                    ArrayList<AbilityDTO> data = (ArrayList<AbilityDTO>) ((Result.Success) res).getData();
+                    if (data != null) {
+                        snigerAbilities.postValue(data);
+                    }
+                }
+            });
+        });
+    }
+
+    public void updateViden() {
+        Executor bgThread3 = Executors.newSingleThreadExecutor();
+        bgThread3.execute(() -> {
+            Result<List<AbilityDTO>> res = abilityRepo.getTypeAbilities("viden");
+            uiThread.post(() -> {
+                if (res instanceof Result.Success) {
+                    ArrayList<AbilityDTO> data = (ArrayList<AbilityDTO>) ((Result.Success) res).getData();
+                    if (data != null) {
+                        videnAbilities.postValue(data);
+                    } else {
+                    }
+                }
+            });
+        });
+    }
+
+    public void updateAlle() {
+        Executor bgThread4 = Executors.newSingleThreadExecutor();
+        bgThread4.execute(() -> {
+            Result<List<AbilityDTO>> res = abilityRepo.getTypeAbilities("allemand");
+            uiThread.post(() -> {
+                if (res instanceof Result.Success) {
+                    ArrayList<AbilityDTO> data = (ArrayList<AbilityDTO>) ((Result.Success) res).getData();
+                    if (data != null) {
+                        alleAbilities.postValue(data);
+                    }
+                }
+            });
+        });
     }
 
     public void setRaceAbilities(int raceID){

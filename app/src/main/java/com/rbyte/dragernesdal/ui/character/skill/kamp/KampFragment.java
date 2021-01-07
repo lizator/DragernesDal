@@ -36,7 +36,7 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 public class KampFragment extends Fragment {
 
-    private KampViewModel kampViewModel = new KampViewModel();
+    //private KampViewModel kampViewModel = new KampViewModel();
     private SkillViewModel skillViewModel = SkillViewModel.getInstance();
     private AbilityRepository abilityrepo;
     private CharacterRepository charRepo;
@@ -72,15 +72,6 @@ public class KampFragment extends Fragment {
             }
         });
 
-        kampViewModel.getCurrAbilitys().observe(getViewLifecycleOwner(), new Observer<ArrayList<Integer>>() {
-            @Override
-            public void onChanged(ArrayList<Integer> integers) {
-                currentAbilityIDs = integers;
-                abilityAdapter.notifyDataSetChanged();
-            }
-        });
-
-
         SharedPreferences prefs = getDefaultSharedPreferences(getContext());
         int currCharacterID = prefs.getInt(HomeFragment.CHARACTER_ID_SAVESPACE, -1);
         if (currCharacterID != -1) { //TO-DO: error handle (not ever likely to happen, nvm)
@@ -104,10 +95,11 @@ public class KampFragment extends Fragment {
             });
         }
         root2 = root;
+        abilityAdapter.notifyDataSetChanged();
         return root;
     }
 
-    class AbilityViewHolder extends RecyclerView.ViewHolder{
+    private class AbilityViewHolder extends RecyclerView.ViewHolder{
         TextView name;
         TextView cost;
         Button buybtn;
@@ -129,7 +121,7 @@ public class KampFragment extends Fragment {
 
     }
 
-    class AbilityAdapter extends RecyclerView.Adapter<AbilityViewHolder> {
+    private class AbilityAdapter extends RecyclerView.Adapter<AbilityViewHolder> {
         @Override
         public int getItemCount() {
             if (abilityList != null) return abilityList.size();
@@ -200,6 +192,7 @@ public class KampFragment extends Fragment {
                                                         ls.add(dto.getId());
                                                     }
                                                     skillViewModel.getCurrentAbilityIDs().postValue(ls);
+                                                    abilityAdapter.notifyDataSetChanged();
                                                 });
                                             });
                                         }
