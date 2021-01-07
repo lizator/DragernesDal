@@ -5,7 +5,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -18,18 +20,37 @@ import androidx.navigation.Navigation;
 
 import com.rbyte.dragernesdal.R;
 
-public class AdminFragment extends Fragment {
+public class AdminFragment extends Fragment implements View.OnClickListener{
 
 
     //TODO: Se Figma
 
     private AdminViewModel adminViewModel;
+    private Button btn_createSkill, btn_editSkill, btn_createRace, btn_editRace, btn_createEvent, btn_editEvent, btn_checkOut, btn_editUser;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         adminViewModel =
                 new ViewModelProvider(this).get(AdminViewModel.class);
         View root = inflater.inflate(R.layout.fragment_admin, container, false);
+
+        btn_createSkill = root.findViewById(R.id.button_create_skill);
+        btn_createSkill.setOnClickListener(this);
+        btn_editSkill = root.findViewById(R.id.button_edit_skill);
+        btn_editSkill.setOnClickListener(this);
+        btn_createRace = root.findViewById(R.id.button_create_race);
+        btn_createRace.setOnClickListener(this);
+        btn_editRace = root.findViewById(R.id.button_edit_race);
+        btn_editRace.setOnClickListener(this);
+        btn_createEvent = root.findViewById(R.id.button_create_event);
+        btn_createEvent.setOnClickListener(this);
+        btn_editEvent = root.findViewById(R.id.button_edit_event);
+        btn_editEvent.setOnClickListener(this);
+        btn_checkOut = root.findViewById(R.id.button_checkout);
+        btn_checkOut.setOnClickListener(this);
+        btn_editUser = root.findViewById(R.id.button_edit_user);
+        btn_editUser.setOnClickListener(this);
+
 
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
@@ -42,5 +63,47 @@ public class AdminFragment extends Fragment {
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
         return root;
+    }
+
+    private void clickedOnToast(String msg){
+        Toast.makeText(getContext(),"Klikket på: " + msg,Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.button_create_skill:
+                clickedOnToast("Opret evne");
+                Log.d("AdminView","Clicked on create skill");
+                break;
+            case R.id.button_edit_skill:
+                clickedOnToast("Rediger evne");
+                Log.d("AdminView","Clicked on edit skill");
+                break;
+            case R.id.button_create_race:
+                clickedOnToast("Opret race");
+                Log.d("AdminView","Clicked on create race");
+                break;
+            case R.id.button_edit_race:
+                clickedOnToast("Rediger race");
+                Log.d("AdminView","Clicked on edit race");
+                break;
+            case R.id.button_create_event:
+                clickedOnToast("Opret event");
+                Log.d("AdminView","Clicked on create event");
+                break;
+            case R.id.button_edit_event:
+                clickedOnToast("Rediger event");
+                Log.d("AdminView","Clicked on edit event");
+                break;
+            case R.id.button_checkout:
+                clickedOnToast("Check ud");
+                Log.d("AdminView","Clicked on check out");
+                break;
+            case R.id.button_edit_user:
+                clickedOnToast("Rediger bruger");
+                Log.d("AdminView","Clicked on edit user");
+                break;
+        }
     }
 }
