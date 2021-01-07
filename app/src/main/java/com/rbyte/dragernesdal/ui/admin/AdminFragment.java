@@ -24,13 +24,13 @@ public class AdminFragment extends Fragment implements View.OnClickListener{
 
     private AdminViewModel adminViewModel;
     private Button btn_createSkill, btn_editSkill, btn_createRace, btn_editRace, btn_createEvent, btn_editEvent, btn_checkOut, btn_editUser;
-
+    private View root2;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         adminViewModel =
                 new ViewModelProvider(this).get(AdminViewModel.class);
         View root = inflater.inflate(R.layout.fragment_admin, container, false);
-
+        root2 = root;
         btn_createSkill = root.findViewById(R.id.button_create_skill);
         btn_createSkill.setOnClickListener(this);
         btn_editSkill = root.findViewById(R.id.button_edit_skill);
@@ -88,6 +88,8 @@ public class AdminFragment extends Fragment implements View.OnClickListener{
             case R.id.button_create_event:
                 clickedOnToast("Opret event");
                 Log.d("AdminView","Clicked on create event");
+                NavController navController = Navigation.findNavController(root2);
+                navController.navigate(R.id.nav_admin_event_create);
                 break;
             case R.id.button_edit_event:
                 clickedOnToast("Rediger event");
