@@ -143,7 +143,7 @@ public class EventFragment extends Fragment {
             vh.date.setText(eventCards.get(position).getDate());
             vh.info.setText(eventCards.get(position).getInfo());
             vh.time.setText(eventCards.get(position).getStartTime()+"-"+eventCards.get(position).getEndTime());
-            vh.address.setText("Addresse: "+eventCards.get(position).getAddress());
+            vh.address.setText("Adresse: "+eventCards.get(position).getAddress());
             vh.attending.setText(eventCards.get(position).getAttending() ? "Deltager" : "Deltager ikke");
         }
 
