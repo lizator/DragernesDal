@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private final static int UPDATE_TIMER = 500;
     public static final String USER_ID_SAVESPACE = "currUserIDSave";
+    private NavigationView navigationView;
+    private boolean isAdmin = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         TextView userEmail = headerView.findViewById(R.id.userEmail);
         username.setText(getIntent().getStringExtra("username"));
         userEmail.setText(getIntent().getStringExtra("email"));
+        isAdmin = getIntent().getBooleanExtra("admin",false);
         Log.d("UserID",getIntent().getStringExtra("id"));
         SharedPreferences prefs = getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = prefs.edit();
@@ -58,16 +61,26 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home,R.id.nav_char_skill,R.id.nav_char_magic,R.id.nav_char_inventory,R.id.nav_char_background,R.id.nav_char_select,R.id.nav_rules,R.id.nav_event,R.id.nav_createCharacterFragment,R.id.nav_chooseRaceFragment)
+                R.id.nav_home,R.id.nav_char_skill,R.id.nav_char_magic,R.id.nav_char_inventory,R.id.nav_char_background,R.id.nav_char_select,R.id.nav_rules,R.id.nav_event,R.id.nav_createCharacterFragment,R.id.nav_chooseRaceFragment,R.id.nav_admin)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+        navigationView = findViewById(R.id.nav_view);
+        Menu nav_Menu = navigationView.getMenu();
+        nav_Menu.findItem(R.id.nav_admin).setVisible(false);
+        if(isAdmin) showAdmin();
         /*UpdaterThread updater = new UpdaterThread();
         updater.run();*/
 
 
+    }
+
+    private void showAdmin(){
+        navigationView = findViewById(R.id.nav_view);
+        Menu nav_Menu = navigationView.getMenu();
+        nav_Menu.findItem(R.id.nav_admin).setVisible(true);
     }
 
 

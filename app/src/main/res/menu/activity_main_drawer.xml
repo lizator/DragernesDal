@@ -46,9 +46,16 @@
                         android:id="@+id/nav_event"
                         android:icon="@android:drawable/ic_menu_today"
                         android:title="@string/event" />
+                    <item
+                        android:id="@+id/nav_admin"
+                        android:icon="@drawable/ic_character_choice"
+                        android:title="Admin"
+                        />
                 </group>
             </menu>
         </item>
+
+
 
     </group>
 </menu>
