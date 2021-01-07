@@ -112,7 +112,7 @@ public class ChooseRaceFragment extends Fragment {
                         public void onClick(DialogInterface dialog, int which) {
 
                             NavController navController = Navigation.findNavController(root);
-                            navController.navigate(R.id.nav_chooseRaceFragment);
+                            navController.navigate(R.id.nav_createCharacterFragment);
 
                         }
                     });
