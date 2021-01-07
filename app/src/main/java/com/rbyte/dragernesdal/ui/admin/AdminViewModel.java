@@ -9,8 +9,7 @@ public class AdminViewModel extends ViewModel {
     private MutableLiveData<String> mText;
 
     public AdminViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is admin fragment");
+
     }
 
     public LiveData<String> getText() {

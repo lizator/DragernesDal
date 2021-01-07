@@ -20,6 +20,9 @@ import com.rbyte.dragernesdal.R;
 
 public class AdminFragment extends Fragment {
 
+
+    //TODO: Se Figma
+
     private AdminViewModel adminViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -27,13 +30,7 @@ public class AdminFragment extends Fragment {
         adminViewModel =
                 new ViewModelProvider(this).get(AdminViewModel.class);
         View root = inflater.inflate(R.layout.fragment_admin, container, false);
-        final TextView textView = root.findViewById(R.id.text_home);
-        adminViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
+
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
