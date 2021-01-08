@@ -26,6 +26,7 @@ import com.rbyte.dragernesdal.ui.home.HomeFragment;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
@@ -62,7 +63,7 @@ public class EventFragment extends Fragment {
                     ft.setTimeZone(TimeZone.getTimeZone("CET-1"));
                     dom.setTimeZone(TimeZone.getTimeZone("CET-1"));
                     eventCards.add(new EventCard(dom.format(n.getStartDate()), n.getInfo(),
-                            "Klokken: " + ft.format(n.getStartDate()),ft.format(n.getEndDate()),n.getAddress()));
+                            "Klokken: " + ft.format(n.getStartDate()),ft.format(n.getEndDate()),n.getAddress(),n.getName()));
                 });
                 eventAdapter.notifyDataSetChanged();
             }
@@ -95,7 +96,7 @@ public class EventFragment extends Fragment {
 
     class EventViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
-        TextView date, info, time, attending, address;
+        TextView date, info, time, attending, address, title;
 
         public EventViewHolder(View eventViews) {
             super(eventViews);
@@ -103,6 +104,7 @@ public class EventFragment extends Fragment {
             date = eventViews.findViewById(R.id.textDate);
             info = eventViews.findViewById(R.id.textEventInfo);
             time = eventViews.findViewById(R.id.textTime);
+            title = eventViews.findViewById(R.id.textTitle);
             attending = eventViews.findViewById(R.id.textAttending);
             address = eventViews.findViewById(R.id.textAddress);
             cardView.setOnClickListener(new View.OnClickListener() {
@@ -144,6 +146,7 @@ public class EventFragment extends Fragment {
             vh.info.setText(eventCards.get(position).getInfo());
             vh.time.setText(eventCards.get(position).getStartTime()+"-"+eventCards.get(position).getEndTime());
             vh.address.setText("Adresse: "+eventCards.get(position).getAddress());
+            vh.title.setText(eventCards.get(position).getTitle());
             vh.attending.setText(eventCards.get(position).getAttending() ? "Deltager" : "Deltager ikke");
         }
 
@@ -156,8 +159,10 @@ public class EventFragment extends Fragment {
         private String endTime = "";
         private Boolean attending = false;
         private String address = "";
+        private String title = "";
 
-        public EventCard(String date, String info, String startTime, String endTime, String address) {
+        public EventCard(String date, String info, String startTime, String endTime, String address, String title) {
+            this.title = title;
             this.date = date;
             this.info = info;
             this.startTime = startTime;
@@ -167,6 +172,14 @@ public class EventFragment extends Fragment {
 
         public EventCard() {
 
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
         }
 
         public String getDate() {
