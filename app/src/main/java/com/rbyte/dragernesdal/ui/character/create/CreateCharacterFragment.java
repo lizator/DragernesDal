@@ -223,6 +223,15 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
                                                 builder.show();
                                             });
                                         });
+                                    case "KRYSRACER":
+                                        Log.d("CharacterCreation", "choosing 2 races as krysling");
+                                        Executor bgThread5 = Executors.newSingleThreadExecutor();
+                                        bgThread5.execute(() -> {
+                                            AlertDialog.Builder builder = popHandler.getKrysRaceAlert(root2, getContext(), uiThread);
+                                            uiThread.post(() ->{
+                                                builder.show();
+                                            });
+                                        });
                                     default: //Error
                                         Log.d("CharacterCreation", "error getting ability");
                                         //TODO: handle error

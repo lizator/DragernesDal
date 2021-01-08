@@ -20,6 +20,7 @@ import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.ability.AbilityRepository;
 import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
+import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
 import com.rbyte.dragernesdal.ui.character.skill.SkillViewModel;
 import com.rbyte.dragernesdal.ui.home.HomeViewModel;
 
@@ -54,6 +55,86 @@ public class PopupHandler {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
+            }
+        });
+        return builder;
+    }
+
+    public AlertDialog.Builder getKrysRaceAlert(View thisView, Context context, Handler uiThread){
+        builder.setTitle("Krydsningen");
+        View alertView = LayoutInflater.from(context).inflate(R.layout.popup_choice_krysracer, (ViewGroup) thisView.getRootView(), false);
+        builder.setView(alertView);
+        Spinner spin1 = alertView.findViewById(R.id.race1spinner);
+        Spinner spin2 = alertView.findViewById(R.id.race2spinner);
+        String[] choices = new String[]{"vælg race!", "Dværg", "Elver", "Gobliner", "Granitaner", "Havfolk", "Menneske", "Orker", "Sortelver"};
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, choices);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spin1.setAdapter(adapter);
+        spin2.setAdapter(adapter);
+
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                int pos1 = spin1.getSelectedItemPosition();
+                int pos2 = spin2.getSelectedItemPosition();
+                if (pos1 != 0 && pos2 != 0){
+                    if (pos1 != pos2) {
+                        Executor bgThread = Executors.newSingleThreadExecutor();
+                        bgThread.execute(() -> {
+                            Result<List<AbilityDTO>> res = abilityRepo.confirmBuy(charRepo.getCurrentChar().getIdcharacter(), 35); // id 35 == blandet blod (krysRacer evnen)
+                            uiThread.post(() -> {
+                                if (res instanceof Result.Success) {
+                                    Executor bgThread2 = Executors.newSingleThreadExecutor();
+                                    bgThread2.execute(() -> {
+                                        Result<CharacterDTO> charRes;
+                                        while (true) {
+                                            charRes = charRepo.createKrysling(charRepo.getCurrentChar().getIdcharacter(), pos1, pos2);
+                                            if (charRes instanceof Result.Success) break;
+                                        }
+                                        charRepo.getCharacterByID(charRepo.getCurrentChar().getIdcharacter());
+                                        Result<CharacterDTO> charResRes = charRes;
+                                        uiThread.post(() -> {
+                                            if (charResRes instanceof Result.Success){
+                                                Toast.makeText(context, String.format("Racerne '%s' og '%s' valgt!", choices[pos1], choices[pos2]), Toast.LENGTH_SHORT).show();
+                                                skillViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
+                                                skillViewModel.getUpdate().postValue(true);
+                                                HomeViewModel.getInstance().startGetThread(charRepo.getCurrentChar().getIdcharacter());
+                                                dialog.dismiss();
+                                            } else {
+                                                Toast.makeText(context, "Fejl i at få racerne, prøv igen!", Toast.LENGTH_SHORT).show();
+                                                getKrysRaceAlert(thisView, context, uiThread).show();
+                                                dialog.dismiss();
+                                            }
+                                        });
+                                    });
+
+                                } else {
+                                    Toast.makeText(context, "Fejl i at få racerne, prøv igen!", Toast.LENGTH_SHORT).show();
+                                    getKrysRaceAlert(thisView, context, uiThread).show();
+                                    dialog.dismiss();
+                                }
+                            });
+                        });
+                    }else {
+                        Toast.makeText(context, "Du kan ikke vælge den samme race 2 gange" , Toast.LENGTH_SHORT).show();
+                        getKrysRaceAlert(thisView, context, uiThread).show();
+                        dialog.dismiss();
+                    }
+                } else {
+                    Toast.makeText(context, "Sørg for at du har valgt begge racer" , Toast.LENGTH_SHORT).show();
+                    getKrysRaceAlert(thisView, context, uiThread).show();
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                dialog.dismiss();
+                Toast.makeText(context, "Du skal vælge nu!", Toast.LENGTH_SHORT).show();
+                getStartChoiceAlert(thisView, context, uiThread).show();
             }
         });
         return builder;

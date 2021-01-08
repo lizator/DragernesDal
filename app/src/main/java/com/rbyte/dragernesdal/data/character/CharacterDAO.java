@@ -1,5 +1,7 @@
 package com.rbyte.dragernesdal.data.character;
 
+import android.util.Log;
+
 import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.WebServerPointer;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
@@ -36,7 +38,10 @@ public class CharacterDAO {
         try {
             Call<CharacterDTO> call = service.createCharacter(dto);
             resp = call.execute();
-            return new Result.Success<CharacterDTO>(resp.body());
+            if (resp.code() == 200) {
+                return new Result.Success<CharacterDTO>(resp.body());
+            }
+            throw new IOException(resp.message());
         } catch (IOException e) {
             e.printStackTrace();
             return new Result.Error(new IOException("Error connection to database"));
@@ -47,8 +52,26 @@ public class CharacterDAO {
         try {
             Call<CharacterDTO> call = service.getByID(characterID);
             resp = call.execute();
-            return new Result.Success<CharacterDTO>(resp.body());
+            if (resp.code() == 200) {
+                return new Result.Success<CharacterDTO>(resp.body());
+            }
+            throw new IOException(resp.message());
         } catch (IOException e) {
+            e.printStackTrace();
+            return new Result.Error(new IOException("Error connection to database"));
+        }
+    }
+
+    Result<CharacterDTO> createKrysling(int characterid, int race1id, int race2id) {
+        try {
+            Call<CharacterDTO> call = service.createKrysling(characterid, race1id, race2id);
+            resp = call.execute();
+            if (resp.code() == 200) {
+                return new Result.Success<CharacterDTO>(resp.body());
+            }
+            throw new IOException(resp.message());
+        } catch (IOException e) {
+            Log.d("CharacterDAO", "updateCharacter: error msg: " + e.getMessage());
             e.printStackTrace();
             return new Result.Error(new IOException("Error connection to database"));
         }
@@ -58,7 +81,10 @@ public class CharacterDAO {
         try {
             Call<List<CharacterDTO>> call = service.getByUserID(userID);
             respList = call.execute();
-            return new Result.Success<List<CharacterDTO>>(respList.body());
+            if (respList.code() == 200) {
+                return new Result.Success<List<CharacterDTO>>(respList.body());
+            }
+            throw new IOException(respList.message());
         } catch (IOException e) {
             e.printStackTrace();
             return new Result.Error(new IOException("Error connection to database"));
@@ -72,6 +98,7 @@ public class CharacterDAO {
             return new Result.Success<CharacterDTO>(resp.body());
         } catch (IOException e) {
             e.printStackTrace();
+            Log.d("CharacterDAO", "updateCharacter: error msg: " + e.getMessage());
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -83,6 +110,9 @@ public class CharacterDAO {
 
         @GET("/character/byUserID/{userid}")
         Call<List<CharacterDTO>> getByUserID(@Path(value = "userid") int userid);
+
+        @GET("/character/krys/{characterid}/{race1id}/{race2id}")
+        Call<CharacterDTO> createKrysling(@Path(value = "characterid") int characterid, @Path(value = "race1id") int race1id, @Path(value = "race2id") int race2id);
 
         @POST("/character/create")
         Call<CharacterDTO> createCharacter(@Body CharacterDTO character);

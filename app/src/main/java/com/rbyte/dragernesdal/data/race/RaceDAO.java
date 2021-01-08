@@ -2,6 +2,7 @@ package com.rbyte.dragernesdal.data.race;
 
 import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.WebServerPointer;
+import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
 import com.rbyte.dragernesdal.data.main.MainDAO;
 import com.rbyte.dragernesdal.data.main.model.MainDTO;
 import com.rbyte.dragernesdal.data.race.model.RaceDTO;
@@ -62,12 +63,29 @@ public class RaceDAO {
         }
     }
 
+    public Result<List<RaceDTO>> getKrysRaces(int characterID){
+        try {
+            Call<List<RaceDTO>> call = service.getKrysRaces(characterID);
+            resplst = call.execute();
+            if (resplst.code() == 200) {
+                return new Result.Success<List<RaceDTO>>(resplst.body());
+            }
+            throw new IOException(resplst.message());
+        } catch (IOException e){
+            e.printStackTrace();
+            return new Result.Error(new IOException(e.getMessage()));
+        }
+    }
+
     public interface RaceCallService {
         @GET("/race/info/standart")
         Call<List<RaceDTO>> getRaceInfoStandart();
 
         @GET("/race/info/single/{raceID}")
         Call<RaceDTO> getRaceInfo(@Path(value = "raceID") int raceID);
+
+        @GET("/race/krys/getCharacterRaces/{characterid}")
+        Call<List<RaceDTO>> getKrysRaces(@Path(value = "characterid") int characterid);
 
         /*@POST("/character/create")
         Call<CharacterDTO> createCharacter(@Body CharacterDTO character);*/

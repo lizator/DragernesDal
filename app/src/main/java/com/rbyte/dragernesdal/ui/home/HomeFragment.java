@@ -24,8 +24,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.rbyte.dragernesdal.R;
 import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
+import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
 import com.rbyte.dragernesdal.data.inventory.model.InventoryDTO;
+import com.rbyte.dragernesdal.data.race.model.RaceDTO;
 import com.rbyte.dragernesdal.ui.character.select.SelectFragment;
 import com.rbyte.dragernesdal.ui.login.LoginActivity;
 
@@ -145,7 +147,12 @@ public class HomeFragment extends Fragment {
                         } //Switch for setting image resource
                         imgView.setImageResource(imgRes);
                         characterNameEdit.setText(character.getName());
-                        raceTV.setText(character.getRaceName());
+                        if (character.getIdrace() == 6 && homeViewModel.getRaces().getValue() != null && homeViewModel.getRaces().getValue().size() != 0){
+                            ArrayList<RaceDTO> raceDTOS = (ArrayList<RaceDTO>) homeViewModel.getRaces().getValue();
+                            raceTV.setText(CharacterRepository.getInstance().getCurrentChar().getRaceName() + " (" + raceDTOS.get(0).getRacename() + "/" + raceDTOS.get(1).getRacename() +")" );
+                        } else {
+                            raceTV.setText(character.getRaceName());
+                        }
                         yearEdit.setText(String.valueOf(character.getAge()));
                         String strength = "";
                         for (int i = 0; i < character.getStrength(); i++) strength += "J";
@@ -183,6 +190,16 @@ public class HomeFragment extends Fragment {
                     silverTV.setText(moneyList.get(1).getAmount() + "");
                     kobberTV.setText(moneyList.get(2).getAmount() + "");
 
+                }
+            });
+
+            homeViewModel.getRaces().observe(getViewLifecycleOwner(), new Observer<List<RaceDTO>>() {
+                @Override
+                public void onChanged(List<RaceDTO> raceDTOS) {
+                    if (CharacterRepository.getInstance().getCurrentChar().getIdrace() == 6){
+                        TextView raceTV = (TextView) root.findViewById(R.id.raceTV);
+                        raceTV.setText(CharacterRepository.getInstance().getCurrentChar().getRaceName() + " (" + raceDTOS.get(0).getRacename() + "/" + raceDTOS.get(1).getRacename() +")" );
+                    }
                 }
             });
         }

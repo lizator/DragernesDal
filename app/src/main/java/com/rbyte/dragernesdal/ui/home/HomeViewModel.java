@@ -9,6 +9,7 @@ import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
 import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.data.inventory.model.InventoryDTO;
+import com.rbyte.dragernesdal.data.race.model.RaceDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ public class HomeViewModel extends ViewModel {
     private MutableLiveData<CharacterDTO> mCharacter;
     private MutableLiveData<List<AbilityDTO>> mAbilities;
     private MutableLiveData<List<InventoryDTO>> mMoney;
+    private MutableLiveData<List<RaceDTO>> mRace;
     private CharacterRepository repo;
     private static HomeViewModel instance;
 
@@ -32,6 +34,7 @@ public class HomeViewModel extends ViewModel {
         this.mCharacter = new MutableLiveData<>();
         this.mAbilities = new MutableLiveData<>();
         this.mMoney = new MutableLiveData<>();
+        this.mRace = new MutableLiveData<>();
         this.repo = CharacterRepository.getInstance();
         //initialing observers
     }
@@ -79,6 +82,10 @@ public class HomeViewModel extends ViewModel {
         return mMoney;
     }
 
+    public LiveData<List<RaceDTO>> getRaces() {
+        return mRace;
+    }
+
     private void getCharacterByCharacterID(int characterid){
         Result<CharacterDTO> result;
         result = repo.getCharacterByID(characterid);
@@ -88,6 +95,9 @@ public class HomeViewModel extends ViewModel {
             mCharacter.postValue(character);
             getAbilitiesByCharacterID(characterid);
             getMoneyByCharacterID(characterid);
+            if (character.getIdrace() == 6){
+                getRacesByCharacterID(characterid);
+            }
             //loginResult.postValue(new LoginResult(new LoggedInUserView(data.getFirstName() + " " + data.getLastName(), data.getEmail(), data.getPassHash())));
         } else {
             //loginResult.postValue(new LoginResult(R.string.login_failed));
@@ -124,6 +134,15 @@ public class HomeViewModel extends ViewModel {
         } else {
             //loginResult.postValue(new LoginResult(R.string.login_failed));
         }
+    }
+
+    public void getRacesByCharacterID(int characterid){
+        Result<List<RaceDTO>> res = repo.getKrydsRaces(characterid);
+        if (res instanceof Result.Success){
+            ArrayList<RaceDTO> raceLst = ((Result.Success<ArrayList<RaceDTO>>) res).getData();
+            mRace.postValue(raceLst);
+        }
+
     }
 
 
