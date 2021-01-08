@@ -56,7 +56,7 @@ public class PopupHandler {
         return builder;
     }
 
-    public AlertDialog.Builder getCraftsAlert(View thisView, Context context, Handler uiThread){
+    public AlertDialog.Builder getCraftsAlert(View thisView, Context context, Handler uiThread, boolean humanFirstBuy){
         builder.setTitle("Håndværk!");
         View alertView = LayoutInflater.from(context).inflate(R.layout.popup_input_a_craft, (ViewGroup) thisView.getRootView(), false);
         builder.setView(alertView);
@@ -70,6 +70,11 @@ public class PopupHandler {
                     bgThread.execute(() -> {
                         Result<AbilityDTO> res = abilityRepo.craftBuy(charRepo.getCurrentChar().getIdcharacter(), craft);
                         charRepo.getCharacterByID(charRepo.getCurrentChar().getIdcharacter());
+                        if (humanFirstBuy) {
+                            charRepo.getCurrentChar().setCurrentep(5);// reset from buying craft
+                            charRepo.updateCharacter(charRepo.getCurrentChar());
+                            abilityRepo.freeGet(charRepo.getCurrentChar().getIdcharacter(), 3); //id == 3 (Proffesion - start human ability)
+                        }
                         uiThread.post(() -> {
                             if (res instanceof Result.Success) {
                                 Toast.makeText(context, String.format("Håndværk '%s' oprettet!", craft), Toast.LENGTH_SHORT).show();
@@ -78,22 +83,37 @@ public class PopupHandler {
                                 dialog.dismiss();
                             } else {
                                 Toast.makeText(context, "Fejl i opret håndværk, prøv igen!", Toast.LENGTH_SHORT).show();
-                                getCraftsAlert(thisView, context, uiThread).show();
+                                getCraftsAlert(thisView, context, uiThread, humanFirstBuy).show();
                             }
                         });
                     });
                 } else {
                     Toast.makeText(context, "Husk at skrive navnet på et Håndværk!", Toast.LENGTH_SHORT).show();
-                    getCraftsAlert(thisView, context, uiThread).show();
+                    getCraftsAlert(thisView, context, uiThread, humanFirstBuy).show();
                 }
             }
         });
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() { //TODO: overwite in create character to reappear if not done!
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                if (humanFirstBuy) {
+                    Toast.makeText(context, "Du skal vælge et Håndværk nu!", Toast.LENGTH_SHORT).show();
+                    getCraftsAlert(thisView, context, uiThread, humanFirstBuy).show();
+                }
                 dialog.cancel();
             }
         });
+        if (humanFirstBuy){
+            builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    dialog.dismiss();
+                    Toast.makeText(context, "Du skal vælge et Håndværk nu!", Toast.LENGTH_SHORT).show();
+                    getCraftsAlert(thisView, context, uiThread, humanFirstBuy).show();
+                }
+            });
+        }
         return builder;
     }
 
