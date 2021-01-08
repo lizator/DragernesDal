@@ -111,6 +111,8 @@ public class EditEventFragment extends Fragment {
                 public void onClick(View v) {
                     final int position = getAdapterPosition();
                     PopupHandler popupHandler = new PopupHandler(getContext());
+                    events.get(position).setEventID(position);
+                    System.out.println(events.get(position).getEventID());
                     AlertDialog.Builder builder = popupHandler.editEvent(root2,events.get(position), uiThread, Navigation.findNavController(root2));
                     builder.show();
                 }

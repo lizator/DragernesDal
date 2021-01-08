@@ -490,7 +490,6 @@ public class PopupHandler {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                EventDTO eventDTO = new EventDTO();
                 EventDAO eventDAO = new EventDAO();
                 eventDTO.setName(title.getText() + "");
                 eventDTO.setAddress(address.getText() + "");
@@ -499,7 +498,7 @@ public class PopupHandler {
                 eventDTO.setInfo(info.getText() + "");
                 Executor bgThread = Executors.newSingleThreadExecutor();
                 bgThread.execute(() -> {
-                    Log.d("Event", "Event edited");
+                    Log.d("Event", "Event edited: " + eventDTO.getEventID());
                     eventDAO.editEvent(eventDTO);
                     uiThread.post(() -> {
                         Toast.makeText(thisView.getContext(), "Event rettet", Toast.LENGTH_SHORT).show();
