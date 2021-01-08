@@ -45,7 +45,6 @@
     <string name="inventar">Inventar</string>
     <string name="baggrund">Baggrund</string>
     <string name="v_lg_karakter">Vælg Karakter</string>
-    <string name="information">Information</string>
     <string name="regelbog">Regelbog</string>
     <string name="event">Event</string>
     <string name="regler">Regler</string>
@@ -81,4 +80,9 @@
     <string name="rediger_bruger">Rediger bruger</string>
     <string name="rediger_event">Rediger event</string>
     <string name="rediger_race">Rediger race</string>
+    <string name="title_event">Title</string>
+    <string name="start_dato">Start Dato</string>
+    <string name="slut_dato">Slut Dato</string>
+    <string name="address">Adresse</string>
+    <string name="information">Information</string>
 </resources>

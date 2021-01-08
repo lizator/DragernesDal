@@ -61,7 +61,7 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
         create = root.findViewById(R.id.create);
         characterName = root.findViewById(R.id.editText_Title);
         characterAge = root.findViewById(R.id.characterAge);
-        characterBackground = root.findViewById(R.id.characterBackground);
+        characterBackground = root.findViewById(R.id.eventInformation);
         textChecker = new TextChecker("","","");
 
 

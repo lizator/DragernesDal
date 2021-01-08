@@ -23,6 +23,13 @@ public class EventDTO {
         this.info = info;
         this.eventID = eventID;
     }
+    public EventDTO(String name, Timestamp startDate, Timestamp endDate, String address, String info){
+        this.name = name;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.address = address;
+        this.info = info;
+    }
 
     public String getName() {
         return name;

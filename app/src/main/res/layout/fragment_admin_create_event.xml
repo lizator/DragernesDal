@@ -17,7 +17,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/textView_title"
@@ -27,7 +27,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
-                android:text="Title"
+                android:text="@string/title_event"
                 android:textSize="36sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -40,9 +40,10 @@
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="4dp"
                 android:layout_marginEnd="8dp"
-                android:hint="Title"
+                android:autofillHints=""
+                android:hint="@string/title_event"
                 android:imeOptions="actionNext"
                 android:inputType="textPersonName"
                 android:selectAllOnFocus="true"
@@ -51,24 +52,6 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView_title" />
-
-            <EditText
-                android:id="@+id/editText_Address"
-                style="@style/TextZone"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
-                android:hint="Addresse"
-                android:imeOptions="actionNext"
-                android:inputType="textPersonName"
-                android:selectAllOnFocus="true"
-                android:textSize="24sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.524"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/address" />
 
             <TextView
                 android:id="@+id/startDate"
@@ -79,12 +62,28 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
 
-                android:text="Start Dato"
+                android:text="@string/start_dato"
                 android:textSize="36sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/editText_Title" />
+
+            <EditText
+                android:id="@+id/editTextStartDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:autofillHints=""
+                android:ems="10"
+                android:focusable="false"
+                android:gravity="center"
+                android:inputType="none"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/startDate" />
 
             <TextView
                 android:id="@+id/endDate"
@@ -95,12 +94,29 @@
 
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="Slut Dato"
+                android:text="@string/slut_dato"
                 android:textSize="36sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/editTextStartDate" />
+
+            <EditText
+                android:id="@+id/editTextEndDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:autofillHints=""
+                android:ems="10"
+                android:focusable="false"
+                android:gravity="center"
+                android:inputType="none"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.496"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/endDate" />
 
             <TextView
                 android:id="@+id/address"
@@ -111,12 +127,31 @@
 
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="Addresse"
+                android:text="@string/address"
                 android:textSize="36sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/editTextEndDate" />
+
+            <EditText
+                android:id="@+id/editText_Address"
+                style="@style/TextZone"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:autofillHints=""
+                android:hint="@string/address"
+                android:imeOptions="actionNext"
+                android:inputType="textPersonName"
+                android:selectAllOnFocus="true"
+                android:textSize="24sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.524"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/address" />
 
             <TextView
                 android:id="@+id/information"
@@ -127,7 +162,7 @@
 
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="Information"
+                android:text="@string/information"
                 android:textSize="36sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -135,16 +170,17 @@
                 app:layout_constraintTop_toBottomOf="@+id/editText_Address" />
 
             <EditText
-                android:id="@+id/characterBackground"
+                android:id="@+id/eventInformation"
                 style="@style/TextZone"
                 android:layout_width="378dp"
                 android:layout_height="150dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="4dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="16dp"
                 android:gravity="top|left"
                 android:imeOptions="actionNext"
+                android:inputType="text"
                 android:paddingLeft="16dp"
                 android:paddingTop="16dp"
                 android:paddingRight="16dp"
@@ -157,32 +193,17 @@
                 app:layout_constraintTop_toBottomOf="@+id/information"
                 app:layout_constraintVertical_bias="0.0" />
 
-            <EditText
-                android:id="@+id/editTextStartDate"
+            <Button
+                android:id="@+id/create_event"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
-                android:ems="10"
-                android:inputType="date"
+                android:layout_marginBottom="16dp"
+                android:text="@string/opret_event"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/startDate" />
-
-            <EditText
-                android:id="@+id/editTextEndDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
-                android:ems="10"
-                android:inputType="date"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.496"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/endDate" />
+                app:layout_constraintTop_toBottomOf="@+id/eventInformation" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
