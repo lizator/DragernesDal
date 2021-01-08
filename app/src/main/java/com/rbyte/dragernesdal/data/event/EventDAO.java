@@ -58,12 +58,24 @@ public class EventDAO {
         }
     }
 
+    public Result<List<EventDTO>> editEvent(EventDTO eventDTO){
+        try {
+            Call<EventDTO> call = service.editEvent(eventDTO);
+            resp = call.execute();
+            return new Result.Success<EventDTO>(resp.body());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new Result.Error(new IOException("Error connection to database"));
+        }
+    }
 
     public interface EventCallService {
         @GET("/event/events")
         Call<List<EventDTO>> getEvents();
         @POST("/event/create")
         Call<EventDTO> createEvent(@Body EventDTO event);
+        @POST("/event/edit")
+        Call<EventDTO> editEvent(@Body EventDTO event);
     }
 
 }

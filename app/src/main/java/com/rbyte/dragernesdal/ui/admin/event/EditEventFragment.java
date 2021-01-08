@@ -2,6 +2,7 @@ package com.rbyte.dragernesdal.ui.admin.event;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -21,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.rbyte.dragernesdal.R;
 import com.rbyte.dragernesdal.data.event.model.AttendingDTO;
 import com.rbyte.dragernesdal.data.event.model.EventDTO;
+import com.rbyte.dragernesdal.ui.PopupHandler;
 import com.rbyte.dragernesdal.ui.event.EventFragment;
 import com.rbyte.dragernesdal.ui.event.EventViewModel;
 import com.rbyte.dragernesdal.ui.home.HomeFragment;
@@ -38,8 +41,11 @@ public class EditEventFragment extends Fragment {
     private EventViewModel eventViewModel;
     private EventAdapter eventAdapter = new EventAdapter();
     private ArrayList<EventCard> eventCards = new ArrayList<>();
+    private ArrayList<EventDTO> events;
+    private Handler uiThread = new Handler();
     SharedPreferences prefs;
     private int characterID;
+    View root2;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -48,7 +54,8 @@ public class EditEventFragment extends Fragment {
         characterID = prefs.getInt(HomeFragment.CHARACTER_ID_SAVESPACE, -1);
         eventViewModel = EventViewModel.getInstance();
         eventViewModel.startGetThread(characterID);
-
+        root2 = root;
+        events = new ArrayList<>();
         RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.eventRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
         recyclerView.setAdapter(eventAdapter);
@@ -58,7 +65,9 @@ public class EditEventFragment extends Fragment {
             @Override
             public void onChanged(List<EventDTO> eventDTOS) {
                 eventCards.clear();
+                events.clear();
                 eventDTOS.forEach((n) -> {
+                    events.add(n);
                     SimpleDateFormat ft = new SimpleDateFormat("HH:mm:ss");
                     SimpleDateFormat dom = new SimpleDateFormat("E: dd-MM-yyyy");
                     ft.setTimeZone(TimeZone.getTimeZone("CET-1"));
@@ -102,22 +111,15 @@ public class EditEventFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     final int position = getAdapterPosition();
-                    if(!eventCards.get(position).getAttending()){
-                        eventCards.get(position).setAttending(true);
-                        eventViewModel.startSetThread(characterID,position);
-                    } else {
-                        eventCards.get(position).setAttending(false);
-                        eventViewModel.startRemoveThread(characterID,position);
-                    }
-                    /*System.out.println(eventCards.toString());
-                    System.out.println("Attending: "+eventCards.get(position).getAttending());
-                    System.out.println("CharID: "+characterID +" Clicked: "+position);*/
+                    PopupHandler popupHandler = new PopupHandler(getContext());
+                    AlertDialog.Builder builder = popupHandler.editEvent(root2,events.get(position), uiThread, eventAdapter);
+                    builder.show();
                 }
             });
         }
     }
 
-    class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
+    public class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
         @Override
         public int getItemCount() {
             return eventCards.size();

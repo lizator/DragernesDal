@@ -1,5 +1,7 @@
 package com.rbyte.dragernesdal.ui;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;
@@ -7,21 +9,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.rbyte.dragernesdal.R;
 import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.ability.AbilityRepository;
 import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
+import com.rbyte.dragernesdal.data.event.EventDAO;
+import com.rbyte.dragernesdal.data.event.model.EventDTO;
+import com.rbyte.dragernesdal.ui.admin.event.EditEventFragment;
 import com.rbyte.dragernesdal.ui.character.skill.SkillViewModel;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -261,7 +273,141 @@ public class PopupHandler {
         return builder;
     }
 
+    public AlertDialog.Builder editEvent(View thisView, EventDTO eventDTO, Handler uiThread, EditEventFragment.EventAdapter eventHandler){
+        builder.setTitle("Rediger Event");
+        View alertView = LayoutInflater.from(context).inflate(R.layout.fragment_admin_create_event, (ViewGroup) thisView.getRootView(), false);
+        final EditText title, startDate, endDate, address, info;
+        final String[] timeStart = new String[1];
+        final String[] timeEnd = new String[1];
+        Button create;
+        title = alertView.findViewById(R.id.editText_Title);
+        startDate = alertView.findViewById(R.id.editTextStartDate);
+        endDate = alertView.findViewById(R.id.editTextEndDate);
+        address = alertView.findViewById(R.id.editText_Address);
+        info = alertView.findViewById(R.id.eventInformation);
+        create = alertView.findViewById(R.id.create_event);
+        create.setEnabled(false);
+        create.setVisibility(View.INVISIBLE);
+        create.setHeight(0);
+        title.setText(eventDTO.getName());
+        startDate.setText("Sæt ny dato");
+        endDate.setText("Sæt ny dato");
+        address.setText(eventDTO.getAddress());
+        info.setText(eventDTO.getInfo());
 
+        startDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int mYear, mMonth, mDay;
+                final Calendar c = Calendar.getInstance();
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
+                DatePickerDialog datePickerDialog = new DatePickerDialog(thisView.getContext(),
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+                                int mHour, mMinute;
+                                String curDate = String.format("%02d-%02d", dayOfMonth, (monthOfYear+1))+"-"+year;
+                                String dateToDTO = year+"-"+String.format("%02d-%02d", (monthOfYear+1),dayOfMonth);
+                                startDate.setText(curDate);
+                                mHour = c.get(Calendar.HOUR_OF_DAY);
+                                mMinute = c.get(Calendar.MINUTE);
+
+                                // Launch Time Picker Dialog
+                                TimePickerDialog timePickerDialog = new TimePickerDialog(thisView.getContext(),
+                                        new TimePickerDialog.OnTimeSetListener() {
+
+                                            @Override
+                                            public void onTimeSet(TimePicker view, int hourOfDay,
+                                                                  int minute) {
+                                                String curTime = String.format("%02d:%02d", hourOfDay, minute);
+                                                timeStart[0] = dateToDTO+" "+curTime+":00";
+                                                Log.d("date set", timeStart[0]);
+                                                startDate.setText(startDate.getText()+" "+curTime+":00");
+                                            }
+                                        }, mHour, mMinute, false);
+                                timePickerDialog.show();
+                            }
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.show();
+
+            }
+        });
+        endDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int mYear, mMonth, mDay;
+                final Calendar c = Calendar.getInstance();
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(thisView.getContext(),
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+                                int mHour, mMinute;
+                                String curDate = String.format("%02d-%02d", dayOfMonth, (monthOfYear+1))+"-"+year;
+                                String dateToDTO = year+"-"+String.format("%02d-%02d", (monthOfYear+1),dayOfMonth);
+                                endDate.setText(curDate);
+                                mHour = c.get(Calendar.HOUR_OF_DAY);
+                                mMinute = c.get(Calendar.MINUTE);
+
+                                // Launch Time Picker Dialog
+                                TimePickerDialog timePickerDialog = new TimePickerDialog(thisView.getContext(),
+                                        new TimePickerDialog.OnTimeSetListener() {
+
+                                            @Override
+                                            public void onTimeSet(TimePicker view, int hourOfDay,
+                                                                  int minute) {
+                                                String curTime = String.format("%02d:%02d", hourOfDay, minute);
+                                                timeEnd[0] = dateToDTO+" "+curTime+":00";
+                                                Log.d("date set", timeEnd[0]);
+                                                endDate.setText(endDate.getText()+" "+curTime+":00");
+                                            }
+                                        }, mHour, mMinute, false);
+                                timePickerDialog.show();
+                            }
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.show();
+
+            }
+        });
+
+        builder.setView(alertView);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                EventDTO eventDTO = new EventDTO();
+                EventDAO eventDAO = new EventDAO();
+                eventDTO.setName(title.getText()+"");
+                eventDTO.setAddress(address.getText()+"");
+                eventDTO.setStartDate(Timestamp.valueOf(timeStart[0]));
+                eventDTO.setEndDate(Timestamp.valueOf(timeEnd[0]));
+                eventDTO.setInfo(info.getText()+"");
+                Executor bgThread = Executors.newSingleThreadExecutor();
+                bgThread.execute(() ->{
+                    Log.d("Event","Event edited");
+                    eventDAO.editEvent(eventDTO);
+                    uiThread.post(()->{
+                        Toast.makeText(thisView.getContext(), "Event rettet", Toast.LENGTH_SHORT).show();
+                        eventHandler.notifyDataSetChanged();
+                        dialog.dismiss();
+                    });
+                });
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        return builder;
+    }
     
 
 }
