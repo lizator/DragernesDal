@@ -12,6 +12,7 @@ public class AbilityRepository {
     private static AbilityRepository instance;
     private AbilityDAO abilityDAO;
     private CharacterRepository characterRepo;
+    private ArrayList<AbilityDTO> starterAbilities = new ArrayList<>();
 
     public static AbilityRepository getInstance(){
         if (instance == null) instance = new AbilityRepository();
@@ -38,6 +39,14 @@ public class AbilityRepository {
 
     public Result<List<AbilityDTO>> getTypeAbilities(String type){
         return abilityDAO.getAbilitiesByType(type);
+    }
+
+    public Result<List<AbilityDTO>> getStarters(){
+        Result<List<AbilityDTO>> res = abilityDAO.getStarters();
+        if (res instanceof Result.Success){
+            starterAbilities = (ArrayList<AbilityDTO>) ((Result.Success<List<AbilityDTO>>) res).getData();
+        }
+        return res;
     }
 
     public String tryBuy(int characterID, int abilityID){
@@ -89,6 +98,8 @@ public class AbilityRepository {
                 case "KRYS4EP":
                     return "KRYS4EP";
                     //TODO: make get both 2ep abilities of races
+                case "STARTEVNE":
+                    return "STARTEVNE";
                 default: // NULL or new
                     confirmBuy(characterID, abilityID);
                     break;
@@ -116,5 +127,9 @@ public class AbilityRepository {
     public Result<AbilityDTO> freeGet(int characterID, int freeAbilityID){
         Result res = abilityDAO.getFreeAbility(characterID,freeAbilityID);
         return res;
+    }
+
+    public ArrayList<AbilityDTO> getStarterAbilities() {
+        return starterAbilities;
     }
 }

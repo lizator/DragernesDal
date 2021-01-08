@@ -2,6 +2,8 @@ package com.rbyte.dragernesdal.data.character;
 
 import android.util.Log;
 
+import androidx.lifecycle.MutableLiveData;
+
 import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.ability.AbilityDAO;
 import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
@@ -23,6 +25,7 @@ public class CharacterRepository { //Class for getting characters and saving the
     private boolean updateNeeded = true;
     private int userID = -1;
     private int characterID = -1;
+    private MutableLiveData<Boolean> abilityUpdate;
 
     private static CharacterRepository instance;
 
@@ -38,6 +41,7 @@ public class CharacterRepository { //Class for getting characters and saving the
         this.currentCharList = new ArrayList<>();
         this.abilitiesList = new ArrayList<>();
         this.inventoryList = new ArrayList<>();
+        this.abilityUpdate = new MutableLiveData<>(true);
     }
 
     public CharacterDTO getCurrentChar(){
@@ -84,6 +88,7 @@ public class CharacterRepository { //Class for getting characters and saving the
         if (result instanceof Result.Success) {
             ArrayList<AbilityDTO> abilities = (ArrayList<AbilityDTO>) ((Result.Success) result).getData();
             abilitiesList = abilities;
+            abilityUpdate.postValue(true);
         }
         return result;
     }
@@ -106,6 +111,10 @@ public class CharacterRepository { //Class for getting characters and saving the
             return result;
         }
         return new Result.Success<List<InventoryDTO>>(this.inventoryList);
+    }
+
+    public void setAbilityUpdate(boolean update){
+        abilityUpdate.setValue(update);
     }
 
 }

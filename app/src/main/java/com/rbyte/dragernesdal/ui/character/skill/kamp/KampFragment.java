@@ -95,7 +95,6 @@ public class KampFragment extends Fragment {
             });
         }
         root2 = root;
-        abilityAdapter.notifyDataSetChanged();
         return root;
     }
 

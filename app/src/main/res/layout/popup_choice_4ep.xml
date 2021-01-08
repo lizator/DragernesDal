@@ -7,12 +7,12 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/ep3choiceheader"
+        android:id="@+id/startchoiceheader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Du skal vælge en 4EP evne.\nDu kan læse om evnerne under evner i reglbogen!"
-        style="@style/text"
+        style="@style/textSmall"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -24,5 +24,5 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ep3choiceheader" />
+        app:layout_constraintTop_toBottomOf="@+id/startchoiceheader" />
 </androidx.constraintlayout.widget.ConstraintLayout>

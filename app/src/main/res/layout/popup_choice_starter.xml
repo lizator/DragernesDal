@@ -4,34 +4,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="5dp">
-
+    android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/inputCraftTitle"
+        android:id="@+id/startchoiceheader"
+        style="@style/textSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/textSmall"
         android:gravity="center"
-        android:text="Definer dit håndværk! det kan fx. være:\nBager,
-Skomager, Tømrer, Slagter, Sprutbrygger, Minearbejder, Fisker, Bogbinder,
-Urtekyndig, Landmand, Kok, Jæger, Skovhugger, Møller, Skriver, Urmager,
-Låsesmed, Smykkesmed, Garver, Stenhugger, Gardner, Dyretræner, Bedemand,
-Syerske, Glaspuster, Maler osv."
+        android:text="Du skal nu vælge en anden races startevne!"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/editCraftName"
+    <Spinner
+        android:id="@+id/startspinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="Håndværk"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inputCraftTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/startchoiceheader" />
 </androidx.constraintlayout.widget.ConstraintLayout>

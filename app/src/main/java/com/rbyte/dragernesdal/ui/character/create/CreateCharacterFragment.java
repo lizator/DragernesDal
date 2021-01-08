@@ -1,5 +1,6 @@
 package com.rbyte.dragernesdal.ui.character.create;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -25,6 +27,7 @@ import com.rbyte.dragernesdal.R;
 import com.rbyte.dragernesdal.data.ability.AbilityRepository;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
+import com.rbyte.dragernesdal.ui.PopupHandler;
 import com.rbyte.dragernesdal.ui.character.select.SelectViewModel;
 import com.rbyte.dragernesdal.ui.home.HomeFragment;
 
@@ -46,6 +49,7 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
     private NavController navController;
     private View root;
     private View root2;
+    private PopupHandler popHandler;
 
     public CreateCharacterFragment(int raceID) {
         this.raceID = raceID;
@@ -65,7 +69,7 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
         textChecker = new TextChecker("","","");
 
 
-
+        popHandler = new PopupHandler(getContext());
         create.setOnClickListener(this);
         create.setEnabled(false);
         SharedPreferences prefs = getDefaultSharedPreferences(getContext());
@@ -202,10 +206,23 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
                         bgThread3.execute(() ->{
                             String commandType = abilityRepo.tryBuy(foundDTO.getIdcharacter(), startAbilityID);
                             uiThread.post(()-> {
-                                switch (commandType) {
+                                switch (commandType) { //TODO: copy in popup-getStartChoice
                                     case "auto": //do nothing
                                         Log.d("CharacterCreation", "correct auto getting ability");
                                         break;
+                                    case "HÅNDVÆRK":
+                                        Log.d("CharacterCreation", "Getting craft ability");
+                                        popHandler.getCraftsAlert(root2, getContext(), uiThread, true).show();
+                                        break;
+                                    case "STARTEVNE":
+                                        Log.d("CharacterCreation", "Getting starter ability");
+                                        Executor bgThread4 = Executors.newSingleThreadExecutor();
+                                        bgThread4.execute(() -> {
+                                            AlertDialog.Builder builder = popHandler.getStartChoiceAlert(root2, getContext(), uiThread);
+                                            uiThread.post(() ->{
+                                                builder.show();
+                                            });
+                                        });
                                     default: //Error
                                         Log.d("CharacterCreation", "error getting ability");
                                         //TODO: handle error
@@ -219,9 +236,10 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
                 });
             });
         });
-
-
     }
+
+
+
 
     class TextChecker{
         private String name;
