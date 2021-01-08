@@ -206,7 +206,7 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
                         bgThread3.execute(() ->{
                             String commandType = abilityRepo.tryBuy(foundDTO.getIdcharacter(), startAbilityID);
                             uiThread.post(()-> {
-                                switch (commandType) {
+                                switch (commandType) { //TODO: copy in popup-getStartChoice
                                     case "auto": //do nothing
                                         Log.d("CharacterCreation", "correct auto getting ability");
                                         break;
@@ -214,6 +214,15 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
                                         Log.d("CharacterCreation", "Getting craft ability");
                                         popHandler.getCraftsAlert(root2, getContext(), uiThread, true).show();
                                         break;
+                                    case "STARTEVNE":
+                                        Log.d("CharacterCreation", "Getting starter ability");
+                                        Executor bgThread4 = Executors.newSingleThreadExecutor();
+                                        bgThread4.execute(() -> {
+                                            AlertDialog.Builder builder = popHandler.getStartChoiceAlert(root2, getContext(), uiThread);
+                                            uiThread.post(() ->{
+                                                builder.show();
+                                            });
+                                        });
                                     default: //Error
                                         Log.d("CharacterCreation", "error getting ability");
                                         //TODO: handle error

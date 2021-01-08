@@ -8,17 +8,17 @@
 
     <TextView
         android:id="@+id/startchoiceheader"
+        style="@style/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Du skal vælge en 4EP evne.\nDu kan læse om evnerne under evner i reglbogen!"
-        style="@style/text"
+        android:text="Du skal nu vælge en anden races startevne!"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
-        android:id="@+id/ep3spinner"
+        android:id="@+id/startspinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
