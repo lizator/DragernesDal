@@ -97,10 +97,10 @@ public class ChooseRaceFragment extends Fragment {
             editor.putInt(RACE_ID_SAVESPACE, raceList.get(getAdapterPosition()).getRaceID());
             editor.commit();
 
-            builder.setTitle("Vil du vælge denne seje race");
+            //builder.setTitle("Vil du vælge denne seje race");
             View viewInflated = LayoutInflater.from(root.getContext()).inflate(R.layout.alert_race_info, (ViewGroup)root.getRootView(),false);
-            final EditText input = (EditText) viewInflated.findViewById(R.id.input);
-            input.setText("Elvere er nogle grimmerter");
+            final EditText description = (EditText) viewInflated.findViewById(R.id.input);
+            description.setText("Elvere er nogle grimmerter");
             builder.setView(viewInflated);
 
             int raceID = prefs.getInt(ChooseRaceFragment.RACE_ID_SAVESPACE, 1);
