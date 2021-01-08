@@ -62,7 +62,7 @@ public class EventFragment extends Fragment {
                     ft.setTimeZone(TimeZone.getTimeZone("CET-1"));
                     dom.setTimeZone(TimeZone.getTimeZone("CET-1"));
                     eventCards.add(new EventCard(dom.format(n.getStartDate()), n.getInfo(),
-                            "Klokken: " + ft.format(n.getStartDate()),ft.format(n.getEndDate()),n.getAddress())); //TODO: Tjek om man er tilmeldt eventet
+                            "Klokken: " + ft.format(n.getStartDate()),ft.format(n.getEndDate()),n.getAddress()));
                 });
                 eventAdapter.notifyDataSetChanged();
             }
@@ -73,9 +73,9 @@ public class EventFragment extends Fragment {
             public void onChanged(List<AttendingDTO> attending) {
                 if (attending == null ||  eventCards == null || eventCards.size() == 0)
                     return;
-                for(int i = 0; i < attending.size();i++){
-                    eventCards.get(attending.get(i).getIdEvent()).setAttending(true);
-                }
+                attending.forEach((n) ->{
+                   eventCards.get(n.getIdEvent()).setAttending(true);
+                });
                 eventAdapter.notifyDataSetChanged();
             }
         });

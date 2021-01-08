@@ -64,7 +64,7 @@ public class EditEventFragment extends Fragment {
                     ft.setTimeZone(TimeZone.getTimeZone("CET-1"));
                     dom.setTimeZone(TimeZone.getTimeZone("CET-1"));
                     eventCards.add(new EventCard(dom.format(n.getStartDate()), n.getInfo(),
-                            "Klokken: " + ft.format(n.getStartDate()),ft.format(n.getEndDate()),n.getAddress())); //TODO: Tjek om man er tilmeldt eventet
+                            "Klokken: " + ft.format(n.getStartDate()),ft.format(n.getEndDate()),n.getAddress()));
                 });
                 eventAdapter.notifyDataSetChanged();
             }
