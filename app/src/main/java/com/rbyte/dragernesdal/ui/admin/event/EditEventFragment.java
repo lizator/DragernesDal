@@ -63,8 +63,11 @@ public class EditEventFragment extends Fragment {
                     SimpleDateFormat dom = new SimpleDateFormat("E: dd-MM-yyyy");
                     ft.setTimeZone(TimeZone.getTimeZone("CET-1"));
                     dom.setTimeZone(TimeZone.getTimeZone("CET-1"));
-                    eventCards.add(new EventCard(dom.format(n.getStartDate()), n.getInfo(),
-                            "Klokken: " + ft.format(n.getStartDate()),ft.format(n.getEndDate()),n.getAddress()));
+                    String date = dom.format(n.getStartDate()).equals(dom.format(n.getEndDate())) ?
+                            dom.format(n.getStartDate()) :
+                            dom.format(n.getStartDate())+ " - " + dom.format(n.getEndDate());
+                    eventCards.add(new EventCard(date, n.getInfo(),
+                            "Klokken: " + ft.format(n.getStartDate()),ft.format(n.getEndDate()),n.getAddress(),n.getName()));
                 });
                 eventAdapter.notifyDataSetChanged();
             }
@@ -84,7 +87,7 @@ public class EditEventFragment extends Fragment {
 
     class EventViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
-        TextView date, info, time, attending, address;
+        TextView date, info, time, attending, address, title;
 
         public EventViewHolder(View eventViews) {
             super(eventViews);
@@ -92,13 +95,23 @@ public class EditEventFragment extends Fragment {
             date = eventViews.findViewById(R.id.textDate);
             info = eventViews.findViewById(R.id.textEventInfo);
             time = eventViews.findViewById(R.id.textTime);
+            title = eventViews.findViewById(R.id.textTitle);
             attending = eventViews.findViewById(R.id.textAttending);
             address = eventViews.findViewById(R.id.textAddress);
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     final int position = getAdapterPosition();
-                    //TODO: Rediger event
+                    if(!eventCards.get(position).getAttending()){
+                        eventCards.get(position).setAttending(true);
+                        eventViewModel.startSetThread(characterID,position);
+                    } else {
+                        eventCards.get(position).setAttending(false);
+                        eventViewModel.startRemoveThread(characterID,position);
+                    }
+                    /*System.out.println(eventCards.toString());
+                    System.out.println("Attending: "+eventCards.get(position).getAttending());
+                    System.out.println("CharID: "+characterID +" Clicked: "+position);*/
                 }
             });
         }
@@ -123,8 +136,13 @@ public class EditEventFragment extends Fragment {
             vh.info.setText(eventCards.get(position).getInfo());
             vh.time.setText(eventCards.get(position).getStartTime()+"-"+eventCards.get(position).getEndTime());
             vh.address.setText("Adresse: "+eventCards.get(position).getAddress());
+            vh.title.setText(eventCards.get(position).getTitle());
             vh.attending.setVisibility(View.INVISIBLE);
+            vh.attending.setHeight(0);
+            vh.attending.setText("");
+            vh.attending.setEnabled(false);
         }
+
     }
 
     private class EventCard {
@@ -134,8 +152,10 @@ public class EditEventFragment extends Fragment {
         private String endTime = "";
         private Boolean attending = false;
         private String address = "";
+        private String title = "";
 
-        public EventCard(String date, String info, String startTime, String endTime, String address) {
+        public EventCard(String date, String info, String startTime, String endTime, String address, String title) {
+            this.title = title;
             this.date = date;
             this.info = info;
             this.startTime = startTime;
@@ -145,6 +165,14 @@ public class EditEventFragment extends Fragment {
 
         public EventCard() {
 
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
         }
 
         public String getDate() {

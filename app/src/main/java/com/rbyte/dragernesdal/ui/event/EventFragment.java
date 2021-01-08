@@ -62,7 +62,10 @@ public class EventFragment extends Fragment {
                     SimpleDateFormat dom = new SimpleDateFormat("E: dd-MM-yyyy");
                     ft.setTimeZone(TimeZone.getTimeZone("CET-1"));
                     dom.setTimeZone(TimeZone.getTimeZone("CET-1"));
-                    eventCards.add(new EventCard(dom.format(n.getStartDate()), n.getInfo(),
+                    String date = dom.format(n.getStartDate()).equals(dom.format(n.getEndDate())) ?
+                            dom.format(n.getStartDate()) :
+                            dom.format(n.getStartDate())+ " - " + dom.format(n.getEndDate());
+                    eventCards.add(new EventCard(date, n.getInfo(),
                             "Klokken: " + ft.format(n.getStartDate()),ft.format(n.getEndDate()),n.getAddress(),n.getName()));
                 });
                 eventAdapter.notifyDataSetChanged();
