@@ -223,7 +223,7 @@ public class AlleFragment extends Fragment {
                                                     if (command != "auto") { //new popup needed
                                                         switch (command){
                                                             case "HÅNDVÆRK":
-                                                                popHandler.getCraftsAlert(root2, getContext(), uiThread).show();
+                                                                popHandler.getCraftsAlert(root2, getContext(), uiThread, false).show();
                                                                 break;
                                                             case "3EP":
                                                                 popHandler.get3EPChoiceAlert(root2, getContext(), uiThread, currentAbilityIDs).show();
@@ -329,7 +329,7 @@ public class AlleFragment extends Fragment {
                                                     if (command != "auto") { //new popup needed
                                                         switch (command){
                                                             case "HÅNDVÆRK":
-                                                                popHandler.getCraftsAlert(root2, getContext(), uiThread).show();
+                                                                popHandler.getCraftsAlert(root2, getContext(), uiThread, false).show();
                                                                 break;
                                                             case "3EP":
                                                                 popHandler.get3EPChoiceAlert(root2, getContext(), uiThread, currentAbilityIDs).show();
