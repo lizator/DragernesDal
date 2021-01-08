@@ -1,6 +1,7 @@
 package com.rbyte.dragernesdal.ui.admin.event;
 
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
@@ -62,21 +64,18 @@ public class EditEventFragment extends Fragment {
         eventAdapter.notifyDataSetChanged();
 
         eventViewModel.getEvents().observe(getViewLifecycleOwner(), new Observer<List<EventDTO>>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onChanged(List<EventDTO> eventDTOS) {
                 eventCards.clear();
                 events.clear();
                 eventDTOS.forEach((n) -> {
                     events.add(n);
-                    SimpleDateFormat ft = new SimpleDateFormat("HH:mm:ss");
-                    SimpleDateFormat dom = new SimpleDateFormat("E: dd-MM-yyyy");
-                    ft.setTimeZone(TimeZone.getTimeZone("CET-1"));
-                    dom.setTimeZone(TimeZone.getTimeZone("CET-1"));
-                    String date = dom.format(n.getStartDate()).equals(dom.format(n.getEndDate())) ?
-                            dom.format(n.getStartDate()) :
-                            dom.format(n.getStartDate())+ " - " + dom.format(n.getEndDate());
+                    String date = n.getStartDate().toLocalDate().toString().equals((n.getEndDate().toLocalDate().toString())) ?
+                            n.getStartDate().toLocalDate().toString() :
+                            n.getStartDate().toLocalDate().toString() + " - " + n.getEndDate().toLocalDate().toString();
                     eventCards.add(new EventCard(date, n.getInfo(),
-                            "Klokken: " + ft.format(n.getStartDate()),ft.format(n.getEndDate()),n.getAddress(),n.getName()));
+                            "Klokken: " + n.getStartDate().toLocalTime().toString()+":00", n.getEndDate().toLocalTime().toString()+":00", n.getAddress(), n.getName()));
                 });
                 eventAdapter.notifyDataSetChanged();
             }
@@ -112,7 +111,7 @@ public class EditEventFragment extends Fragment {
                 public void onClick(View v) {
                     final int position = getAdapterPosition();
                     PopupHandler popupHandler = new PopupHandler(getContext());
-                    AlertDialog.Builder builder = popupHandler.editEvent(root2,events.get(position), uiThread, eventAdapter);
+                    AlertDialog.Builder builder = popupHandler.editEvent(root2,events.get(position), uiThread, Navigation.findNavController(root2));
                     builder.show();
                 }
             });

@@ -2,6 +2,7 @@ package com.rbyte.dragernesdal.ui.admin.event;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -30,6 +32,7 @@ import com.rbyte.dragernesdal.ui.character.background.BackgroundViewModel;
 import com.rbyte.dragernesdal.ui.event.EventViewModel;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -76,7 +79,7 @@ public class CreateEventFragment extends Fragment {
                                             public void onTimeSet(TimePicker view, int hourOfDay,
                                                                   int minute) {
                                                 String curTime = String.format("%02d:%02d", hourOfDay, minute);
-                                                timeStart = dateToDTO+" "+curTime+":00";
+                                                timeStart = dateToDTO+"T"+curTime+":00";
                                                 Log.d("date set", timeStart);
                                                 startDate.setText(startDate.getText()+" "+curTime+":00");
                                             }
@@ -116,7 +119,7 @@ public class CreateEventFragment extends Fragment {
                                             public void onTimeSet(TimePicker view, int hourOfDay,
                                                                   int minute) {
                                                 String curTime = String.format("%02d:%02d", hourOfDay, minute);
-                                                timeEnd = dateToDTO+" "+curTime+":00";
+                                                timeEnd = dateToDTO+"T"+curTime+":00";
                                                 Log.d("date set", timeStart);
                                                 endDate.setText(endDate.getText()+" "+curTime+":00");
                                             }
@@ -132,14 +135,15 @@ public class CreateEventFragment extends Fragment {
         info = root.findViewById(R.id.eventInformation);
 
         createEvent.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 EventDTO eventDTO = new EventDTO();
                 EventDAO eventDAO = new EventDAO();
                 eventDTO.setName(title.getText()+"");
                 eventDTO.setAddress(address.getText()+"");
-                eventDTO.setStartDate(Timestamp.valueOf(timeStart));
-                eventDTO.setEndDate(Timestamp.valueOf(timeEnd));
+                eventDTO.setStartDate(timeStart);
+                eventDTO.setEndDate(timeEnd);
                 eventDTO.setInfo(info.getText()+"");
                 Executor bgThread = Executors.newSingleThreadExecutor();
                 bgThread.execute(() ->{

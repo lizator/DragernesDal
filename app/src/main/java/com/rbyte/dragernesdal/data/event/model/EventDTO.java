@@ -1,12 +1,17 @@
 package com.rbyte.dragernesdal.data.event.model;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class EventDTO {
     private String name;
-    private Timestamp startDate;
-    private Timestamp endDate;
+    private String startDate;
+    private String endDate;
     private String address;
     private String info;
     private int eventID;
@@ -15,7 +20,7 @@ public class EventDTO {
 
     }
 
-    public EventDTO(String name, Timestamp startDate, Timestamp endDate, String address, String info, int eventID){
+    public EventDTO(String name, String startDate, String endDate, String address, String info, int eventID){
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -23,7 +28,7 @@ public class EventDTO {
         this.info = info;
         this.eventID = eventID;
     }
-    public EventDTO(String name, Timestamp startDate, Timestamp endDate, String address, String info){
+    public EventDTO(String name, String startDate, String endDate, String address, String info){
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -39,19 +44,22 @@ public class EventDTO {
         this.name = name;
     }
 
-    public Date getStartDate() {
-        return startDate;
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public LocalDateTime getStartDate() {
+        System.out.println(LocalDateTime.parse(startDate) + "LocalDateTime");
+        return LocalDateTime.parse(startDate);
     }
 
-    public void setStartDate(Timestamp startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
-        return endDate;
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public LocalDateTime getEndDate() {
+        return LocalDateTime.parse(endDate);
     }
 
-    public void setEndDate(Timestamp endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
 

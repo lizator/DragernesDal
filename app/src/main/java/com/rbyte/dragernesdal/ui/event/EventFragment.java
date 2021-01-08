@@ -1,6 +1,7 @@
 package com.rbyte.dragernesdal.ui.event;
 
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -23,6 +25,7 @@ import com.rbyte.dragernesdal.data.event.model.AttendingDTO;
 import com.rbyte.dragernesdal.data.event.model.EventDTO;
 import com.rbyte.dragernesdal.ui.home.HomeFragment;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,19 +57,16 @@ public class EventFragment extends Fragment {
         eventAdapter.notifyDataSetChanged();
 
         eventViewModel.getEvents().observe(getViewLifecycleOwner(), new Observer<List<EventDTO>>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onChanged(List<EventDTO> eventDTOS) {
                 eventCards.clear();
                 eventDTOS.forEach((n) -> {
-                    SimpleDateFormat ft = new SimpleDateFormat("HH:mm:ss");
-                    SimpleDateFormat dom = new SimpleDateFormat("E: dd-MM-yyyy");
-                    ft.setTimeZone(TimeZone.getTimeZone("CET-1"));
-                    dom.setTimeZone(TimeZone.getTimeZone("CET-1"));
-                    String date = dom.format(n.getStartDate()).equals(dom.format(n.getEndDate())) ?
-                            dom.format(n.getStartDate()) :
-                            dom.format(n.getStartDate())+ " - " + dom.format(n.getEndDate());
+                    String date = n.getStartDate().toLocalDate().toString().equals((n.getEndDate().toLocalDate().toString())) ?
+                            n.getStartDate().toLocalDate().toString() :
+                            n.getStartDate().toLocalDate().toString() + " - " + n.getEndDate().toLocalDate().toString();
                     eventCards.add(new EventCard(date, n.getInfo(),
-                            "Klokken: " + ft.format(n.getStartDate()),ft.format(n.getEndDate()),n.getAddress(),n.getName()));
+                            "Klokken: " + n.getStartDate().toLocalTime().toString()+":00", n.getEndDate().toLocalTime().toString()+":00", n.getAddress(), n.getName()));
                 });
                 eventAdapter.notifyDataSetChanged();
             }
@@ -75,10 +75,10 @@ public class EventFragment extends Fragment {
         eventViewModel.getAttending(characterID).observe(getViewLifecycleOwner(), new Observer<List<AttendingDTO>>() {
             @Override
             public void onChanged(List<AttendingDTO> attending) {
-                if (attending == null ||  eventCards == null || eventCards.size() == 0)
+                if (attending == null || eventCards == null || eventCards.size() == 0)
                     return;
-                attending.forEach((n) ->{
-                   eventCards.get(n.getIdEvent()).setAttending(true);
+                attending.forEach((n) -> {
+                    eventCards.get(n.getIdEvent()).setAttending(true);
                 });
                 eventAdapter.notifyDataSetChanged();
             }
@@ -114,12 +114,12 @@ public class EventFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     final int position = getAdapterPosition();
-                    if(!eventCards.get(position).getAttending()){
+                    if (!eventCards.get(position).getAttending()) {
                         eventCards.get(position).setAttending(true);
-                        eventViewModel.startSetThread(characterID,position);
+                        eventViewModel.startSetThread(characterID, position);
                     } else {
                         eventCards.get(position).setAttending(false);
-                        eventViewModel.startRemoveThread(characterID,position);
+                        eventViewModel.startRemoveThread(characterID, position);
 
                     }
                     /*System.out.println(eventCards.toString());
@@ -147,8 +147,8 @@ public class EventFragment extends Fragment {
         public void onBindViewHolder(EventViewHolder vh, int position) {
             vh.date.setText(eventCards.get(position).getDate());
             vh.info.setText(eventCards.get(position).getInfo());
-            vh.time.setText(eventCards.get(position).getStartTime()+"-"+eventCards.get(position).getEndTime());
-            vh.address.setText("Adresse: "+eventCards.get(position).getAddress());
+            vh.time.setText(eventCards.get(position).getStartTime() + "-" + eventCards.get(position).getEndTime());
+            vh.address.setText("Adresse: " + eventCards.get(position).getAddress());
             vh.title.setText(eventCards.get(position).getTitle());
             vh.attending.setText(eventCards.get(position).getAttending() ? "Deltager" : "Deltager ikke");
         }
@@ -234,8 +234,8 @@ public class EventFragment extends Fragment {
         }
 
         @Override
-        public String toString(){
-            return date+"\n"+info+"\n"+ startTime +"\n"+attending;
+        public String toString() {
+            return date + "\n" + info + "\n" + startTime + "\n" + attending;
         }
     }
 }
