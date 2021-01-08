@@ -83,6 +83,7 @@ public class PopupHandler {
                                 Toast.makeText(context, String.format("Håndværk '%s' oprettet!", craft), Toast.LENGTH_SHORT).show();
                                 skillViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
                                 skillViewModel.getUpdate().postValue(true);
+                                HomeViewModel.getInstance().startGetThread(charRepo.getCurrentChar().getIdcharacter());
                                 dialog.dismiss();
                             } else {
                                 Toast.makeText(context, "Fejl i opret håndværk, prøv igen!", Toast.LENGTH_SHORT).show();
@@ -96,17 +97,14 @@ public class PopupHandler {
                 }
             }
         });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() { //TODO: overwite in create character to reappear if not done!
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (humanFirstBuy) {
-                    Toast.makeText(context, "Du skal vælge et Håndværk nu!", Toast.LENGTH_SHORT).show();
-                    getCraftsAlert(thisView, context, uiThread, humanFirstBuy).show();
+        if (!humanFirstBuy) {
+            builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() { //TODO: overwite in create character to reappear if not done!
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
                 }
-                dialog.cancel();
-            }
-        });
-        if (humanFirstBuy){
+            });
+        } else {
             builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
 
                 @Override
@@ -185,25 +183,18 @@ public class PopupHandler {
                             } else {
                                 Toast.makeText(context, "Fejl i at få evne til 3 EP, prøv igen!", Toast.LENGTH_SHORT).show();
                                 getStartChoiceAlert(thisView, context, uiThread).show();
+                                dialog.dismiss();
                             }
                         });
                     });
                 } else {
                     Toast.makeText(context, "husk at vælge!" , Toast.LENGTH_SHORT).show();
                     getStartChoiceAlert(thisView, context, uiThread).show();
+                    dialog.dismiss();
                 }
             }
         });
 
-
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(context, "Du skal vælge nu!" , Toast.LENGTH_SHORT).show();
-                getStartChoiceAlert(thisView, context, uiThread).show();
-                dialog.cancel();
-            }
-        });
         builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {

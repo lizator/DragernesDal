@@ -12,7 +12,7 @@
         android:id="@+id/inputCraftTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/text"
+        style="@style/textSmall"
         android:gravity="center"
         android:text="Definer dit håndværk! det kan fx. være:\nBager,
 Skomager, Tømrer, Slagter, Sprutbrygger, Minearbejder, Fisker, Bogbinder,
