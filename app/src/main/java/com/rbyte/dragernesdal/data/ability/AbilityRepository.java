@@ -70,6 +70,19 @@ public class AbilityRepository {
                     }
                     confirmBuy(characterID, abilityID);
                     break;
+                case "NKP":
+                    Result<CharacterDTO> KPresDTO2 = characterRepo.getCharacterByID(characterID);
+                    if (KPresDTO2 instanceof Result.Error){
+                        //TODO: Handle error
+                    }
+                    CharacterDTO KPcharacterDTO2 = ((Result.Success<CharacterDTO>) KPresDTO2).getData();
+                    KPcharacterDTO2.setHealth(KPcharacterDTO2.getHealth() - 1);
+                    KPresDTO = characterRepo.updateCharacter(KPcharacterDTO2);
+                    if (KPresDTO instanceof Result.Error){
+                        //TODO: Handle error
+                    }
+                    confirmBuy(characterID, abilityID);
+                    break;
                 case "STYRKE":
                     Result<CharacterDTO> STresDTO = characterRepo.getCharacterByID(characterID);
                     if (STresDTO instanceof Result.Error){
@@ -79,6 +92,20 @@ public class AbilityRepository {
                     CharacterDTO STcharacterDTO = ((Result.Success<CharacterDTO>) STresDTO).getData();
                     STcharacterDTO.setStrength(STcharacterDTO.getStrength() + 1);
                     STresDTO = characterRepo.updateCharacter(STcharacterDTO);
+                    if (STresDTO instanceof Result.Error){
+                        //TODO: Handle error
+                    }
+                    confirmBuy(characterID, abilityID);
+                    break;
+                case "NSTYRKE":
+                    Result<CharacterDTO> STresDTO2 = characterRepo.getCharacterByID(characterID);
+                    if (STresDTO2 instanceof Result.Error){
+                        //TODO: Handle error
+                        System.out.println("Error in STYRKE");
+                    }
+                    CharacterDTO STcharacterDTO2 = ((Result.Success<CharacterDTO>) STresDTO2).getData();
+                    STcharacterDTO2.setStrength(STcharacterDTO2.getStrength() - 1);
+                    STresDTO = characterRepo.updateCharacter(STcharacterDTO2);
                     if (STresDTO instanceof Result.Error){
                         //TODO: Handle error
                     }
