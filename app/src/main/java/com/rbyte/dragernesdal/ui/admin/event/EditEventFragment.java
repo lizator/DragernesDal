@@ -1,7 +1,9 @@
 package com.rbyte.dragernesdal.ui.admin.event;
 
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,8 @@ import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -21,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.rbyte.dragernesdal.R;
 import com.rbyte.dragernesdal.data.event.model.AttendingDTO;
 import com.rbyte.dragernesdal.data.event.model.EventDTO;
+import com.rbyte.dragernesdal.ui.PopupHandler;
 import com.rbyte.dragernesdal.ui.event.EventFragment;
 import com.rbyte.dragernesdal.ui.event.EventViewModel;
 import com.rbyte.dragernesdal.ui.home.HomeFragment;
@@ -38,8 +43,11 @@ public class EditEventFragment extends Fragment {
     private EventViewModel eventViewModel;
     private EventAdapter eventAdapter = new EventAdapter();
     private ArrayList<EventCard> eventCards = new ArrayList<>();
+    private ArrayList<EventDTO> events;
+    private Handler uiThread = new Handler();
     SharedPreferences prefs;
     private int characterID;
+    View root2;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -48,23 +56,26 @@ public class EditEventFragment extends Fragment {
         characterID = prefs.getInt(HomeFragment.CHARACTER_ID_SAVESPACE, -1);
         eventViewModel = EventViewModel.getInstance();
         eventViewModel.startGetThread(characterID);
-
+        root2 = root;
+        events = new ArrayList<>();
         RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.eventRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
         recyclerView.setAdapter(eventAdapter);
         eventAdapter.notifyDataSetChanged();
 
         eventViewModel.getEvents().observe(getViewLifecycleOwner(), new Observer<List<EventDTO>>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onChanged(List<EventDTO> eventDTOS) {
                 eventCards.clear();
+                events.clear();
                 eventDTOS.forEach((n) -> {
-                    SimpleDateFormat ft = new SimpleDateFormat("HH:mm:ss");
-                    SimpleDateFormat dom = new SimpleDateFormat("E: dd-MM-yyyy");
-                    ft.setTimeZone(TimeZone.getTimeZone("CET-1"));
-                    dom.setTimeZone(TimeZone.getTimeZone("CET-1"));
-                    eventCards.add(new EventCard(dom.format(n.getStartDate()), n.getInfo(),
-                            "Klokken: " + ft.format(n.getStartDate()),ft.format(n.getEndDate()),n.getAddress()));
+                    events.add(n);
+                    String date = n.getStartDate().toLocalDate().toString().equals((n.getEndDate().toLocalDate().toString())) ?
+                            n.getStartDate().toLocalDate().toString() :
+                            n.getStartDate().toLocalDate().toString() + " - " + n.getEndDate().toLocalDate().toString();
+                    eventCards.add(new EventCard(date, n.getInfo(),
+                            "Klokken: " + n.getStartDate().toLocalTime().toString()+":00", n.getEndDate().toLocalTime().toString()+":00", n.getAddress(), n.getName()));
                 });
                 eventAdapter.notifyDataSetChanged();
             }
@@ -84,7 +95,7 @@ public class EditEventFragment extends Fragment {
 
     class EventViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
-        TextView date, info, time, attending, address;
+        TextView date, info, time, attending, address, title;
 
         public EventViewHolder(View eventViews) {
             super(eventViews);
@@ -92,19 +103,24 @@ public class EditEventFragment extends Fragment {
             date = eventViews.findViewById(R.id.textDate);
             info = eventViews.findViewById(R.id.textEventInfo);
             time = eventViews.findViewById(R.id.textTime);
+            title = eventViews.findViewById(R.id.textTitle);
             attending = eventViews.findViewById(R.id.textAttending);
             address = eventViews.findViewById(R.id.textAddress);
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     final int position = getAdapterPosition();
-                    //TODO: Rediger event
+                    PopupHandler popupHandler = new PopupHandler(getContext());
+                    events.get(position).setEventID(position);
+                    System.out.println(events.get(position).getEventID());
+                    AlertDialog.Builder builder = popupHandler.editEvent(root2,events.get(position), uiThread, Navigation.findNavController(root2));
+                    builder.show();
                 }
             });
         }
     }
 
-    class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
+    public class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
         @Override
         public int getItemCount() {
             return eventCards.size();
@@ -123,8 +139,13 @@ public class EditEventFragment extends Fragment {
             vh.info.setText(eventCards.get(position).getInfo());
             vh.time.setText(eventCards.get(position).getStartTime()+"-"+eventCards.get(position).getEndTime());
             vh.address.setText("Adresse: "+eventCards.get(position).getAddress());
+            vh.title.setText(eventCards.get(position).getTitle());
             vh.attending.setVisibility(View.INVISIBLE);
+            vh.attending.setHeight(0);
+            vh.attending.setText("");
+            vh.attending.setEnabled(false);
         }
+
     }
 
     private class EventCard {
@@ -134,8 +155,10 @@ public class EditEventFragment extends Fragment {
         private String endTime = "";
         private Boolean attending = false;
         private String address = "";
+        private String title = "";
 
-        public EventCard(String date, String info, String startTime, String endTime, String address) {
+        public EventCard(String date, String info, String startTime, String endTime, String address, String title) {
+            this.title = title;
             this.date = date;
             this.info = info;
             this.startTime = startTime;
@@ -145,6 +168,14 @@ public class EditEventFragment extends Fragment {
 
         public EventCard() {
 
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
         }
 
         public String getDate() {
