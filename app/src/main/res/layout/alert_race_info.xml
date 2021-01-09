@@ -27,7 +27,7 @@
 
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/racepic"
         android:layout_width="0dp"
         android:layout_height="370dp"
         android:layout_weight="1"
