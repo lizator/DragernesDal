@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.rbyte.dragernesdal.data.ability.AbilityDAO;
+import com.rbyte.dragernesdal.data.ability.AbilityRepository;
 import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
 import com.rbyte.dragernesdal.data.Result;
@@ -22,6 +24,7 @@ public class HomeViewModel extends ViewModel {
     private MutableLiveData<List<AbilityDTO>> mAbilities;
     private MutableLiveData<List<InventoryDTO>> mMoney;
     private MutableLiveData<List<RaceDTO>> mRace;
+    private ArrayList<AbilityDTO> potential3epRaceAbilities;
     private CharacterRepository repo;
     private static HomeViewModel instance;
 
@@ -35,6 +38,7 @@ public class HomeViewModel extends ViewModel {
         this.mAbilities = new MutableLiveData<>();
         this.mMoney = new MutableLiveData<>();
         this.mRace = new MutableLiveData<>();
+        this.potential3epRaceAbilities = new ArrayList<>();
         this.repo = CharacterRepository.getInstance();
         //initialing observers
     }
@@ -84,6 +88,10 @@ public class HomeViewModel extends ViewModel {
 
     public LiveData<List<RaceDTO>> getRaces() {
         return mRace;
+    }
+
+    public ArrayList<AbilityDTO> getPotential3epRaceAbilities() {
+        return potential3epRaceAbilities;
     }
 
     private void getCharacterByCharacterID(int characterid){
@@ -141,8 +149,23 @@ public class HomeViewModel extends ViewModel {
         if (res instanceof Result.Success){
             ArrayList<RaceDTO> raceLst = ((Result.Success<ArrayList<RaceDTO>>) res).getData();
             mRace.postValue(raceLst);
+            getAbilitiesFromRace(raceLst.get(0).getEp3(), raceLst.get(1).getEp3());
         }
 
+    }
+
+    public void getAbilitiesFromRace(int ability1ID, int ability2ID){
+        AbilityDAO tmpdao = new AbilityDAO();
+        Result<AbilityDTO> resAb1 = tmpdao.getAbilityByID(ability1ID);
+        Result<AbilityDTO> resAb2 = tmpdao.getAbilityByID(ability2ID);
+
+        if (resAb1 instanceof Result.Success && resAb2 instanceof Result.Success){
+            AbilityDTO ab1 = ((Result.Success<AbilityDTO>) resAb1).getData();
+            AbilityDTO ab2 = ((Result.Success<AbilityDTO>) resAb2).getData();
+            potential3epRaceAbilities.clear();
+            potential3epRaceAbilities.add(ab1);
+            potential3epRaceAbilities.add(ab2);
+        }
     }
 
 

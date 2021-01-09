@@ -27,6 +27,7 @@ import com.rbyte.dragernesdal.data.ability.AbilityRepository;
 import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.ui.PopupHandler;
+import com.rbyte.dragernesdal.ui.character.background.BackgroundViewModel;
 import com.rbyte.dragernesdal.ui.character.skill.SkillViewModel;
 import com.rbyte.dragernesdal.ui.home.HomeFragment;
 
@@ -40,6 +41,7 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 public class AlleFragment extends Fragment {
 
     private SkillViewModel skillViewModel = SkillViewModel.getInstance();
+    private BackgroundViewModel backgroundViewModel = BackgroundViewModel.getInstance();
     private AbilityRepository abilityrepo;
     private CharacterRepository charRepo;
     private ArrayList<AbilityDTO> abilityList = new ArrayList<>();
@@ -55,7 +57,7 @@ public class AlleFragment extends Fragment {
     private PopupHandler popHandler;
     private Handler uiThread = new Handler();
     private View root2;
-    private String[] normalTypes = new String[]{"Kamp", "Viden", "Sniger", "Race"};
+    private String[] normalTypes = new String[]{"Kamp", "Viden", "Sniger", "Race", "Bad"};
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -222,22 +224,8 @@ public class AlleFragment extends Fragment {
                                                 uiThread.post(() -> {
                                                     if (command != "auto") { //new popup needed
                                                         switch (command){
-                                                            case "HÅNDVÆRK":
+                                                            case "HÅNDVÆRK": // Only thing tha might be bought here
                                                                 popHandler.getCraftsAlert(root2, getContext(), uiThread, false).show();
-                                                                break;
-                                                            case "3EP":
-                                                                popHandler.get3EPChoiceAlert(root2, getContext(), uiThread, currentAbilityIDs).show();
-                                                                break;
-                                                            case "4EP":
-                                                                popHandler.get4EPChoiceAlert(root2, getContext(), uiThread, currentAbilityIDs).show();
-                                                                break;
-                                                            case "EVNE":
-                                                                break;
-                                                            case "EKSTRAMAGI":
-                                                                break;
-                                                            case "KRYS2EP":
-                                                                break;
-                                                            case "STARTEVNE": //only happens in create character and should be handled there
                                                                 break;
                                                         }
 
@@ -342,6 +330,7 @@ public class AlleFragment extends Fragment {
                                                             case "EKSTRAMAGI":
                                                                 break;
                                                             case "KRYS2EP":
+                                                                popHandler.getKrys2EPAlert(root2, getContext(), uiThread, currentAbilityIDs).show();
                                                                 break;
                                                             case "STARTEVNE": //only happens in create character and should be handled there
                                                                 break;

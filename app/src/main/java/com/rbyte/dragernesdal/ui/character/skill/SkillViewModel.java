@@ -8,16 +8,11 @@ import androidx.lifecycle.ViewModel;
 import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.ability.AbilityRepository;
 import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
-import com.rbyte.dragernesdal.ui.character.skill.alle.AlleFragment;
-import com.rbyte.dragernesdal.ui.character.skill.kamp.KampFragment;
-import com.rbyte.dragernesdal.ui.character.skill.sniger.SnigerFragment;
-import com.rbyte.dragernesdal.ui.character.skill.viden.VidenFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class SkillViewModel extends ViewModel {
     private static SkillViewModel instace;

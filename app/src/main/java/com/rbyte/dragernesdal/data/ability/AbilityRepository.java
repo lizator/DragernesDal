@@ -136,6 +136,93 @@ public class AbilityRepository {
         return "auto";
     }
 
+    public String tryBuy(int characterID, int abilityID, boolean free){
+        Result<AbilityDTO> res = abilityDAO.getAbilityByID(abilityID);
+        if (res instanceof Result.Error){
+            //TODO: handle errors with error msg to frontend
+            return null;
+        } else {
+            AbilityDTO dto = ((Result.Success<AbilityDTO>) res).getData();
+            switch (dto.getCommand().split(",")[0]){
+                case "KP":
+                    Result<CharacterDTO> KPresDTO = characterRepo.getCharacterByID(characterID);
+                    if (KPresDTO instanceof Result.Error){
+                        //TODO: Handle error
+                    }
+                    CharacterDTO KPcharacterDTO = ((Result.Success<CharacterDTO>) KPresDTO).getData();
+                    KPcharacterDTO.setHealth(KPcharacterDTO.getHealth() + 1);
+                    KPresDTO = characterRepo.updateCharacter(KPcharacterDTO);
+                    if (KPresDTO instanceof Result.Error){
+                        //TODO: Handle error
+                    }
+                    freeGet(characterID, abilityID);
+                    break;
+                case "NKP":
+                    Result<CharacterDTO> KPresDTO2 = characterRepo.getCharacterByID(characterID);
+                    if (KPresDTO2 instanceof Result.Error){
+                        //TODO: Handle error
+                    }
+                    CharacterDTO KPcharacterDTO2 = ((Result.Success<CharacterDTO>) KPresDTO2).getData();
+                    KPcharacterDTO2.setHealth(KPcharacterDTO2.getHealth() - 1);
+                    KPresDTO = characterRepo.updateCharacter(KPcharacterDTO2);
+                    if (KPresDTO instanceof Result.Error){
+                        //TODO: Handle error
+                    }
+                    freeGet(characterID, abilityID);
+                    break;
+                case "STYRKE":
+                    Result<CharacterDTO> STresDTO = characterRepo.getCharacterByID(characterID);
+                    if (STresDTO instanceof Result.Error){
+                        //TODO: Handle error
+                        System.out.println("Error in STYRKE");
+                    }
+                    CharacterDTO STcharacterDTO = ((Result.Success<CharacterDTO>) STresDTO).getData();
+                    STcharacterDTO.setStrength(STcharacterDTO.getStrength() + 1);
+                    STresDTO = characterRepo.updateCharacter(STcharacterDTO);
+                    if (STresDTO instanceof Result.Error){
+                        //TODO: Handle error
+                    }
+                    freeGet(characterID, abilityID);
+                    break;
+                case "NSTYRKE":
+                    Result<CharacterDTO> STresDTO2 = characterRepo.getCharacterByID(characterID);
+                    if (STresDTO2 instanceof Result.Error){
+                        //TODO: Handle error
+                        System.out.println("Error in STYRKE");
+                    }
+                    CharacterDTO STcharacterDTO2 = ((Result.Success<CharacterDTO>) STresDTO2).getData();
+                    STcharacterDTO2.setStrength(STcharacterDTO2.getStrength() - 1);
+                    STresDTO = characterRepo.updateCharacter(STcharacterDTO2);
+                    if (STresDTO instanceof Result.Error){
+                        //TODO: Handle error
+                    }
+                    freeGet(characterID, abilityID);
+                    break;
+                case "REGEN":
+                    freeGet(characterID, abilityID); //first ability
+                    freeGet(characterID, 90); //Regen
+                    break;
+                case "HÅNDVÆRK": //should return a string to init a popup
+                    return "HÅNDVÆRK";
+                case "VALG": //should return a string to init a popup
+                    return dto.getCommand().split(",")[1];
+                case "KRYS3EP":
+                    return "KRYS3EP";
+                //TODO: make get both start abilities of races
+                case "KRYS4EP":
+                    return "KRYS4EP";
+                //TODO: make get both 2ep abilities of races
+                case "STARTEVNE":
+                    return "STARTEVNE";
+                default: // NULL or new
+                    freeGet(characterID, abilityID);
+                    break;
+            }
+        }
+
+        return "auto";
+    }
+
     public Result confirmBuy(int characterID, int abilityID){
         Result res = abilityDAO.buyAbility(characterID, abilityID);
         return res;
@@ -143,6 +230,11 @@ public class AbilityRepository {
 
     public Result<List<AbilityDTO>> confirmBuyWithFree(int characterID, int abilityID, int freeAbilityID){
         Result res = abilityDAO.buyAndGetFreeAbility(characterID, abilityID, freeAbilityID);
+        return res;
+    }
+
+    public Result<List<AbilityDTO>> confirmBuyWithFree(int characterID, int abilityID, int freeAbilityID, boolean free){
+        Result res = abilityDAO.buyAndGetFreeAbility(characterID, abilityID, freeAbilityID, free);
         return res;
     }
 

@@ -127,6 +127,18 @@ public class AbilityDAO {
         }
     }
 
+    public Result<AbilityDTO> buyAndGetFreeAbility(int characterID, int abilityID, int freeID, boolean free){
+        try {
+            Call<List<AbilityDTO>> call = service.freeAndGetFreeAbility(characterID, abilityID, freeID);
+            respList = call.execute();
+            if (respList.code() == 200) return new Result.Success<List<AbilityDTO>>(respList.body());
+            return new Result.Error(new IOException(resp.message()));
+        } catch (IOException e){
+            e.printStackTrace();
+            return new Result.Error(new IOException("Error connection to database"));
+        }
+    }
+
 
     public Result<AbilityDTO> addCraft(int characterID, String craft){
         try {
@@ -165,6 +177,9 @@ public class AbilityDAO {
 
         @GET("/ability/buyAndGetFree/{characterID}/{abilityID}/{freeAbilityID}")
         Call<List<AbilityDTO>> buyAndGetFreeAbility(@Path(value = "characterID") int characterID, @Path(value = "abilityID") int abilityID, @Path(value = "freeAbilityID") int freeAbilityID);
+
+        @GET("/ability/freeAndGetFree/{characterID}/{abilityID}/{freeAbilityID}")
+        Call<List<AbilityDTO>> freeAndGetFreeAbility(@Path(value = "characterID") int characterID, @Path(value = "abilityID") int abilityID, @Path(value = "freeAbilityID") int freeAbilityID);
 
         @GET("/ability/craft/{characterID}/{craft}")
         Call<AbilityDTO> addCraft(@Path(value = "characterID") int characterID, @Path(value = "craft") String craft);
