@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.rbyte.dragernesdal.data.ability.AbilityDAO;
-import com.rbyte.dragernesdal.data.ability.AbilityRepository;
 import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
 import com.rbyte.dragernesdal.data.Result;
@@ -15,15 +14,14 @@ import com.rbyte.dragernesdal.data.race.model.RaceDTO;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 public class HomeViewModel extends ViewModel {
 
     private MutableLiveData<CharacterDTO> mCharacter;
     private MutableLiveData<List<AbilityDTO>> mAbilities;
     private MutableLiveData<List<InventoryDTO>> mMoney;
-    private MutableLiveData<List<RaceDTO>> mRace;
+    private MutableLiveData<RaceDTO> mRace;
+    private MutableLiveData<List<RaceDTO>> mOtherRace;
     private ArrayList<AbilityDTO> potential3epRaceAbilities;
     private CharacterRepository repo;
     private static HomeViewModel instance;
@@ -38,6 +36,7 @@ public class HomeViewModel extends ViewModel {
         this.mAbilities = new MutableLiveData<>();
         this.mMoney = new MutableLiveData<>();
         this.mRace = new MutableLiveData<>();
+        this.mOtherRace = new MutableLiveData<>();
         this.potential3epRaceAbilities = new ArrayList<>();
         this.repo = CharacterRepository.getInstance();
         //initialing observers
@@ -86,8 +85,12 @@ public class HomeViewModel extends ViewModel {
         return mMoney;
     }
 
-    public LiveData<List<RaceDTO>> getRaces() {
+    public MutableLiveData<RaceDTO> getmRace() {
         return mRace;
+    }
+
+    public LiveData<List<RaceDTO>> getRaces() {
+        return mOtherRace;
     }
 
     public ArrayList<AbilityDTO> getPotential3epRaceAbilities() {
@@ -104,7 +107,7 @@ public class HomeViewModel extends ViewModel {
             getAbilitiesByCharacterID(characterid);
             getMoneyByCharacterID(characterid);
             if (character.getIdrace() == 6){
-                getRacesByCharacterID(characterid);
+                getRacesByCharacterID(characterid, character.getIdrace(), 0);
             }
             //loginResult.postValue(new LoginResult(new LoggedInUserView(data.getFirstName() + " " + data.getLastName(), data.getEmail(), data.getPassHash())));
         } else {
@@ -144,14 +147,23 @@ public class HomeViewModel extends ViewModel {
         }
     }
 
-    public void getRacesByCharacterID(int characterid){
-        Result<List<RaceDTO>> res = repo.getKrydsRaces(characterid);
+    public void getRacesByCharacterID(int characterid, int raceID, int count){
+        Result<RaceDTO> res = repo.getSingleRace(raceID);
         if (res instanceof Result.Success){
-            ArrayList<RaceDTO> raceLst = ((Result.Success<ArrayList<RaceDTO>>) res).getData();
-            mRace.postValue(raceLst);
+            RaceDTO race = ((Result.Success<RaceDTO>) res).getData();
+            mRace.postValue(race);
+        }
+
+        Result<List<RaceDTO>> res2 = repo.getKrydsRaces(characterid);
+        if (res2 instanceof Result.Success){
+            ArrayList<RaceDTO> raceLst = ((Result.Success<ArrayList<RaceDTO>>) res2).getData();
+            mOtherRace.postValue(raceLst);
             getAbilitiesFromRace(raceLst.get(0).getEp3(), raceLst.get(1).getEp3());
         }
 
+        if ((res instanceof Result.Error || res2 instanceof Result.Error) && count < 10){
+            getRacesByCharacterID(characterid, raceID, count+1);
+        }
     }
 
     public void getAbilitiesFromRace(int ability1ID, int ability2ID){

@@ -49,7 +49,7 @@ public class RaceDAO {
         }
     }
 
-    public Result<List<RaceDTO>> getRaceInfo(int raceID){
+    public Result<RaceDTO> getRaceInfo(int raceID){
         try {
             Call<RaceDTO> call = service.getRaceInfo(raceID);
             resp = call.execute();

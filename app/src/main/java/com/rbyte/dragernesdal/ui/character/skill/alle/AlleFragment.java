@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
@@ -26,10 +27,12 @@ import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.ability.AbilityRepository;
 import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
+import com.rbyte.dragernesdal.data.race.model.RaceDTO;
 import com.rbyte.dragernesdal.ui.PopupHandler;
 import com.rbyte.dragernesdal.ui.character.background.BackgroundViewModel;
 import com.rbyte.dragernesdal.ui.character.skill.SkillViewModel;
 import com.rbyte.dragernesdal.ui.home.HomeFragment;
+import com.rbyte.dragernesdal.ui.home.HomeViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,8 +87,16 @@ public class AlleFragment extends Fragment {
             boolean special = true;
             for (String type : normalTypes){
                 if (dto.getType().equals(type)){
-                    special = false;
-                    break;
+                    if (dto.getType().equals("Race")){
+                        RaceDTO race = HomeViewModel.getInstance().getmRace().getValue();
+                        if (race.getStart() == dto.getId() || race.getEp2() == dto.getId() || race.getEp3() == dto.getId() || race.getEp4() == dto.getId()){
+                            special = false;
+                            break;
+                        }
+                    } else {
+                        special = false;
+                        break;
+                    }
                 }
             }
             if (special){
@@ -314,8 +325,8 @@ public class AlleFragment extends Fragment {
                                                 String command = abilityrepo.tryBuy(charRepo.getCurrentChar().getIdcharacter(), raceAbilityList.get(position).getId());
                                                 charRepo.getCharacterByID(charRepo.getCurrentChar().getIdcharacter());
                                                 uiThread.post(() -> {
-                                                    if (command != "auto") { //new popup needed
-                                                        switch (command){
+                                                    if (command.split(",")[0] != "auto") { //new popup needed
+                                                        switch (command.split(",")[0]){
                                                             case "HÅNDVÆRK":
                                                                 popHandler.getCraftsAlert(root2, getContext(), uiThread, false).show();
                                                                 break;
@@ -332,7 +343,34 @@ public class AlleFragment extends Fragment {
                                                             case "KRYS2EP":
                                                                 popHandler.getKrys2EPAlert(root2, getContext(), uiThread, currentAbilityIDs).show();
                                                                 break;
+                                                            case "KRYS":
+                                                                ArrayList<String> frees = new ArrayList<>();
+                                                                frees.add(command.split(",")[1]);
+                                                                frees.add(command.split(",")[2]);
+                                                                for (String command2 : frees){
+                                                                    switch (command2){
+                                                                        case "HÅNDVÆRK":
+                                                                            popHandler.getCraftsAlert(root2, getContext(), uiThread, true).show();
+                                                                            break;
+                                                                        case "3EP":
+                                                                            popHandler.get3EPChoiceAlert(root2, getContext(), uiThread, currentAbilityIDs, true).show();
+                                                                            break;
+                                                                        case "EKSTRAMAGI":
+                                                                            break;
+                                                                        default:
+                                                                            break;
+                                                                    }
+                                                                }
+                                                                break;
                                                             case "STARTEVNE": //only happens in create character and should be handled there
+                                                                Log.d("CharacterCreation", "Getting starter ability");
+                                                                Executor bgThread4 = Executors.newSingleThreadExecutor();
+                                                                bgThread4.execute(() -> {
+                                                                    AlertDialog.Builder builder = popHandler.getStartChoiceAlert(root2, getContext(), uiThread);
+                                                                    uiThread.post(() ->{
+                                                                        builder.show();
+                                                                    });
+                                                                });
                                                                 break;
                                                         }
 

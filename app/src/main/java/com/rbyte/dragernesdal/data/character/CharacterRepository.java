@@ -26,7 +26,8 @@ public class CharacterRepository { //Class for getting characters and saving the
     private ArrayList<CharacterDTO> currentCharList;
     private ArrayList<AbilityDTO> abilitiesList; //current characters List of abilities
     private ArrayList<InventoryDTO> inventoryList; //current characters List of inventory
-    private ArrayList raceList; //race tracking for kryslings
+    private RaceDTO race; //current race info
+    private ArrayList<RaceDTO> raceList; //race tracking for kryslings
     private boolean updateNeeded = true;
     private int userID = -1;
     private int characterID = -1;
@@ -120,6 +121,14 @@ public class CharacterRepository { //Class for getting characters and saving the
             inventoryList = inventory;
         }
         return result;
+    }
+
+    public Result<RaceDTO> getSingleRace(int raceID){
+        Result<RaceDTO> res = raceDAO.getRaceInfo(raceID);
+        if (res instanceof Result.Success){
+            this.race = ((Result.Success<RaceDTO>) res).getData();
+        }
+        return res;
     }
 
     public Result<List<RaceDTO>> getKrydsRaces(int characterID){
