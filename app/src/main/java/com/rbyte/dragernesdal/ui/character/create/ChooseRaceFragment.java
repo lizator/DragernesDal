@@ -100,7 +100,7 @@ public class ChooseRaceFragment extends Fragment {
             //builder.setTitle("Vil du vælge denne seje race");
             View viewInflated = LayoutInflater.from(root.getContext()).inflate(R.layout.alert_race_info, (ViewGroup)root.getRootView(),false);
             final EditText description = (EditText) viewInflated.findViewById(R.id.input);
-            description.setText("Elvere er nogle grimmerter");
+            description.setText("Elvere er nogle grimmerter. og vi tester lige med en længere tekst for at se hvordan det egentlig kommer til at se ud.");
             builder.setView(viewInflated);
 
             int raceID = prefs.getInt(ChooseRaceFragment.RACE_ID_SAVESPACE, 1);
