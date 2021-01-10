@@ -22,7 +22,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.rbyte.dragernesdal.R;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
+import com.rbyte.dragernesdal.ui.character.skill.SkillViewModel;
 import com.rbyte.dragernesdal.ui.home.HomeFragment;
+import com.rbyte.dragernesdal.ui.home.HomeViewModel;
 import com.rbyte.dragernesdal.ui.main.MainActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -106,6 +108,7 @@ public class SelectFragment extends Fragment{
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putInt(HomeFragment.CHARACTER_ID_SAVESPACE, characterList.get(position).getIdcharacter());
                     editor.commit();
+                    SkillViewModel.getInstance().reset();
                     navController = Navigation.findNavController(root2);
                     navController.popBackStack(R.id.nav_home,false);
                 }

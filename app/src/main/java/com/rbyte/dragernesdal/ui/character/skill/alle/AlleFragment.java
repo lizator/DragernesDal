@@ -89,7 +89,7 @@ public class AlleFragment extends Fragment {
                 if (dto.getType().equals(type)){
                     if (dto.getType().equals("Race")){
                         RaceDTO race = HomeViewModel.getInstance().getmRace().getValue();
-                        if (race.getStart() == dto.getId() || race.getEp2() == dto.getId() || race.getEp3() == dto.getId() || race.getEp4() == dto.getId()){
+                        if (race != null && (race.getStart() == dto.getId() || race.getEp2() == dto.getId() || race.getEp3() == dto.getId() || race.getEp4() == dto.getId())){
                             special = false;
                             break;
                         }

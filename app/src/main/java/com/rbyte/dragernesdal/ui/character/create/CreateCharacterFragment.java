@@ -29,6 +29,7 @@ import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
 import com.rbyte.dragernesdal.ui.PopupHandler;
 import com.rbyte.dragernesdal.ui.character.select.SelectViewModel;
+import com.rbyte.dragernesdal.ui.character.skill.SkillViewModel;
 import com.rbyte.dragernesdal.ui.home.HomeFragment;
 
 import java.util.concurrent.Executor;
@@ -237,6 +238,7 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
                                         //TODO: handle error
                                         break;
                                 }
+                                SkillViewModel.getInstance().reset();
                                 navController = Navigation.findNavController(root2);
                                 navController.popBackStack(R.id.nav_home,false);
                             });

@@ -104,10 +104,11 @@ public class HomeViewModel extends ViewModel {
         if (result instanceof Result.Success) {
             CharacterDTO character = ((Result.Success<CharacterDTO>) result).getData();
             mCharacter.postValue(character);
+            getRaceByRaceID(character.getIdrace(), 0);
             getAbilitiesByCharacterID(characterid);
             getMoneyByCharacterID(characterid);
             if (character.getIdrace() == 6){
-                getRacesByCharacterID(characterid, character.getIdrace(), 0);
+                getKrysRacesByCharacterID(characterid, character.getIdrace(), 0);
             }
             //loginResult.postValue(new LoginResult(new LoggedInUserView(data.getFirstName() + " " + data.getLastName(), data.getEmail(), data.getPassHash())));
         } else {
@@ -147,13 +148,19 @@ public class HomeViewModel extends ViewModel {
         }
     }
 
-    public void getRacesByCharacterID(int characterid, int raceID, int count){
+    public void getRaceByRaceID(int raceID, int count){
         Result<RaceDTO> res = repo.getSingleRace(raceID);
         if (res instanceof Result.Success){
             RaceDTO race = ((Result.Success<RaceDTO>) res).getData();
             mRace.postValue(race);
         }
 
+        if ((res instanceof Result.Error) && count < 10){
+            getRaceByRaceID(raceID, count+1);
+        }
+    }
+
+    public void getKrysRacesByCharacterID(int characterid, int raceID, int count){
         Result<List<RaceDTO>> res2 = repo.getKrydsRaces(characterid);
         if (res2 instanceof Result.Success){
             ArrayList<RaceDTO> raceLst = ((Result.Success<ArrayList<RaceDTO>>) res2).getData();
@@ -161,8 +168,8 @@ public class HomeViewModel extends ViewModel {
             getAbilitiesFromRace(raceLst.get(0).getEp3(), raceLst.get(1).getEp3());
         }
 
-        if ((res instanceof Result.Error || res2 instanceof Result.Error) && count < 10){
-            getRacesByCharacterID(characterid, raceID, count+1);
+        if ((res2 instanceof Result.Error) && count < 10){
+            getKrysRacesByCharacterID(characterid, raceID, count+1);
         }
     }
 

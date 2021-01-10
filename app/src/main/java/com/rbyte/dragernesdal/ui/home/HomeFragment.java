@@ -156,6 +156,10 @@ public class HomeFragment extends Fragment {
                         yearEdit.setText(String.valueOf(character.getAge()));
                         String strength = "";
                         for (int i = 0; i < character.getStrength(); i++) strength += "J";
+                        if (strength.length() > 5) {
+                            strengthTV.setTextSize(60);
+                            kpTV.setTextSize(30);
+                        }
                         strengthTV.setText(strength);
                         String kp = "";
                         for (int i = 0; i < character.getHealth(); i++) {

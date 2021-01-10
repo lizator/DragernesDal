@@ -49,6 +49,10 @@ public class SkillViewModel extends ViewModel {
 
     }
 
+    public void reset(){
+        raceAbilities.setValue(null);
+    }
+
     public void updateKamp(){
         Executor bgThread = Executors.newSingleThreadExecutor();
         bgThread.execute(() -> {
