@@ -1,5 +1,6 @@
 package com.rbyte.dragernesdal.ui.admin.event;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,7 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.activity.OnBackPressedCallback;
@@ -21,8 +24,11 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.rbyte.dragernesdal.R;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
+import com.rbyte.dragernesdal.data.event.model.CheckInDTO;
+import com.rbyte.dragernesdal.ui.PopupHandler;
 import com.rbyte.dragernesdal.ui.character.select.SelectViewModel;
 import com.rbyte.dragernesdal.ui.character.skill.SkillViewModel;
 import com.rbyte.dragernesdal.ui.home.HomeFragment;
@@ -42,17 +48,38 @@ public class CheckInFragment extends Fragment {
     private View root2;
     public static final String EVENT_ID_ARGUMENT = "eventIDArgument";
     private static final String EVENT_SELECTED_NAME = "eventName";
-    private int checkin = 0;
+    private int checkin;
+    private int eventID;
+    private FloatingActionButton fab;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_admin_checkin, container, false);
         characterList = new ArrayList<CharacterDTO>();
         checkInViewModel = CheckInViewModel.getInstance();
-
+        checkin = 0;
+        fab = root.findViewById(R.id.checkedIn);
         SharedPreferences prefs = getDefaultSharedPreferences(getContext());
-        int eventID = prefs.getInt(EVENT_ID_ARGUMENT, -1);
+        eventID = prefs.getInt(EVENT_ID_ARGUMENT, -1);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Check in: "+prefs.getString(EVENT_SELECTED_NAME, ""));
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(checkin == 1){
+                    checkin = 0;
+                    checkInViewModel.startGetThread(eventID, checkin);
+                    characterAdapter.notifyDataSetChanged();
+                    fab.setImageResource(R.drawable.ic_baseline_save_alt_24);
+                    ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Check in: "+prefs.getString(EVENT_SELECTED_NAME, ""));
+                } else {
+                    checkin = 1;
+                    checkInViewModel.startGetThread(eventID, checkin);
+                    characterAdapter.notifyDataSetChanged();
+                    fab.setImageResource(R.drawable.ic_plus_menu);
+                    ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Checked in: "+prefs.getString(EVENT_SELECTED_NAME, ""));
+                }
+            }
+        });
         Log.i("CheckInFrag", "EventID Found: " + eventID);
         checkInViewModel.startGetThread(eventID, checkin);
         //Finding recyclerview to input abilities
@@ -99,13 +126,33 @@ public class CheckInFragment extends Fragment {
                 public void onClick(View v){
                     Log.i("test", "Running");
                     final int position = getAdapterPosition(); // listeelementets position
-                    /*SharedPreferences prefs = getDefaultSharedPreferences(getContext());;
-                    SharedPreferences.Editor editor = prefs.edit();
-                    editor.putInt(HomeFragment.CHARACTER_ID_SAVESPACE, characterList.get(position).getIdcharacter());
-                    editor.commit();
-                    SkillViewModel.getInstance().reset();
-                    navController = Navigation.findNavController(root2);
-                    navController.popBackStack(R.id.nav_home,false);*/
+                    AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                    if(checkin == 1) alertDialog.setTitle(getResources().getString(R.string.checkin)+" "+ characterList.get(position).getName());
+                    else alertDialog.setTitle(getResources().getString(R.string.checkout)+" "+ characterList.get(position).getName());
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            alertDialog.dismiss();
+                            CheckInDTO dto = new CheckInDTO();
+                            if(checkin == 0) dto.setCheckin(1);
+                            else dto.setCheckin(0);
+                            dto.setIdEvent(eventID);
+                            dto.setIdChar(characterList.get(position).getIdcharacter());
+                            checkInViewModel.startSetThread(dto);
+                            if(checkin == 1) Toast.makeText(getContext(),characterList.get(position).getName()+": checked ud",Toast.LENGTH_SHORT).show();
+                            else Toast.makeText(getContext(),characterList.get(position).getName()+": checked ind",Toast.LENGTH_SHORT).show();
+                            characterList.remove(position);
+                            characterAdapter.notifyDataSetChanged();
+                        }
+                    });
+                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Annuller", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            alertDialog.dismiss();
+
+                        }
+                    });
+                    alertDialog.show();
                 }
             });
 

@@ -8,6 +8,8 @@ import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.ability.AbilityDAO;
 import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
+import com.rbyte.dragernesdal.data.event.CheckInDAO;
+import com.rbyte.dragernesdal.data.event.model.CheckInDTO;
 import com.rbyte.dragernesdal.data.inventory.InventoryDAO;
 import com.rbyte.dragernesdal.data.inventory.model.InventoryDTO;
 import com.rbyte.dragernesdal.data.race.RaceDAO;

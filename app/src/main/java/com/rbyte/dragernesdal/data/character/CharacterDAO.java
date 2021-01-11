@@ -105,6 +105,12 @@ public class CharacterDAO {
         }
     }
 
+    Result<CharacterDTO> setCharacterByEventID(int eventID, int charid, int checkin) {
+            service.setByEventID(eventID, charid, checkin);
+            return new Result<CharacterDTO>();
+
+    }
+
     Result<CharacterDTO> updateCharacter(CharacterDTO dto) {
         try {
             Call<CharacterDTO> call = service.updateCharacter(dto);
@@ -130,6 +136,9 @@ public class CharacterDAO {
 
         @GET("/character/krys/{characterid}/{race1id}/{race2id}")
         Call<CharacterDTO> createKrysling(@Path(value = "characterid") int characterid, @Path(value = "race1id") int race1id, @Path(value = "race2id") int race2id);
+
+        @GET("/character/setByEventID/{eventid}/{checkin}/{charid}")
+        Call<CharacterDTO> setByEventID(@Path(value = "eventid") int eventid, @Path(value = "checkin") int checkin, @Path(value = "charid") int charid);
 
         @POST("/character/create")
         Call<CharacterDTO> createCharacter(@Body CharacterDTO character);
