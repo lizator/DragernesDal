@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -39,6 +41,7 @@ public class CheckInFragment extends Fragment {
     private NavController navController;
     private View root2;
     public static final String EVENT_ID_ARGUMENT = "eventIDArgument";
+    private static final String EVENT_SELECTED_NAME = "eventName";
     private int checkin = 0;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -46,8 +49,10 @@ public class CheckInFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_admin_checkin, container, false);
         characterList = new ArrayList<CharacterDTO>();
         checkInViewModel = CheckInViewModel.getInstance();
+
         SharedPreferences prefs = getDefaultSharedPreferences(getContext());
         int eventID = prefs.getInt(EVENT_ID_ARGUMENT, -1);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Check in: "+prefs.getString(EVENT_SELECTED_NAME, ""));
         Log.i("CheckInFrag", "EventID Found: " + eventID);
         checkInViewModel.startGetThread(eventID, checkin);
         //Finding recyclerview to input abilities
