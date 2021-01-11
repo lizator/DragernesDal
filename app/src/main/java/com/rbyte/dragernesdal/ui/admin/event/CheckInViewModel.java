@@ -20,6 +20,7 @@ public class CheckInViewModel extends ViewModel {
     private CharacterRepository repo;
     private int eventID = -1;
 
+
     private CheckInViewModel() {
         mCharacters = new MutableLiveData<>();
         repo = CharacterRepository.getInstance();
@@ -38,15 +39,15 @@ public class CheckInViewModel extends ViewModel {
         return mCharacters;
     }
 
-    public void startGetThread(int eventID){
+    public void startGetThread(int eventID, int checkin){
         setEventID(eventID);
-        GetCharacterListThread thread = new GetCharacterListThread(eventID);
+        GetCharacterListThread thread = new GetCharacterListThread(eventID, checkin);
         thread.start();
     }
 
-    public void getCharactersByEventID(int eventID){
+    public void getCharactersByEventID(int eventID, int checkin){
         Result<List<CharacterDTO>> result;
-        result = repo.getCharactersByEventID(eventID);
+        result = repo.getCharactersByEventID(eventID, checkin);
         if (result instanceof Result.Success) {
             ArrayList<CharacterDTO> lst = ((Result.Success<ArrayList<CharacterDTO>>) result).getData();
             if(!(lst).equals((ArrayList<CharacterDTO>) mCharacters.getValue())) {
@@ -61,14 +62,16 @@ public class CheckInViewModel extends ViewModel {
 
     class GetCharacterListThread extends Thread {
         private int id;
+        private int checkin = 0;
 
-        public GetCharacterListThread(int eventID) {
+        public GetCharacterListThread(int eventID, int checkin) {
             this.id = eventID;
+            this.checkin = checkin;
         }
 
         @Override
         public void run() {
-            getCharactersByEventID(this.id);
+            getCharactersByEventID(this.id, checkin);
         }
     }
 }

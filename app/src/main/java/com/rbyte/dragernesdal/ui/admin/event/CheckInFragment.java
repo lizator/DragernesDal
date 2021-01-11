@@ -39,6 +39,7 @@ public class CheckInFragment extends Fragment {
     private NavController navController;
     private View root2;
     public static final String EVENT_ID_ARGUMENT = "eventIDArgument";
+    private int checkin = 0;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -48,7 +49,7 @@ public class CheckInFragment extends Fragment {
         SharedPreferences prefs = getDefaultSharedPreferences(getContext());
         int eventID = prefs.getInt(EVENT_ID_ARGUMENT, -1);
         Log.i("CheckInFrag", "EventID Found: " + eventID);
-        checkInViewModel.startGetThread(eventID);
+        checkInViewModel.startGetThread(eventID, checkin);
         //Finding recyclerview to input abilities
         recyclerView = (RecyclerView) root.findViewById(R.id.charRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
