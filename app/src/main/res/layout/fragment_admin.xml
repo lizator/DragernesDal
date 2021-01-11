@@ -123,4 +123,16 @@
         app:layout_constraintStart_toEndOf="@+id/button_checkout"
         app:layout_constraintTop_toBottomOf="@+id/button_edit_event" />
 
+    <Button
+        android:id="@+id/button_checkind"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/check_ind"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.102"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_checkout" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

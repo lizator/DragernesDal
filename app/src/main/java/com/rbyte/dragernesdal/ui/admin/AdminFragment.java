@@ -23,7 +23,8 @@ public class AdminFragment extends Fragment implements View.OnClickListener{
     //TODO: Se Figma
 
     private AdminViewModel adminViewModel;
-    private Button btn_createSkill, btn_editSkill, btn_createRace, btn_editRace, btn_createEvent, btn_editEvent, btn_checkOut, btn_editUser;
+    private Button btn_createSkill, btn_editSkill, btn_createRace, btn_editRace,
+            btn_createEvent, btn_editEvent, btn_checkOut, btn_editUser, btn_checkInd;
     private View root2;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -47,6 +48,8 @@ public class AdminFragment extends Fragment implements View.OnClickListener{
         btn_checkOut.setOnClickListener(this);
         btn_editUser = root.findViewById(R.id.button_edit_user);
         btn_editUser.setOnClickListener(this);
+        btn_checkInd = root.findViewById(R.id.button_checkind);
+        btn_checkInd.setOnClickListener(this);
 
 
 
@@ -109,6 +112,10 @@ public class AdminFragment extends Fragment implements View.OnClickListener{
                 clickedOnToast("Rediger bruger");
                 Log.d("AdminView","Clicked on edit user");
                 navController.navigate(R.id.nav_admin_user_edit);
+                break;
+            case R.id.button_checkind:
+                Log.d("AdminView","Clicked on check in");
+                navController.navigate(R.id.nav_admin_checkin);
                 break;
         }
     }
