@@ -8,6 +8,8 @@ import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.ability.AbilityDAO;
 import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
+import com.rbyte.dragernesdal.data.event.CheckInDAO;
+import com.rbyte.dragernesdal.data.event.model.CheckInDTO;
 import com.rbyte.dragernesdal.data.inventory.InventoryDAO;
 import com.rbyte.dragernesdal.data.inventory.model.InventoryDTO;
 import com.rbyte.dragernesdal.data.race.RaceDAO;
@@ -70,6 +72,16 @@ public class CharacterRepository { //Class for getting characters and saving the
             }
             return result;
         }
+        return new Result.Success<List<CharacterDTO>>(this.currentCharList);
+    }
+
+    public Result<List<CharacterDTO>> getCharactersByEventID(int eventID, int checkin){
+            Result<List<CharacterDTO>> result;
+            result = characterDAO.getCharactersByEventID(eventID, checkin);
+            if (result instanceof Result.Success) {
+                this.currentCharList = (ArrayList<CharacterDTO>) ((Result.Success) result).getData();
+                Log.i("GetCharacters Results", "b");
+            }
         return new Result.Success<List<CharacterDTO>>(this.currentCharList);
     }
 
