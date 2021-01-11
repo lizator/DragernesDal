@@ -243,7 +243,7 @@ public class HomeFragment extends Fragment {
         public AbilityViewHolder(View abilityViews) {
             super(abilityViews);
             view = abilityViews;
-            name = abilityViews.findViewById(R.id.abilityName);
+            name = abilityViews.findViewById(R.id.magicName);
             // Gør listeelementer klikbare og vis det ved at deres baggrunsfarve ændrer sig ved berøring
             name.setBackgroundResource(android.R.drawable.list_selector_background);
         }

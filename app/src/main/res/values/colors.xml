@@ -16,6 +16,11 @@
     <color name="colorSniger">#9C27B0</color>
     <color name="colorViden">#2196F3</color>
     <color name="colorAlle">#4CAF50</color>
+    <color name="colorElemtal">#F44336</color>
+    <color name="colorDivine">#9E9E9E</color>
+    <color name="colorNecro">#2A2A2A</color>
+    <color name="colorDemon">#4CAF50</color>
+    <color name="colorTransform">#03A9F4</color>
     <color name="colorTableLine1">#EEEEEE</color>
     <color name="colorTableLine2">#CECECE</color>
 </resources>

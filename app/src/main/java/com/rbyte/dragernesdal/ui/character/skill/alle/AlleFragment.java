@@ -12,13 +12,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -160,7 +157,7 @@ public class AlleFragment extends Fragment {
         public AbilityViewHolder(View abilityViews) {
             super(abilityViews);
             view = abilityViews;
-            name = abilityViews.findViewById(R.id.abilityName);
+            name = abilityViews.findViewById(R.id.magicName);
             cost = abilityViews.findViewById(R.id.abilityCostTv);
             buybtn = abilityViews.findViewById(R.id.buyAbilitybtn);
             checkimg = abilityViews.findViewById(R.id.checkImage);

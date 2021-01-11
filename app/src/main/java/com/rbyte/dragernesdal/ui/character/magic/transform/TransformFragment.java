@@ -1,4 +1,4 @@
-package com.rbyte.dragernesdal.ui.character.skill.kamp;
+package com.rbyte.dragernesdal.ui.character.magic.transform;
 
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -34,7 +34,7 @@ import java.util.concurrent.Executors;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
-public class KampFragment extends Fragment {
+public class TransformFragment extends Fragment {
 
     //private KampViewModel kampViewModel = new KampViewModel();
     private SkillViewModel skillViewModel = SkillViewModel.getInstance();
