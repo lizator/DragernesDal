@@ -71,6 +71,20 @@ public class PopupHandler {
         return builder;
     }
 
+    public AlertDialog.Builder getInfoAlert(View thisView, String name, String msg){
+        builder.setTitle(name);
+        View alertView = LayoutInflater.from(context).inflate(R.layout.popup_ability_info, (ViewGroup) thisView.getRootView(), false);
+        ((TextView) alertView.findViewById(R.id.abilityInfo)).setText(msg);
+        builder.setView(alertView);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        return builder;
+    }
+
     public AlertDialog.Builder getKrysRaceAlert(View thisView, Context context, Handler uiThread){
         builder.setTitle("Krydsningen");
         View alertView = LayoutInflater.from(context).inflate(R.layout.popup_choice_krysracer, (ViewGroup) thisView.getRootView(), false);

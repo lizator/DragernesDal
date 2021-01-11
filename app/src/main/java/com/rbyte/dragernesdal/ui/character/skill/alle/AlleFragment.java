@@ -191,6 +191,12 @@ public class AlleFragment extends Fragment {
         public void onBindViewHolder(AbilityViewHolder vh, int position) {
             vh.name.setText(abilityList.get(position).getName());
             vh.cost.setText(abilityList.get(position).getCost() + "");
+            vh.view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popHandler.getInfoAlert(root2, abilityList.get(position).getName(), abilityList.get(position).getDesc()).show();
+                }
+            });
             if (position % 2 == 1) vh.view.setBackgroundColor(getResources().getColor(R.color.colorTableLine1));
             boolean bought = false;
             for (int id : currentAbilityIDs){
@@ -296,6 +302,12 @@ public class AlleFragment extends Fragment {
             if(!bought){
                 int currEP = skillViewModel.getCurrentEP().getValue();
                 int parent = raceAbilityList.get(position).getIdparent();
+                vh.view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        popHandler.getInfoAlert(root2, raceAbilityList.get(position).getName(), raceAbilityList.get(position).getDesc()).show();
+                    }
+                });
                 Boolean ownsParent = false;
                 if (parent != 0) {
                     for (int id : currentAbilityIDs){
@@ -413,6 +425,12 @@ public class AlleFragment extends Fragment {
         public void onBindViewHolder(AbilityViewHolder vh, int position) {
             vh.name.setText(otherAbilityList.get(position).getName());
             vh.cost.setText(otherAbilityList.get(position).getCost() + "");
+            vh.view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popHandler.getInfoAlert(root2, otherAbilityList.get(position).getName(), otherAbilityList.get(position).getDesc()).show();
+                }
+            });
             if (position % 2 == (otherAbilityList.size() + 1) % 2) vh.view.setBackgroundColor(getResources().getColor(R.color.colorTableLine1));
             vh.buybtn.setVisibility(View.GONE);
             vh.checkimg.setVisibility(View.VISIBLE);
