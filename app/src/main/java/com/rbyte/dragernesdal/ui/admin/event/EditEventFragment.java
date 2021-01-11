@@ -1,5 +1,6 @@
 package com.rbyte.dragernesdal.ui.admin.event;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -109,12 +110,29 @@ public class EditEventFragment extends Fragment {
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                    alertDialog.setTitle(getResources().getString(R.string.editOrCheckIn));
                     final int position = getAdapterPosition();
-                    PopupHandler popupHandler = new PopupHandler(getContext());
-                    events.get(position).setEventID(position);
-                    System.out.println(events.get(position).getEventID());
-                    AlertDialog.Builder builder = popupHandler.editEvent(root2,events.get(position), uiThread, Navigation.findNavController(root2));
-                    builder.show();
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getResources().getString(R.string.rediger_event), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            alertDialog.dismiss();
+                            PopupHandler popupHandler = new PopupHandler(getContext());
+                            events.get(position).setEventID(position);
+                            System.out.println(events.get(position).getEventID());
+                            AlertDialog.Builder builder = popupHandler.editEvent(root2,events.get(position), uiThread, Navigation.findNavController(root2));
+                            builder.show();
+                        }
+                    });
+                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.check_ind), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            alertDialog.dismiss();
+                            NavController navController = Navigation.findNavController(root2);
+                            navController.navigate(R.id.nav_admin_checkin);
+                        }
+                    });
+                    alertDialog.show();
                 }
             });
         }

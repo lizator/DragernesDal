@@ -86,4 +86,5 @@
     <string name="address">Adresse</string>
     <string name="information">Information</string>
     <string name="check_ind">Check ind</string>
+    <string name="editOrCheckIn">Vil du redigere eller tjekke ind?</string>
 </resources>

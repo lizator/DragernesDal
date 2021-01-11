@@ -1,4 +1,4 @@
-package com.rbyte.dragernesdal.ui.admin;
+package com.rbyte.dragernesdal.ui.admin.event;
 
 import android.os.Bundle;
 import android.util.Log;
