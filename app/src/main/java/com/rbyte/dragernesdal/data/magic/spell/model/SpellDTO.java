@@ -1,4 +1,4 @@
-package com.rbyte.dragernesdal.data.spell.model;
+package com.rbyte.dragernesdal.data.magic.spell.model;
 
 
 public class SpellDTO {

@@ -1,20 +1,15 @@
-package com.rbyte.dragernesdal.data.spell;
+package com.rbyte.dragernesdal.data.magic.magicTier;
 
-import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.WebServerPointer;
 import com.rbyte.dragernesdal.data.race.model.RaceDTO;
 
-import java.io.IOException;
 import java.util.List;
 
-import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.GET;
-import retrofit2.http.Path;
 
-public class SpellDAO {
+public class MagicTierDAO {
     private Retrofit retrofit;
     private RaceCallService service;
 
@@ -22,7 +17,7 @@ public class SpellDAO {
     Response<List<RaceDTO>> resplst;
 
 
-    public SpellDAO(){
+    public MagicTierDAO(){
         {
             this.retrofit = new Retrofit.Builder()
                     .addConverterFactory(GsonConverterFactory.create())

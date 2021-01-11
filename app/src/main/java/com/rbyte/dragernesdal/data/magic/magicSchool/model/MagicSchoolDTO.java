@@ -1,4 +1,4 @@
-package com.rbyte.dragernesdal.data.magicSchool.model;
+package com.rbyte.dragernesdal.data.magic.magicSchool.model;
 
 
 public class MagicSchoolDTO {

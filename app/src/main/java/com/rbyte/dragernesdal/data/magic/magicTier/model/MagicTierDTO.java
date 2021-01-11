@@ -1,4 +1,4 @@
-package com.rbyte.dragernesdal.data.magicTier.model;
+package com.rbyte.dragernesdal.data.magic.magicTier.model;
 
 
 public class MagicTierDTO {

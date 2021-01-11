@@ -1,4 +1,4 @@
-package com.rbyte.dragernesdal.data.magicTier;
+package com.rbyte.dragernesdal.data.magic.magicSchool;
 
 import com.rbyte.dragernesdal.data.WebServerPointer;
 import com.rbyte.dragernesdal.data.race.model.RaceDTO;
@@ -9,7 +9,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MagicTierDAO {
+public class MagicSchoolDAO {
     private Retrofit retrofit;
     private RaceCallService service;
 
@@ -17,7 +17,7 @@ public class MagicTierDAO {
     Response<List<RaceDTO>> resplst;
 
 
-    public MagicTierDAO(){
+    public MagicSchoolDAO(){
         {
             this.retrofit = new Retrofit.Builder()
                     .addConverterFactory(GsonConverterFactory.create())
