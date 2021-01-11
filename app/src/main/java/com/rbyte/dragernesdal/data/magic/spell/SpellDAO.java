@@ -1,5 +1,7 @@
 package com.rbyte.dragernesdal.data.magic.spell;
 
+import android.util.Log;
+
 import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.WebServerPointer;
 import com.rbyte.dragernesdal.data.inventory.model.InventoryDTO;

@@ -7,6 +7,8 @@ public class MagicTierDTO {
     private int spell1ID;
     private int spell2ID;
     private int spell3ID;
+    private int spell4ID;
+    private int spell5ID;
 
     public int getID() {
         return ID;
@@ -46,6 +48,22 @@ public class MagicTierDTO {
 
     public void setSpell3ID(int spell3ID) {
         this.spell3ID = spell3ID;
+    }
+
+    public int getSpell4ID() {
+        return spell4ID;
+    }
+
+    public void setSpell4ID(int spell4ID) {
+        this.spell4ID = spell4ID;
+    }
+
+    public int getSpell5ID() {
+        return spell5ID;
+    }
+
+    public void setSpell5ID(int spell5ID) {
+        this.spell5ID = spell5ID;
     }
 }
 

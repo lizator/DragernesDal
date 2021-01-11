@@ -30,7 +30,6 @@ public class CharacterRepository { //Class for getting characters and saving the
     private ArrayList<RaceDTO> raceList; //race tracking for kryslings
     private boolean updateNeeded = true;
     private int userID = -1;
-    private int characterID = -1;
     private MutableLiveData<Boolean> abilityUpdate;
 
     private static CharacterRepository instance;
