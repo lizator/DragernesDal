@@ -127,7 +127,7 @@ public class CheckInFragment extends Fragment {
                     Log.i("test", "Running");
                     final int position = getAdapterPosition(); // listeelementets position
                     AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-                    if(checkin == 1) alertDialog.setTitle(getResources().getString(R.string.checkin)+" "+ characterList.get(position).getName());
+                    if(checkin == 0) alertDialog.setTitle(getResources().getString(R.string.checkin)+" "+ characterList.get(position).getName());
                     else alertDialog.setTitle(getResources().getString(R.string.checkout)+" "+ characterList.get(position).getName());
                     alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Ok", new DialogInterface.OnClickListener() {
                         @Override
