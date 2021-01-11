@@ -214,28 +214,10 @@ public class PopupHandler {
                             if (res instanceof Result.Success) {
                                 Executor bgThread2 = Executors.newSingleThreadExecutor();
                                 bgThread2.execute(() -> {
-                                    int thisEP = charRepo.getCurrentChar().getCurrentep() - 2;
                                     String ab3epRes = abilityRepo.tryBuy(charRepo.getCurrentChar().getIdcharacter(), race3EPAbilities.get(pos1).getId(), true);
                                     String badRes = abilityRepo.tryBuy(charRepo.getCurrentChar().getIdcharacter(), badAbilities.get(pos2).getId(), true);
                                     uiThread.post(() -> {
-                                        if (ab3epRes != "auto") { //new popup needed
-                                            switch (ab3epRes){
-                                                case "HÅNDVÆRK": //Shouldn't happen here
-                                                    getCraftsAlert(thisView, context, uiThread, true).show();
-                                                    break;
-                                                case "3EP": //shouldn't happen here
-                                                    get3EPChoiceAlert(thisView, context, uiThread, currentAbilities).show();
-                                                    break;
-                                                case "4EP":
-                                                    get4EPChoiceAlert(thisView, context, uiThread, currentAbilities, true).show();
-                                                    break;
-                                                case "EVNE":
-                                                    break;
-                                                case "EKSTRAMAGI":
-                                                    break;
-                                            }
-                                            //TODO: create more popups
-                                        }
+                                        buyOtherAbility(ab3epRes, thisView, context, uiThread, currentAbilities);
                                         Toast.makeText(context, String.format("Evnen '%s' og dårlige karaktertræk '%s' opnået", raceAbilityNames.get(pos1+1), badAbilityNames.get(pos2+1)), Toast.LENGTH_SHORT).show();
                                         skillViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
                                         skillViewModel.getUpdate().postValue(true);
@@ -264,6 +246,142 @@ public class PopupHandler {
             @Override
             public void onCancel(DialogInterface dialog) {
                 dialog.dismiss();
+            }
+        });
+        return builder;
+    }
+
+    public AlertDialog.Builder getKrys2EPAlert(View thisView, Context context, Handler uiThread, ArrayList<Integer> currentAbilities, boolean free){
+        builder.setTitle("Deformitet");
+        View alertView = LayoutInflater.from(context).inflate(R.layout.popup_choice_krys2ep, (ViewGroup) thisView.getRootView(), false);
+        builder.setView(alertView);
+        Spinner spin1 = alertView.findViewById(R.id.ep3spinner);
+        Spinner spin2 = alertView.findViewById(R.id.badspinner);
+
+        ArrayList<AbilityDTO> race3EPAbilities = (ArrayList<AbilityDTO>) HomeViewModel.getInstance().getPotential3epRaceAbilities();
+        ArrayList<AbilityDTO> foundBadAbilities = (ArrayList<AbilityDTO>) backgroundViewModel.getBadAbilities().getValue();
+        ArrayList<AbilityDTO> badAbilities = new ArrayList<>();
+        ArrayList<String> raceAbilityNames = new ArrayList<>();
+        ArrayList<String> badAbilityNames = new ArrayList<>();
+        if (race3EPAbilities != null && badAbilities != null){
+
+            raceAbilityNames.add("Vælg RaceEvne!");
+            raceAbilityNames.add(race3EPAbilities.get(0).getName());
+            raceAbilityNames.add(race3EPAbilities.get(1).getName());
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, raceAbilityNames);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spin1.setAdapter(adapter);
+
+            badAbilityNames.add("Vælg dårligt karaktertræk!");
+            for (AbilityDTO dto : foundBadAbilities){
+                boolean notBought = true;
+                for (int id : currentAbilities){
+                    if (id == dto.getId()){
+                        notBought = false;
+                        break;
+                    }
+                }
+                if (notBought && dto.getCost() == -1) {
+                    badAbilityNames.add(dto.getName());
+                    badAbilities.add(dto);
+                }
+            }
+            ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, badAbilityNames);
+            adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spin2.setAdapter(adapter2);
+        }
+
+
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                int pos1 = spin1.getSelectedItemPosition() - 1;
+                int pos2 = spin2.getSelectedItemPosition() - 1;
+                if (pos1 != -1 && pos2 != -1){
+                    Executor bgThread = Executors.newSingleThreadExecutor();
+                    bgThread.execute(() -> {
+                        Result<List<AbilityDTO>> res = abilityRepo.confirmBuy(charRepo.getCurrentChar().getIdcharacter(), 36); // id 36 == Deformitet (krys2EP evnen)
+                        uiThread.post(() -> {
+                            if (res instanceof Result.Success) {
+                                Executor bgThread2 = Executors.newSingleThreadExecutor();
+                                bgThread2.execute(() -> {
+                                    int thisEP = charRepo.getCurrentChar().getCurrentep() - 2;
+                                    String ab3epRes = abilityRepo.tryBuy(charRepo.getCurrentChar().getIdcharacter(), race3EPAbilities.get(pos1).getId(), true);
+                                    String badRes = abilityRepo.tryBuy(charRepo.getCurrentChar().getIdcharacter(), badAbilities.get(pos2).getId(), true);
+                                    uiThread.post(() -> {
+                                        buyOtherAbility(ab3epRes, thisView, context, uiThread, currentAbilities);
+                                        Toast.makeText(context, String.format("Evnen '%s' og dårlige karaktertræk '%s' opnået", raceAbilityNames.get(pos1+1), badAbilityNames.get(pos2+1)), Toast.LENGTH_SHORT).show();
+                                        skillViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
+                                        skillViewModel.getUpdate().postValue(true);
+                                        HomeViewModel.getInstance().startGetThread(charRepo.getCurrentChar().getIdcharacter());
+                                        dialog.dismiss();
+
+                                    });
+                                });
+
+                            } else {
+                                Toast.makeText(context, "Fejl i at få racerne, prøv igen!", Toast.LENGTH_SHORT).show();
+                                getKrys2EPAlert(thisView, context, uiThread, currentAbilities).show();
+                                dialog.dismiss();
+                            }
+                        });
+                    });
+                } else {
+                    Toast.makeText(context, "Sørg for at du har valgt begge evner!" , Toast.LENGTH_SHORT).show();
+                    getKrys2EPAlert(thisView, context, uiThread, currentAbilities).show();
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                dialog.dismiss();
+            }
+        });
+        return builder;
+    }
+
+    public AlertDialog.Builder getCraftsAlert(View thisView, Context context, Handler uiThread){
+        builder.setTitle("Håndværk!");
+        View alertView = LayoutInflater.from(context).inflate(R.layout.popup_input_a_craft, (ViewGroup) thisView.getRootView(), false);
+        builder.setView(alertView);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                EditText input = alertView.findViewById(R.id.editCraftName);
+                String craft = input.getText().toString();
+                if (craft.length() != 0) {
+                    Executor bgThread = Executors.newSingleThreadExecutor();
+                    bgThread.execute(() -> {
+                        Result<AbilityDTO> res = abilityRepo.craftBuy(charRepo.getCurrentChar().getIdcharacter(), craft);
+                        charRepo.getCharacterByID(charRepo.getCurrentChar().getIdcharacter());
+
+                        uiThread.post(() -> {
+                            if (res instanceof Result.Success) {
+                                Toast.makeText(context, String.format("Håndværk '%s' oprettet!", craft), Toast.LENGTH_SHORT).show();
+                                skillViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
+                                skillViewModel.getUpdate().postValue(true);
+                                HomeViewModel.getInstance().startGetThread(charRepo.getCurrentChar().getIdcharacter());
+                                dialog.dismiss();
+                            } else {
+                                Toast.makeText(context, "Fejl i opret håndværk, prøv igen!", Toast.LENGTH_SHORT).show();
+                                getCraftsAlert(thisView, context, uiThread).show();
+                            }
+                        });
+                    });
+                } else {
+                    Toast.makeText(context, "Husk at skrive navnet på et Håndværk!", Toast.LENGTH_SHORT).show();
+                    getCraftsAlert(thisView, context, uiThread).show();
+                }
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() { //TODO: overwite in create character to reappear if not done!
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
             }
         });
         return builder;
@@ -418,7 +536,7 @@ public class PopupHandler {
             }
         });
         return builder;
-    }
+    } // Mørkskabt start
 
     public AlertDialog.Builder get3EPChoiceAlert(View thisView, Context context, Handler uiThread, ArrayList<Integer> currAbilities){
         builder.setTitle("3EP Evne!");
@@ -429,15 +547,17 @@ public class PopupHandler {
         ArrayList<AbilityDTO> snigerDTOS = skillViewModel.getSnigerAbilities().getValue();
         ArrayList<AbilityDTO> videnDTOS = skillViewModel.getVidenAbilities().getValue();
         ArrayList<AbilityDTO> alleDTOS = skillViewModel.getAlleAbilities().getValue();
+        ArrayList<AbilityDTO> raceDTOs = skillViewModel.getRaceAbilities().getValue();
         ArrayList<AbilityDTO> collected = new ArrayList<>();
 
         ArrayList<AbilityDTO> ep3DTOS = new ArrayList<>(); // finding all possible 3ep abilities
         ArrayList<String> names = new ArrayList<>();
-        if (kampDTOS != null && snigerDTOS != null && videnDTOS != null && alleDTOS != null){
-            collected.addAll(kampDTOS); //adding all abilities to alleDTOS
+        if (kampDTOS != null && snigerDTOS != null && videnDTOS != null && alleDTOS != null && raceDTOs != null){
+            collected.addAll(kampDTOS); //adding all abilities to collected
             collected.addAll(snigerDTOS);
             collected.addAll(videnDTOS);
             collected.addAll(alleDTOS);
+            collected.addAll(raceDTOs);
 
 
             names.add("Vælg evne!");
@@ -449,7 +569,18 @@ public class PopupHandler {
                         break;
                     }
                 }
-                if (notOwned && dto.getCost() == 3){
+                boolean ownParent = true;
+                if (dto.getIdparent() != 0){
+                    ownParent = false;
+                    for (int id : currAbilities){
+                        if (id == dto.getIdparent()){
+                            ownParent = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (notOwned && ownParent && dto.getCost() == 3){
                     ep3DTOS.add(dto);
                     names.add(dto.getName());
                 }
@@ -467,27 +598,34 @@ public class PopupHandler {
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                int pos = spin.getSelectedItemPosition() - 1;
-                if (pos != -1){
-                    Executor bgThread = Executors.newSingleThreadExecutor();
-                    bgThread.execute(() -> {
-                        Result<List<AbilityDTO>> res = abilityRepo.confirmBuyWithFree(charRepo.getCurrentChar().getIdcharacter(), 4, ep3DTOS.get(pos).getId()); // id 4 == lille talent (3EP evnen)
-                        charRepo.getCharacterByID(charRepo.getCurrentChar().getIdcharacter());
-                        uiThread.post(() -> {
-                            if (res instanceof Result.Success) {
-                                Toast.makeText(context, String.format("evnen '%s' opnået!", ep3DTOS.get(pos).getName()), Toast.LENGTH_SHORT).show();
-                                skillViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
-                                skillViewModel.getUpdate().postValue(true);
-                                dialog.dismiss();
-                            } else {
-                                Toast.makeText(context, "Fejl i at få evne til 3 EP, prøv igen!", Toast.LENGTH_SHORT).show();
-                                get3EPChoiceAlert(thisView, context, uiThread, currAbilities).show();
-                            }
+                if (names.size() != 0) {
+                    int pos = spin.getSelectedItemPosition() - 1;
+                    if (pos != -1) {
+                        Executor bgThread = Executors.newSingleThreadExecutor();
+                        bgThread.execute(() -> {
+                            Result<List<AbilityDTO>> res = abilityRepo.confirmBuy(charRepo.getCurrentChar().getIdcharacter(), 4); // id 4 == lille talent (3EP evnen)
+                            String command = abilityRepo.tryBuy(charRepo.getCurrentChar().getIdcharacter(), ep3DTOS.get(pos).getId(), true);
+                            charRepo.getCharacterByID(charRepo.getCurrentChar().getIdcharacter());
+                            uiThread.post(() -> {
+                                if (res instanceof Result.Success) {
+                                    buyOtherAbility(command, thisView, context, uiThread, currAbilities);
+                                    Toast.makeText(context, String.format("evnen '%s' opnået!", ep3DTOS.get(pos).getName()), Toast.LENGTH_SHORT).show();
+                                    skillViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
+                                    skillViewModel.getUpdate().postValue(true);
+                                    dialog.dismiss();
+                                } else {
+                                    Toast.makeText(context, "Fejl i at få evne til 3 EP, prøv igen!", Toast.LENGTH_SHORT).show();
+                                    get3EPChoiceAlert(thisView, context, uiThread, currAbilities).show();
+                                }
+                            });
                         });
-                    });
+                    } else {
+                        Toast.makeText(context, "husk at vælge!", Toast.LENGTH_SHORT).show();
+                        get3EPChoiceAlert(thisView, context, uiThread, currAbilities).show();
+                    }
                 } else {
-                    Toast.makeText(context, "husk at vælge!" , Toast.LENGTH_SHORT).show();
-                    get3EPChoiceAlert(thisView, context, uiThread, currAbilities).show();
+                    Toast.makeText(context, "Du har ikke nogle valg. Køb andre evner først!", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
                 }
             }
         });
@@ -511,15 +649,17 @@ public class PopupHandler {
         ArrayList<AbilityDTO> snigerDTOS = skillViewModel.getSnigerAbilities().getValue();
         ArrayList<AbilityDTO> videnDTOS = skillViewModel.getVidenAbilities().getValue();
         ArrayList<AbilityDTO> alleDTOS = skillViewModel.getAlleAbilities().getValue();
+        ArrayList<AbilityDTO> raceDTOs = skillViewModel.getRaceAbilities().getValue();
         ArrayList<AbilityDTO> collected = new ArrayList<>();
 
         ArrayList<AbilityDTO> ep3DTOS = new ArrayList<>(); // finding all possible 3ep abilities
         ArrayList<String> names = new ArrayList<>();
-        if (kampDTOS != null && snigerDTOS != null && videnDTOS != null && alleDTOS != null){
-            collected.addAll(kampDTOS); //adding all abilities to alleDTOS
+        if (kampDTOS != null && snigerDTOS != null && videnDTOS != null && alleDTOS != null && raceDTOs != null){
+            collected.addAll(kampDTOS); //adding all abilities to collected
             collected.addAll(snigerDTOS);
             collected.addAll(videnDTOS);
             collected.addAll(alleDTOS);
+            collected.addAll(raceDTOs);
 
 
             names.add("Vælg evne!");
@@ -531,7 +671,18 @@ public class PopupHandler {
                         break;
                     }
                 }
-                if (notOwned && dto.getCost() == 3){
+                boolean ownParent = true;
+                if (dto.getIdparent() != 0){
+                    ownParent = false;
+                    for (int id : currAbilities){
+                        if (id == dto.getIdparent()){
+                            ownParent = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (notOwned && ownParent && dto.getCost() == 3){
                     ep3DTOS.add(dto);
                     names.add(dto.getName());
                 }
@@ -549,27 +700,34 @@ public class PopupHandler {
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                int pos = spin.getSelectedItemPosition() - 1;
-                if (pos != -1){
-                    Executor bgThread = Executors.newSingleThreadExecutor();
-                    bgThread.execute(() -> {
-                        Result<List<AbilityDTO>> res = abilityRepo.confirmBuyWithFree(charRepo.getCurrentChar().getIdcharacter(), 4, ep3DTOS.get(pos).getId(), true); // id 4 == lille talent (3EP evnen)
-                        charRepo.getCharacterByID(charRepo.getCurrentChar().getIdcharacter());
-                        uiThread.post(() -> {
-                            if (res instanceof Result.Success) {
-                                Toast.makeText(context, String.format("evnen '%s' opnået!", ep3DTOS.get(pos).getName()), Toast.LENGTH_SHORT).show();
-                                skillViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
-                                skillViewModel.getUpdate().postValue(true);
-                                dialog.dismiss();
-                            } else {
-                                Toast.makeText(context, "Fejl i at få evne til 3 EP, prøv igen!", Toast.LENGTH_SHORT).show();
-                                get3EPChoiceAlert(thisView, context, uiThread, currAbilities, true).show();
-                            }
+                if (names.size() != 0) {
+                    int pos = spin.getSelectedItemPosition() - 1;
+                    if (pos != -1) {
+                        Executor bgThread = Executors.newSingleThreadExecutor();
+                        bgThread.execute(() -> {
+                            String command = abilityRepo.tryBuy(charRepo.getCurrentChar().getIdcharacter(), ep3DTOS.get(pos).getId(), free); // getting the free thingy
+                            Result<AbilityDTO> res = abilityRepo.freeGet(charRepo.getCurrentChar().getIdcharacter(), 4); // id 4 == lille talent (3EP evnen)
+                            charRepo.getCharacterByID(charRepo.getCurrentChar().getIdcharacter());
+                            uiThread.post(() -> {
+                                if (res instanceof Result.Success) {
+                                    buyOtherAbility(command, thisView, context, uiThread, currAbilities);
+                                    Toast.makeText(context, String.format("evnen '%s' opnået!", ep3DTOS.get(pos).getName()), Toast.LENGTH_SHORT).show();
+                                    skillViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
+                                    skillViewModel.getUpdate().postValue(true);
+                                    dialog.dismiss();
+                                } else {
+                                    Toast.makeText(context, "Fejl i at få evne til 3 EP, prøv igen!", Toast.LENGTH_SHORT).show();
+                                    get3EPChoiceAlert(thisView, context, uiThread, currAbilities, true).show();
+                                }
+                            });
                         });
-                    });
+                    } else {
+                        Toast.makeText(context, "husk at vælge!", Toast.LENGTH_SHORT).show();
+                        get3EPChoiceAlert(thisView, context, uiThread, currAbilities, true).show();
+                    }
                 } else {
-                    Toast.makeText(context, "husk at vælge!" , Toast.LENGTH_SHORT).show();
-                    get3EPChoiceAlert(thisView, context, uiThread, currAbilities, true).show();
+                    Toast.makeText(context, "Du har ikke nogle valg. Køb andre evner først!", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
                 }
             }
         });
@@ -595,15 +753,17 @@ public class PopupHandler {
         ArrayList<AbilityDTO> snigerDTOS = skillViewModel.getSnigerAbilities().getValue();
         ArrayList<AbilityDTO> videnDTOS = skillViewModel.getVidenAbilities().getValue();
         ArrayList<AbilityDTO> alleDTOS = skillViewModel.getAlleAbilities().getValue();
+        ArrayList<AbilityDTO> raceDTOs = skillViewModel.getRaceAbilities().getValue();
         ArrayList<AbilityDTO> collected = new ArrayList<>();
 
-        ArrayList<AbilityDTO> ep3DTOS = new ArrayList<>(); // finding all possible 3ep abilities
+        ArrayList<AbilityDTO> ep4DTOS = new ArrayList<>(); // finding all possible 3ep abilities
         ArrayList<String> names = new ArrayList<>();
-        if (kampDTOS != null && snigerDTOS != null && videnDTOS != null && alleDTOS != null){
-            collected.addAll(kampDTOS); //adding all abilities to alleDTOS
+        if (kampDTOS != null && snigerDTOS != null && videnDTOS != null && alleDTOS != null && raceDTOs != null){
+            collected.addAll(kampDTOS); //adding all abilities to collected
             collected.addAll(snigerDTOS);
             collected.addAll(videnDTOS);
             collected.addAll(alleDTOS);
+            collected.addAll(raceDTOs);
 
 
             names.add("Vælg evne!");
@@ -615,8 +775,19 @@ public class PopupHandler {
                         break;
                     }
                 }
-                if (notOwned && dto.getCost() == 4){
-                    ep3DTOS.add(dto);
+                boolean ownParent = true;
+                if (dto.getIdparent() != 0){
+                    ownParent = false;
+                    for (int id : currAbilities){
+                        if (id == dto.getIdparent()){
+                            ownParent = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (notOwned && ownParent && dto.getCost() == 4){
+                    ep4DTOS.add(dto);
                     names.add(dto.getName());
                 }
             }
@@ -633,27 +804,34 @@ public class PopupHandler {
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                int pos = spin.getSelectedItemPosition() - 1;
-                if (pos != -1){
-                    Executor bgThread = Executors.newSingleThreadExecutor();
-                    bgThread.execute(() -> {
-                        Result<List<AbilityDTO>> res = abilityRepo.confirmBuyWithFree(charRepo.getCurrentChar().getIdcharacter(), 5, ep3DTOS.get(pos).getId()); // id 5 == stort talent (4EP evnen)
-                        charRepo.getCharacterByID(charRepo.getCurrentChar().getIdcharacter());
-                        uiThread.post(() -> {
-                            if (res instanceof Result.Success) {
-                                Toast.makeText(context, String.format("evnen '%s' opnået!", ep3DTOS.get(pos).getName()), Toast.LENGTH_SHORT).show();
-                                skillViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
-                                skillViewModel.getUpdate().postValue(true);
-                                dialog.dismiss();
-                            } else {
-                                Toast.makeText(context, "Fejl i at få evne til 4 EP, prøv igen!", Toast.LENGTH_SHORT).show();
-                                get3EPChoiceAlert(thisView, context, uiThread, currAbilities).show();
-                            }
+                if (names.size() != 0){
+                    int pos = spin.getSelectedItemPosition() - 1;
+                    if (pos != -1) {
+                        Executor bgThread = Executors.newSingleThreadExecutor();
+                        bgThread.execute(() -> {
+                            Result<List<AbilityDTO>> res = abilityRepo.confirmBuy(charRepo.getCurrentChar().getIdcharacter(), 5); // id 5 == stort talent (4EP evnen)
+                            String command = abilityRepo.tryBuy(charRepo.getCurrentChar().getIdcharacter(), ep4DTOS.get(pos).getId(), true);
+                            charRepo.getCharacterByID(charRepo.getCurrentChar().getIdcharacter());
+                            uiThread.post(() -> {
+                                if (res instanceof Result.Success) {
+                                    buyOtherAbility(command, thisView, context, uiThread, currAbilities);
+                                    Toast.makeText(context, String.format("evnen '%s' opnået!", ep4DTOS.get(pos).getName()), Toast.LENGTH_SHORT).show();
+                                    skillViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
+                                    skillViewModel.getUpdate().postValue(true);
+                                    dialog.dismiss();
+                                } else {
+                                    Toast.makeText(context, "Fejl i at få evne til 4 EP, prøv igen!", Toast.LENGTH_SHORT).show();
+                                    get3EPChoiceAlert(thisView, context, uiThread, currAbilities).show();
+                                }
+                            });
                         });
-                    });
+                    } else {
+                        Toast.makeText(context, "husk at vælge!", Toast.LENGTH_SHORT).show();
+                        get3EPChoiceAlert(thisView, context, uiThread, currAbilities).show();
+                    }
                 } else {
-                    Toast.makeText(context, "husk at vælge!" , Toast.LENGTH_SHORT).show();
-                    get3EPChoiceAlert(thisView, context, uiThread, currAbilities).show();
+                    Toast.makeText(context, "Du har ikke nogle valg. Køb andre evner først!", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
                 }
             }
         });
@@ -677,15 +855,17 @@ public class PopupHandler {
         ArrayList<AbilityDTO> snigerDTOS = skillViewModel.getSnigerAbilities().getValue();
         ArrayList<AbilityDTO> videnDTOS = skillViewModel.getVidenAbilities().getValue();
         ArrayList<AbilityDTO> alleDTOS = skillViewModel.getAlleAbilities().getValue();
+        ArrayList<AbilityDTO> raceDTOs = skillViewModel.getRaceAbilities().getValue();
         ArrayList<AbilityDTO> collected = new ArrayList<>();
 
-        ArrayList<AbilityDTO> ep3DTOS = new ArrayList<>(); // finding all possible 3ep abilities
+        ArrayList<AbilityDTO> ep4DTOS = new ArrayList<>(); // finding all possible 3ep abilities
         ArrayList<String> names = new ArrayList<>();
-        if (kampDTOS != null && snigerDTOS != null && videnDTOS != null && alleDTOS != null){
+        if (kampDTOS != null && snigerDTOS != null && videnDTOS != null && alleDTOS != null && raceDTOs != null){
             collected.addAll(kampDTOS); //adding all abilities to alleDTOS
             collected.addAll(snigerDTOS);
             collected.addAll(videnDTOS);
             collected.addAll(alleDTOS);
+            collected.addAll(raceDTOs);
 
 
             names.add("Vælg evne!");
@@ -697,8 +877,19 @@ public class PopupHandler {
                         break;
                     }
                 }
-                if (notOwned && dto.getCost() == 4){
-                    ep3DTOS.add(dto);
+                boolean ownParent = true;
+                if (dto.getIdparent() != 0){
+                    ownParent = false;
+                    for (int id : currAbilities){
+                        if (id == dto.getIdparent()){
+                            ownParent = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (notOwned && ownParent && dto.getCost() == 4){
+                    ep4DTOS.add(dto);
                     names.add(dto.getName());
                 }
             }
@@ -715,28 +906,35 @@ public class PopupHandler {
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                int pos = spin.getSelectedItemPosition() - 1;
-                if (pos != -1){
-                    Executor bgThread = Executors.newSingleThreadExecutor();
-                    bgThread.execute(() -> {
-                        Result<List<AbilityDTO>> res = abilityRepo.confirmBuyWithFree(charRepo.getCurrentChar().getIdcharacter(), 5, ep3DTOS.get(pos).getId(), free); // id 5 == stort talent (4EP evnen)
-                        charRepo.getCharacterByID(charRepo.getCurrentChar().getIdcharacter());
-                        uiThread.post(() -> {
-                            if (res instanceof Result.Success) {
-                                Toast.makeText(context, String.format("evnen '%s' opnået!", ep3DTOS.get(pos).getName()), Toast.LENGTH_SHORT).show();
-                                skillViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
-                                skillViewModel.getUpdate().postValue(true);
-                                dialog.dismiss();
-                            } else {
-                                Toast.makeText(context, "Fejl i at få evne til 4 EP, prøv igen!", Toast.LENGTH_SHORT).show();
-                                get4EPChoiceAlert(thisView, context, uiThread, currAbilities, true).show();
-                                dialog.dismiss();
-                            }
+                if (names.size() != 1) {
+                    int pos = spin.getSelectedItemPosition() - 1;
+                    if (pos != -1) {
+                        Executor bgThread = Executors.newSingleThreadExecutor();
+                        bgThread.execute(() -> {
+                            Result<AbilityDTO> res = abilityRepo.freeGet(charRepo.getCurrentChar().getIdcharacter(),  5); // id 5 == stort talent (4EP evnen)
+                            String command = abilityRepo.tryBuy(charRepo.getCurrentChar().getIdcharacter(), ep4DTOS.get(pos).getId(), free);
+                            charRepo.getCharacterByID(charRepo.getCurrentChar().getIdcharacter());
+                            uiThread.post(() -> {
+                                if (res instanceof Result.Success) {
+                                    buyOtherAbility(command, thisView, context, uiThread, currAbilities);
+                                    Toast.makeText(context, String.format("evnen '%s' opnået!", ep4DTOS.get(pos).getName()), Toast.LENGTH_SHORT).show();
+                                    skillViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
+                                    skillViewModel.getUpdate().postValue(true);
+                                    dialog.dismiss();
+                                } else {
+                                    Toast.makeText(context, "Fejl i at få evne til 4 EP, prøv igen!", Toast.LENGTH_SHORT).show();
+                                    get4EPChoiceAlert(thisView, context, uiThread, currAbilities, true).show();
+                                    dialog.dismiss();
+                                }
+                            });
                         });
-                    });
+                    } else {
+                        Toast.makeText(context, "husk at vælge!", Toast.LENGTH_SHORT).show();
+                        get4EPChoiceAlert(thisView, context, uiThread, currAbilities, true).show();
+                        dialog.dismiss();
+                    }
                 } else {
-                    Toast.makeText(context, "husk at vælge!" , Toast.LENGTH_SHORT).show();
-                    get4EPChoiceAlert(thisView, context, uiThread, currAbilities, true).show();
+                    Toast.makeText(context, "Du har ikke nogle valg. Køb andre evner først!", Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
                 }
             }
@@ -887,6 +1085,51 @@ public class PopupHandler {
         });
         return builder;
     }
-    
+
+    private void buyOtherAbility(String command ,View thisView, Context context, Handler uiThread, ArrayList<Integer> currAbilities){
+        switch (command.split(",")[0]){
+            case "HÅNDVÆRK":
+                getCraftsAlert(thisView, context, uiThread, true).show();
+                break;
+            case "3EP":
+                get3EPChoiceAlert(thisView, context, uiThread, currAbilities, true).show();
+                break;
+            case "4EP":
+                get4EPChoiceAlert(thisView, context, uiThread, currAbilities, true).show();
+                break;
+            case "EVNE":
+                break;
+            case "KRYS2EP":
+                getKrys2EPAlert(thisView, context, uiThread, currAbilities, true).show();
+                break;
+            case "KRYS":
+                ArrayList<String> frees = new ArrayList<>();
+                frees.add(command.split(",")[1]);
+                frees.add(command.split(",")[2]);
+                for (String command2 : frees){
+                    switch (command2){
+                        case "HÅNDVÆRK":
+                            getCraftsAlert(thisView, context, uiThread, true).show();
+                            break;
+                        case "3EP":
+                            get3EPChoiceAlert(thisView, context, uiThread, currAbilities, true).show();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                break;
+            case "STARTEVNE": //only happens in create character and should be handled there
+                Log.d("CharacterCreation", "Getting starter ability");
+                Executor bgThread4 = Executors.newSingleThreadExecutor();
+                bgThread4.execute(() -> {
+                    AlertDialog.Builder builder = getStartChoiceAlert(thisView, context, uiThread);
+                    uiThread.post(() ->{
+                        builder.show();
+                    });
+                });
+                break;
+        }
+    }
 
 }

@@ -236,7 +236,7 @@ public class AlleFragment extends Fragment {
                                                     if (command != "auto") { //new popup needed
                                                         switch (command){
                                                             case "HÅNDVÆRK": // Only thing tha might be bought here
-                                                                popHandler.getCraftsAlert(root2, getContext(), uiThread, false).show();
+                                                                popHandler.getCraftsAlert(root2, getContext(), uiThread).show();
                                                                 break;
                                                         }
 
@@ -338,8 +338,6 @@ public class AlleFragment extends Fragment {
                                                                 break;
                                                             case "EVNE":
                                                                 break;
-                                                            case "EKSTRAMAGI":
-                                                                break;
                                                             case "KRYS2EP":
                                                                 popHandler.getKrys2EPAlert(root2, getContext(), uiThread, currentAbilityIDs).show();
                                                                 break;
@@ -354,8 +352,6 @@ public class AlleFragment extends Fragment {
                                                                             break;
                                                                         case "3EP":
                                                                             popHandler.get3EPChoiceAlert(root2, getContext(), uiThread, currentAbilityIDs, true).show();
-                                                                            break;
-                                                                        case "EKSTRAMAGI":
                                                                             break;
                                                                         default:
                                                                             break;
