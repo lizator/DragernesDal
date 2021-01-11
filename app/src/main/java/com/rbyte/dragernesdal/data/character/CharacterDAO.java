@@ -91,6 +91,20 @@ public class CharacterDAO {
         }
     }
 
+    Result<List<CharacterDTO>> getCharactersByEventID(int eventID) {
+        try {
+            Call<List<CharacterDTO>> call = service.getByEventID(eventID);
+            respList = call.execute();
+            if (respList.code() == 200) {
+                return new Result.Success<List<CharacterDTO>>(respList.body());
+            }
+            throw new IOException(respList.message());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new Result.Error(new IOException("Error connection to database"));
+        }
+    }
+
     Result<CharacterDTO> updateCharacter(CharacterDTO dto) {
         try {
             Call<CharacterDTO> call = service.updateCharacter(dto);
@@ -110,6 +124,9 @@ public class CharacterDAO {
 
         @GET("/character/byUserID/{userid}")
         Call<List<CharacterDTO>> getByUserID(@Path(value = "userid") int userid);
+
+        @GET("/character/byEventID/{eventid}")
+        Call<List<CharacterDTO>> getByEventID(@Path(value = "eventid") int eventid);
 
         @GET("/character/krys/{characterid}/{race1id}/{race2id}")
         Call<CharacterDTO> createKrysling(@Path(value = "characterid") int characterid, @Path(value = "race1id") int race1id, @Path(value = "race2id") int race2id);

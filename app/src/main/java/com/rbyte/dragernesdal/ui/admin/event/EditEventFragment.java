@@ -48,6 +48,7 @@ public class EditEventFragment extends Fragment {
     private Handler uiThread = new Handler();
     SharedPreferences prefs;
     private int characterID;
+    public static final String EVENT_ID_ARGUMENT = "eventIDArgument";
     View root2;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -128,6 +129,10 @@ public class EditEventFragment extends Fragment {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             alertDialog.dismiss();
+                            SharedPreferences prefs = getDefaultSharedPreferences(root2.getContext());
+                            SharedPreferences.Editor editor = prefs.edit();
+                            editor.putInt(EVENT_ID_ARGUMENT, events.get(position).getEventID());
+                            editor.commit();
                             NavController navController = Navigation.findNavController(root2);
                             navController.navigate(R.id.nav_admin_checkin);
                         }
