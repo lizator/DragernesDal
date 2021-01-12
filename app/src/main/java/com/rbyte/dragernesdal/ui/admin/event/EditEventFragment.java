@@ -115,7 +115,7 @@ public class EditEventFragment extends Fragment {
                     AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
                     alertDialog.setTitle(getResources().getString(R.string.editOrCheckIn));
                     final int position = getAdapterPosition();
-                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getResources().getString(R.string.rediger_event), new DialogInterface.OnClickListener() {
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Rediger event", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             alertDialog.dismiss();
@@ -137,6 +137,13 @@ public class EditEventFragment extends Fragment {
                             editor.commit();
                             NavController navController = Navigation.findNavController(root2);
                             navController.navigate(R.id.nav_admin_checkin);
+                        }
+                    });
+
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Check ud", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            alertDialog.dismiss();
                         }
                     });
                     alertDialog.show();
