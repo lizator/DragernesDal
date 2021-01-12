@@ -69,7 +69,7 @@ public class CheckOutFragment extends Fragment {
                             character.setCurrentep(character.getCurrentep()+1);
                         }
                         characterAdapter.notifyDataSetChanged();
-                        Toast.makeText(getContext(),"1 EP tilføjet til alle",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(),"1 EP tilføjet til alle!",Toast.LENGTH_SHORT).show();
                     }
                 });
                 alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Nej", new DialogInterface.OnClickListener() {
