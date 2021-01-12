@@ -106,6 +106,8 @@ public class CheckInFragment extends Fragment {
             }
         });
 
+
+
         root2 = root;
         return root;
     }
