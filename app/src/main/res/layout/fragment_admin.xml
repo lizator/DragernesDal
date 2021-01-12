@@ -123,4 +123,5 @@
         app:layout_constraintStart_toEndOf="@+id/button_checkout"
         app:layout_constraintTop_toBottomOf="@+id/button_edit_event" />
 
+
 </androidx.constraintlayout.widget.ConstraintLayout>
