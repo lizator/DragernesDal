@@ -5,6 +5,8 @@ import android.app.TimePickerDialog;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,6 +52,9 @@ public class CreateEventFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_admin_create_event, container, false);
         createEvent = root.findViewById(R.id.create_event);
+        createEvent.setEnabled(false);
+        final boolean[] startDateSet = {false};
+        final boolean[] endDateSet = {false};
         title = root.findViewById(R.id.editText_Title);
         startDate = root.findViewById(R.id.editTextStartDate);
         startDate.setOnClickListener(new View.OnClickListener() {
@@ -82,6 +87,8 @@ public class CreateEventFragment extends Fragment {
                                                 timeStart = dateToDTO+"T"+curTime+":00";
                                                 Log.d("date set", timeStart);
                                                 startDate.setText(startDate.getText()+" "+curTime+":00");
+                                                startDateSet[0] = true;
+                                                if(startDateSet[0] && endDateSet[0]) createEvent.setEnabled(true);
                                             }
                                         }, mHour, mMinute, false);
                                 timePickerDialog.show();
@@ -122,6 +129,8 @@ public class CreateEventFragment extends Fragment {
                                                 timeEnd = dateToDTO+"T"+curTime+":00";
                                                 Log.d("date set", timeStart);
                                                 endDate.setText(endDate.getText()+" "+curTime+":00");
+                                                endDateSet[0] = true;
+                                                if(startDateSet[0] && endDateSet[0]) createEvent.setEnabled(true);
                                             }
                                         }, mHour, mMinute, false);
                                 timePickerDialog.show();
@@ -134,7 +143,6 @@ public class CreateEventFragment extends Fragment {
         address = root.findViewById(R.id.editText_Address);
         info = root.findViewById(R.id.eventInformation);
         hyperlink = root.findViewById(R.id.editText_hyperlink);
-
         createEvent.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override

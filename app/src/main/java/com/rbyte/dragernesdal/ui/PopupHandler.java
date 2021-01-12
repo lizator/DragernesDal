@@ -34,6 +34,7 @@ import com.rbyte.dragernesdal.data.event.model.EventDTO;
 import com.rbyte.dragernesdal.ui.character.skill.SkillViewModel;
 import com.rbyte.dragernesdal.ui.home.HomeViewModel;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -965,6 +966,7 @@ public class PopupHandler {
         return builder;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public AlertDialog.Builder editEvent(View thisView, EventDTO eventDTO, Handler uiThread, NavController navController) {
         builder.setTitle("Rediger Event");
         View alertView = LayoutInflater.from(context).inflate(R.layout.fragment_admin_create_event, (ViewGroup) thisView.getRootView(), false);
@@ -983,8 +985,13 @@ public class PopupHandler {
         create.setVisibility(View.INVISIBLE);
         create.setHeight(0);
         title.setText(eventDTO.getName());
-        startDate.setText("Sæt ny dato");
-        endDate.setText("Sæt ny dato");
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-YYYY");
+        DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
+
+        startDate.setText(dateFormat.format(eventDTO.getStartDate().toLocalDate())+" "+ timeFormat.format(eventDTO.getStartDate().toLocalTime())+":00");
+        endDate.setText(dateFormat.format(eventDTO.getEndDate().toLocalDate())+" "+ timeFormat.format(eventDTO.getEndDate().toLocalTime())+":00");
+        final Boolean[] startChanged = {false};
+        final Boolean[] endChanged = { false };
         address.setText(eventDTO.getAddress());
         info.setText(eventDTO.getInfo());
         hyperlink.setText(eventDTO.getHyperlink());
@@ -1020,6 +1027,7 @@ public class PopupHandler {
                                                 timeStart[0] = dateToDTO + "T" + curTime + ":00";
                                                 Log.d("date set", timeStart[0]);
                                                 startDate.setText(startDate.getText() + " " + curTime + ":00");
+                                                startChanged[0] = true;
                                             }
                                         }, mHour, mMinute, false);
                                 timePickerDialog.show();
@@ -1061,6 +1069,7 @@ public class PopupHandler {
                                                 timeEnd[0] = dateToDTO + "T" + curTime + ":00";
                                                 Log.d("date set", timeEnd[0]);
                                                 endDate.setText(endDate.getText() + " " + curTime + ":00");
+                                                endChanged[0] = true;
                                             }
                                         }, mHour, mMinute, false);
                                 timePickerDialog.show();
@@ -1075,23 +1084,23 @@ public class PopupHandler {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                EventDAO eventDAO = new EventDAO();
-                eventDTO.setName(title.getText() + "");
-                eventDTO.setAddress(address.getText() + "");
-                eventDTO.setStartDate(timeStart[0]);
-                eventDTO.setEndDate(timeEnd[0]);
-                eventDTO.setInfo(info.getText() + "");
-                eventDTO.setHyperlink(hyperlink.getText()+"");
-                Executor bgThread = Executors.newSingleThreadExecutor();
-                bgThread.execute(() -> {
-                    Log.d("Event", "Event edited: " + eventDTO.getEventID());
-                    eventDAO.editEvent(eventDTO);
-                    uiThread.post(() -> {
-                        Toast.makeText(thisView.getContext(), "Event rettet", Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
-                        navController.popBackStack();
+                    EventDAO eventDAO = new EventDAO();
+                    eventDTO.setName(title.getText() + "");
+                    eventDTO.setAddress(address.getText() + "");
+                    if(startChanged[0]) eventDTO.setStartDate(timeStart[0]);
+                    if(endChanged[0]) eventDTO.setEndDate(timeEnd[0]);
+                    eventDTO.setInfo(info.getText() + "");
+                    eventDTO.setHyperlink(hyperlink.getText()+"");
+                    Executor bgThread = Executors.newSingleThreadExecutor();
+                    bgThread.execute(() -> {
+                        Log.d("Event", "Event edited: " + eventDTO.getEventID());
+                        eventDAO.editEvent(eventDTO);
+                        uiThread.post(() -> {
+                            Toast.makeText(thisView.getContext(), "Event rettet", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                            navController.popBackStack();
+                        });
                     });
-                });
             }
         });
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
