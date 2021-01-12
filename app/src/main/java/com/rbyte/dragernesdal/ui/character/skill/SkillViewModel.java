@@ -108,6 +108,7 @@ public class SkillViewModel extends ViewModel {
                     ArrayList<AbilityDTO> data = (ArrayList<AbilityDTO>) ((Result.Success) res).getData();
                     if (data != null) {
                         alleAbilities.postValue(data);
+                        System.out.println("Alle abilities");
                     }
                 }
             });
