@@ -27,7 +27,6 @@ public class MagicFragment extends Fragment {
         magicViewModel =
                 new ViewModelProvider(this).get(MagicViewModel.class);
         View root = inflater.inflate(R.layout.fragment_character_magic, container, false);
-        final TextView textView = root.findViewById(R.id.text_home);
 
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
