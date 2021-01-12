@@ -35,6 +35,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:maxImageSize="48dp"
-        app:srcCompat="@drawable/ic_baseline_exposure_plus_1_24" />
-    
+        app:srcCompat="@drawable/ic_baseline_save_alt_24" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

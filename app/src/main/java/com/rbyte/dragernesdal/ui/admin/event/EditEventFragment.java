@@ -1,5 +1,6 @@
 package com.rbyte.dragernesdal.ui.admin.event;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -47,6 +48,8 @@ public class EditEventFragment extends Fragment {
     private Handler uiThread = new Handler();
     SharedPreferences prefs;
     private int characterID;
+    public static final String EVENT_ID_ARGUMENT = "eventIDArgument";
+    private static final String EVENT_SELECTED_NAME = "eventName";
     View root2;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -109,12 +112,48 @@ public class EditEventFragment extends Fragment {
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                    alertDialog.setTitle(getResources().getString(R.string.editOrCheckIn));
                     final int position = getAdapterPosition();
-                    PopupHandler popupHandler = new PopupHandler(getContext());
-                    events.get(position).setEventID(position);
-                    System.out.println(events.get(position).getEventID());
-                    AlertDialog.Builder builder = popupHandler.editEvent(root2,events.get(position), uiThread, Navigation.findNavController(root2));
-                    builder.show();
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Rediger event", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            alertDialog.dismiss();
+                            PopupHandler popupHandler = new PopupHandler(getContext());
+                            events.get(position).setEventID(position);
+                            System.out.println(events.get(position).getEventID());
+                            AlertDialog.Builder builder = popupHandler.editEvent(root2,events.get(position), uiThread, Navigation.findNavController(root2));
+                            builder.show();
+                        }
+                    });
+                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.check_ind), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            alertDialog.dismiss();
+                            SharedPreferences prefs = getDefaultSharedPreferences(root2.getContext());
+                            SharedPreferences.Editor editor = prefs.edit();
+                            editor.putInt(EVENT_ID_ARGUMENT, events.get(position).getEventID());
+                            editor.putString(EVENT_SELECTED_NAME, events.get(position).getName());
+                            editor.commit();
+                            NavController navController = Navigation.findNavController(root2);
+                            navController.navigate(R.id.nav_admin_checkin);
+                        }
+                    });
+
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Check ud", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            alertDialog.dismiss();
+                            SharedPreferences prefs = getDefaultSharedPreferences(root2.getContext());
+                            SharedPreferences.Editor editor = prefs.edit();
+                            editor.putInt(EVENT_ID_ARGUMENT, events.get(position).getEventID());
+                            editor.putString(EVENT_SELECTED_NAME, events.get(position).getName());
+                            editor.commit();
+                            NavController navController = Navigation.findNavController(root2);
+                            navController.navigate(R.id.nav_admin_checkout);
+                        }
+                    });
+                    alertDialog.show();
                 }
             });
         }
