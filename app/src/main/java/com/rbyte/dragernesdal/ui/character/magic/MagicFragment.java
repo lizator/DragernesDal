@@ -1,10 +1,14 @@
 package com.rbyte.dragernesdal.ui.character.magic;
 
+import android.content.Context;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -37,6 +41,7 @@ public class MagicFragment extends Fragment {
     private CharacterRepository charRepo = CharacterRepository.getInstance();
     private FragmentManager fm;
     private int state = 0;
+    private int screenWidth = 0;
 
     private SpellAdapter spellAdapter;
     private ArrayList<SpellDTO> characterSpells;
@@ -85,6 +90,7 @@ public class MagicFragment extends Fragment {
 
         spellbookRecyclerView = (RecyclerView) root.findViewById(R.id.spellbookRecycler);
         spellbookRecyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+        spellbookRecyclerView.getLayoutParams().height = (int) (getScreenWidth(root.getContext()) / 3);
         spellbookRecyclerView.setAdapter(spellAdapter);
         spellAdapter.notifyDataSetChanged();
 
@@ -122,6 +128,18 @@ public class MagicFragment extends Fragment {
     private void addSpellToSpellBook(int spellID){
         ownedSpellIDs.add(spellID);
         characterSpells.add(magicViewModel.getSpell(spellID));
+    }
+
+    private int getScreenWidth(Context context) {
+
+        if (screenWidth == 0) {
+            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            Display display = wm.getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            screenWidth = size.x;
+        }
+        return screenWidth;
     }
 
     private class SpellAdapter extends RecyclerView.Adapter<SpellViewHolder> {
