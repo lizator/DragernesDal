@@ -24,7 +24,7 @@ public class AdminFragment extends Fragment implements View.OnClickListener{
 
     private AdminViewModel adminViewModel;
     private Button btn_createSkill, btn_editSkill, btn_createRace, btn_editRace,
-            btn_createEvent, btn_editEvent, btn_checkOut, btn_editUser;
+            btn_createEvent, btn_editEvent, btn_editUser;
     private View root2;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -44,8 +44,6 @@ public class AdminFragment extends Fragment implements View.OnClickListener{
         btn_createEvent.setOnClickListener(this);
         btn_editEvent = root.findViewById(R.id.button_edit_event);
         btn_editEvent.setOnClickListener(this);
-        btn_checkOut = root.findViewById(R.id.button_checkout);
-        btn_checkOut.setOnClickListener(this);
         btn_editUser = root.findViewById(R.id.button_edit_user);
         btn_editUser.setOnClickListener(this);
 
@@ -101,11 +99,6 @@ public class AdminFragment extends Fragment implements View.OnClickListener{
                 clickedOnToast("Rediger event");
                 Log.d("AdminView","Clicked on edit event");
                 navController.navigate(R.id.nav_admin_event_edit);
-                break;
-            case R.id.button_checkout:
-                clickedOnToast("Check ud");
-                Log.d("AdminView","Clicked on check out");
-                navController.navigate(R.id.nav_admin_checkout);
                 break;
             case R.id.button_edit_user:
                 clickedOnToast("Rediger bruger");
