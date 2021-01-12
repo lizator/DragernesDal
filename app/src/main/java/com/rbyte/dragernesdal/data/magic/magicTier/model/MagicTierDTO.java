@@ -2,7 +2,7 @@ package com.rbyte.dragernesdal.data.magic.magicTier.model;
 
 
 public class MagicTierDTO {
-    private int ID;
+    private int id;
     private int lvl;
     private int spell1ID;
     private int spell2ID;
@@ -10,12 +10,12 @@ public class MagicTierDTO {
     private int spell4ID;
     private int spell5ID;
 
-    public int getID() {
-        return ID;
+    public int getId() {
+        return id;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getLvl() {

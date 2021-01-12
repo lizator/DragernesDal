@@ -27,9 +27,9 @@ public class MagicRepository {
 
     private ArrayList<MagicSchoolDTO> schools = new ArrayList<>();
     private ArrayList<MagicTierDTO> tiers = new ArrayList<>();
+    private HashMap<Integer, MagicTierDTO> tierMap = new HashMap<>();
     private HashMap<Integer, Integer> tiercosts = new HashMap<>();
     private ArrayList<SpellDTO> spells = new ArrayList<>();
-
     private HashMap<Integer, SpellDTO> spellMap;
 
     public static MagicRepository getInstance(){
@@ -46,6 +46,35 @@ public class MagicRepository {
         tiercosts.put(5, 4);
 
         startGetThread();
+    }
+
+    public ArrayList<SpellDTO> getSpellsBySchool(int schoolID){
+        MagicSchoolDTO school = new MagicSchoolDTO();
+        for (MagicSchoolDTO dto : schools){
+            if (dto.getId() == schoolID){
+                school = dto;
+                break;
+            }
+        }
+
+        ArrayList<Integer> teirs = new ArrayList<>();
+        teirs.add(school.getLvl1ID());
+        teirs.add(school.getLvl2ID());
+        teirs.add(school.getLvl3ID());
+        teirs.add(school.getLvl4ID());
+        teirs.add(school.getLvl5ID());
+
+        ArrayList<SpellDTO> schoolSpells = new ArrayList<>();
+        for (int tierID : teirs){
+            MagicTierDTO tier = tierMap.get(tierID);
+            if (tier.getSpell1ID() != 0) schoolSpells.add(getSpell(tier.getSpell1ID()));
+            if (tier.getSpell2ID() != 0) schoolSpells.add(getSpell(tier.getSpell2ID()));
+            if (tier.getSpell3ID() != 0) schoolSpells.add(getSpell(tier.getSpell3ID()));
+            if (tier.getSpell4ID() != 0) schoolSpells.add(getSpell(tier.getSpell4ID()));
+            if (tier.getSpell5ID() != 0) schoolSpells.add(getSpell(tier.getSpell5ID()));
+        }
+
+        return schoolSpells;
     }
 
 
@@ -73,6 +102,9 @@ public class MagicRepository {
                     Result<List<MagicTierDTO>> tierRes = tierDAO.getTiers();
                     if (tierRes instanceof Result.Success && tiers.size() == 0) {
                         tiers = (ArrayList<MagicTierDTO>) ((Result.Success<List<MagicTierDTO>>) tierRes).getData();
+                        for (MagicTierDTO dto : tiers){
+                            tierMap.put(dto.getId(), dto);
+                        }
                     }
 
                     Result<List<MagicSchoolDTO>> schoolRes = schoolDAO.getSchools();
@@ -87,6 +119,8 @@ public class MagicRepository {
             });
         }
     }
+
+
 
     public ArrayList<MagicSchoolDTO> getSchools() {
         return schools;

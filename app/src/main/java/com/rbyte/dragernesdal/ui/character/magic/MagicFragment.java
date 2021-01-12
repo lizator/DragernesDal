@@ -12,12 +12,14 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -26,9 +28,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.rbyte.dragernesdal.R;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
+import com.rbyte.dragernesdal.data.magic.MagicRepository;
 import com.rbyte.dragernesdal.data.magic.magicTier.model.MagicTierDTO;
 import com.rbyte.dragernesdal.data.magic.spell.model.SpellDTO;
 import com.rbyte.dragernesdal.ui.PopupHandler;
+import com.rbyte.dragernesdal.ui.character.magic.demon.DemonFragment;
+import com.rbyte.dragernesdal.ui.character.magic.divine.DivineFragment;
+import com.rbyte.dragernesdal.ui.character.magic.elemental.ElemtalFragment;
+import com.rbyte.dragernesdal.ui.character.magic.necro.NecroFragment;
+import com.rbyte.dragernesdal.ui.character.magic.transform.TransformFragment;
+import com.rbyte.dragernesdal.ui.character.skill.alle.AlleFragment;
+import com.rbyte.dragernesdal.ui.character.skill.kamp.KampFragment;
+import com.rbyte.dragernesdal.ui.character.skill.sniger.SnigerFragment;
+import com.rbyte.dragernesdal.ui.character.skill.viden.VidenFragment;
 
 import java.util.ArrayList;
 
@@ -52,8 +64,14 @@ public class MagicFragment extends Fragment {
     private RadioButton elementRadio;
     private RadioButton divineRadio;
     private RadioButton necroRadio;
-    private RadioButton demonoRadio;
+    private RadioButton demonRadio;
     private RadioButton transformRadio;
+
+    private ElemtalFragment elemtalFragment;
+    private DivineFragment divineFragment;
+    private NecroFragment necroFragment;
+    private DemonFragment demonFragment;
+    private TransformFragment transformFragment;
 
     private LinearLayout.LayoutParams checkedParam = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
@@ -71,20 +89,13 @@ public class MagicFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        magicViewModel = new ViewModelProvider(this).get(MagicViewModel.class);
+        magicViewModel = MagicViewModel.getInstance();
         View root = inflater.inflate(R.layout.fragment_character_magic, container, false);
         popHandler = new PopupHandler(getContext());
 
-        ownedSpellIDs = new ArrayList<>();
-        characterSpells = new ArrayList<>();
-        ArrayList<MagicTierDTO> charTiers = charRepo.getCurrentTierList();
-        for (MagicTierDTO tier : charTiers){
-            if (tier.getSpell1ID() != 0) addSpellToSpellBook(tier.getSpell1ID());
-            if (tier.getSpell2ID() != 0) addSpellToSpellBook(tier.getSpell2ID());
-            if (tier.getSpell3ID() != 0) addSpellToSpellBook(tier.getSpell3ID());
-            if (tier.getSpell4ID() != 0) addSpellToSpellBook(tier.getSpell4ID());
-            if (tier.getSpell5ID() != 0) addSpellToSpellBook(tier.getSpell5ID());
-        }
+        ownedSpellIDs = magicViewModel.getOwnedSpellIDs();
+        characterSpells = magicViewModel.getCharacterSpells();
+
 
         spellAdapter = new SpellAdapter();
 
@@ -93,6 +104,60 @@ public class MagicFragment extends Fragment {
         spellbookRecyclerView.getLayoutParams().height = (int) (getScreenWidth(root.getContext()) / 3);
         spellbookRecyclerView.setAdapter(spellAdapter);
         spellAdapter.notifyDataSetChanged();
+
+
+
+        fm = getActivity().getSupportFragmentManager();
+
+        elementRadio = root.findViewById(R.id.tab_elementalism);
+        divineRadio = root.findViewById(R.id.tab_divination);
+        necroRadio = root.findViewById(R.id.tab_necromancy);
+        demonRadio = root.findViewById(R.id.tab_demonology);
+        transformRadio = root.findViewById(R.id.tab_transformation);
+
+        RadioGroup abilityRadioGroup = (RadioGroup) root.findViewById(R.id.magicRadioGroup);
+        abilityRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch(checkedId) {
+                    case R.id.tab_elementalism:
+                        if (state != 0) {
+                            state = 0;
+                            switchFrag(state);
+                        }
+
+                        break;
+                    case R.id.tab_divination:
+                        if (state != 1) {
+                            state = 1;
+                            switchFrag(state);
+                        };
+
+                        break;
+                    case R.id.tab_necromancy:
+                        if (state != 2) {
+                            state = 2;
+                            switchFrag(state);
+                        }
+
+                        break;
+                    case R.id.tab_demonology:
+                        if (state != 3) {
+                            state = 3;
+                            switchFrag(state);
+                        }
+                        break;
+                    case R.id.tab_transformation:
+                        if (state != 4) {
+                            state = 4;
+                            switchFrag(state);
+                        }
+                        break;
+                }
+            }
+        });
+
+
 
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
@@ -104,6 +169,7 @@ public class MagicFragment extends Fragment {
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+        switchFrag(state);
         root2 = root;
         return root;
     }
@@ -125,10 +191,7 @@ public class MagicFragment extends Fragment {
 
     }
 
-    private void addSpellToSpellBook(int spellID){
-        ownedSpellIDs.add(spellID);
-        characterSpells.add(magicViewModel.getSpell(spellID));
-    }
+
 
     private int getScreenWidth(Context context) {
 
@@ -140,6 +203,72 @@ public class MagicFragment extends Fragment {
             screenWidth = size.x;
         }
         return screenWidth;
+    }
+
+    private void switchFrag(int newState){
+        elemtalFragment = new ElemtalFragment();
+        divineFragment = new DivineFragment();
+        necroFragment = new NecroFragment();
+        demonFragment = new DemonFragment();
+        transformFragment = new TransformFragment();
+        switch (newState){
+            case 0:
+                FragmentTransaction transactionk = fm.beginTransaction();
+                transactionk.replace(R.id.innerLinear, elemtalFragment);
+                transactionk.commit();
+
+                elementRadio.setLayoutParams(checkedParam);
+                divineRadio.setLayoutParams(uncheckedParam);
+                necroRadio.setLayoutParams(uncheckedParam);
+                demonRadio.setLayoutParams(uncheckedParam);
+                transformRadio.setLayoutParams(uncheckedParam);
+                break;
+            case 1:
+                FragmentTransaction transactiondi = fm.beginTransaction();
+                transactiondi.replace(R.id.innerLinear, divineFragment);
+                transactiondi.commit();
+
+                elementRadio.setLayoutParams(uncheckedParam);
+                divineRadio.setLayoutParams(checkedParam);
+                necroRadio.setLayoutParams(uncheckedParam);
+                demonRadio.setLayoutParams(uncheckedParam);
+                transformRadio.setLayoutParams(uncheckedParam);
+                break;
+            case 2:
+                FragmentTransaction transactionn = fm.beginTransaction();
+                transactionn.replace(R.id.innerLinear, necroFragment);
+                transactionn.commit();
+
+                elementRadio.setLayoutParams(uncheckedParam);
+                divineRadio.setLayoutParams(uncheckedParam);
+                necroRadio.setLayoutParams(checkedParam);
+                demonRadio.setLayoutParams(uncheckedParam);
+                transformRadio.setLayoutParams(uncheckedParam);
+                break;
+            case 3:
+                FragmentTransaction transactionde = fm.beginTransaction();
+                transactionde.replace(R.id.innerLinear, demonFragment);
+                transactionde.commit();
+
+                elementRadio.setLayoutParams(uncheckedParam);
+                divineRadio.setLayoutParams(uncheckedParam);
+                necroRadio.setLayoutParams(uncheckedParam);
+                demonRadio.setLayoutParams(checkedParam);
+                transformRadio.setLayoutParams(uncheckedParam);
+                break;
+            case 4:
+                FragmentTransaction transactiont = fm.beginTransaction();
+                transactiont.replace(R.id.innerLinear, transformFragment);
+                transactiont.commit();
+
+                elementRadio.setLayoutParams(uncheckedParam);
+                divineRadio.setLayoutParams(uncheckedParam);
+                necroRadio.setLayoutParams(uncheckedParam);
+                demonRadio.setLayoutParams(uncheckedParam);
+                transformRadio.setLayoutParams(checkedParam);
+                break;
+
+        }
     }
 
     private class SpellAdapter extends RecyclerView.Adapter<SpellViewHolder> {

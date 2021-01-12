@@ -2,7 +2,7 @@ package com.rbyte.dragernesdal.data.magic.magicSchool.model;
 
 
 public class MagicSchoolDTO {
-    private int ID;
+    private int id;
     private String schoolName;
     private int lvl1ID;
     private int lvl2ID;
@@ -12,12 +12,12 @@ public class MagicSchoolDTO {
     private String desc;
     private String color;
 
-    public int getID() {
-        return ID;
+    public int getId() {
+        return id;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getSchoolName() {
