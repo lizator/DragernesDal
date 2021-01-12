@@ -78,16 +78,11 @@
     <string name="opret_event">Opret event</string>
     <string name="check_ud">Check ud</string>
     <string name="rediger_bruger">Rediger bruger</string>
-    <string name="rediger_event">Events</string>
+    <string name="rediger_event">Rediger event</string>
     <string name="rediger_race">Rediger race</string>
     <string name="title_event">Title</string>
     <string name="start_dato">Start Dato</string>
     <string name="slut_dato">Slut Dato</string>
     <string name="address">Adresse</string>
     <string name="information">Information</string>
-    <string name="check_ind">Check ind</string>
-    <string name="editOrCheckIn">Vil du redigere eller tjekke ind?</string>
-    <string name="checkin">Bekræft check ind af:</string>
-    <string name="checkout">Bekræft fjernelse af check ind af:</string>
-    <string name="checked_ind">Checked ind</string>
 </resources>

@@ -11,9 +11,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public class AbilityDAO {
@@ -143,10 +141,8 @@ public class AbilityDAO {
 
 
     public Result<AbilityDTO> addCraft(int characterID, String craft){
-        AbilityDTO newCraft = new AbilityDTO();
-        newCraft.setName(craft);
         try {
-            Call<AbilityDTO> call = service.addCraft(characterID, newCraft);
+            Call<AbilityDTO> call = service.addCraft(characterID, craft);
             resp = call.execute();
             if (resp.code() == 200) return new Result.Success<AbilityDTO>(resp.body());
             return new Result.Error(new IOException(resp.message()));
@@ -185,7 +181,7 @@ public class AbilityDAO {
         @GET("/ability/freeAndGetFree/{characterID}/{abilityID}/{freeAbilityID}")
         Call<List<AbilityDTO>> freeAndGetFreeAbility(@Path(value = "characterID") int characterID, @Path(value = "abilityID") int abilityID, @Path(value = "freeAbilityID") int freeAbilityID);
 
-        @POST("/ability/craft/{characterID}")
-        Call<AbilityDTO> addCraft(@Path(value = "characterID") int characterID, @Body AbilityDTO craft);
+        @GET("/ability/craft/{characterID}/{craft}")
+        Call<AbilityDTO> addCraft(@Path(value = "characterID") int characterID, @Path(value = "craft") String craft);
     }
 }

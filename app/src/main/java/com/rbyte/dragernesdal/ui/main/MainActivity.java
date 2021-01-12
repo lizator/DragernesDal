@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                     R.id.nav_home, R.id.nav_char_skill, R.id.nav_char_magic, R.id.nav_char_inventory, R.id.nav_char_background,
                     R.id.nav_char_select, R.id.nav_rules, R.id.nav_event, R.id.nav_createCharacterFragment, R.id.nav_chooseRaceFragment,
                     R.id.nav_admin, R.id.nav_admin_event_create, R.id.nav_admin_event_edit, R.id.nav_admin_checkout, R.id.nav_admin_user_edit,
-                    R.id.nav_admin_skill_create, R.id.nav_admin_skill_edit, R.id.nav_admin_race_create, R.id.nav_admin_race_edit, R.id.nav_admin_checkin)
+                    R.id.nav_admin_skill_create, R.id.nav_admin_skill_edit, R.id.nav_admin_race_create, R.id.nav_admin_race_edit)
                     .setDrawerLayout(drawer)
                     .build();
         }

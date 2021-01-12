@@ -24,7 +24,6 @@ import androidx.navigation.Navigation;
 import com.rbyte.dragernesdal.R;
 import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
-import com.rbyte.dragernesdal.ui.PopupHandler;
 import com.rbyte.dragernesdal.ui.character.background.BackgroundViewModel;
 import com.rbyte.dragernesdal.ui.character.skill.alle.AlleFragment;
 import com.rbyte.dragernesdal.ui.character.skill.kamp.KampFragment;

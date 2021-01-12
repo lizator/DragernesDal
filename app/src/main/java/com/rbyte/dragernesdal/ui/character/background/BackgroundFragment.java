@@ -23,7 +23,8 @@ public class BackgroundFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        backgroundViewModel = BackgroundViewModel.getInstance();
+        backgroundViewModel =
+                new ViewModelProvider(this).get(BackgroundViewModel.class);
         View root = inflater.inflate(R.layout.fragment_character_background, container, false);
         //final TextView textView = root.findViewById(R.id.text_home);
 

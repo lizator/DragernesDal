@@ -28,7 +28,6 @@ import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
 import com.rbyte.dragernesdal.data.inventory.model.InventoryDTO;
 import com.rbyte.dragernesdal.data.race.model.RaceDTO;
-import com.rbyte.dragernesdal.ui.PopupHandler;
 import com.rbyte.dragernesdal.ui.character.select.SelectFragment;
 import com.rbyte.dragernesdal.ui.login.LoginActivity;
 
@@ -45,8 +44,6 @@ public class HomeFragment extends Fragment {
     private RecyclerView recyclerView;
     private int imgRes;
     private NavController navController;
-    private PopupHandler popHandler;
-    private View root2;
 
     public static final String CHARACTER_ID_SAVESPACE = "currCharacterID"; //TODO check if new login or clear when logout.
     //TODO maybe make some animation thing for when logging to to have data loaded and setup made?
@@ -54,7 +51,6 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-        popHandler = new PopupHandler(getContext());
         SharedPreferences prefs = getDefaultSharedPreferences(getContext());
         Bundle args = getArguments();
         if (args != null) {
@@ -233,16 +229,14 @@ public class HomeFragment extends Fragment {
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
 
-        root2 = root;
+
         return root;
     }
 
     class AbilityViewHolder extends RecyclerView.ViewHolder{
         TextView name;
-        View view;
         public AbilityViewHolder(View abilityViews) {
             super(abilityViews);
-            view = abilityViews;
             name = abilityViews.findViewById(R.id.abilityName);
             // Gør listeelementer klikbare og vis det ved at deres baggrunsfarve ændrer sig ved berøring
             name.setBackgroundResource(android.R.drawable.list_selector_background);
@@ -266,12 +260,6 @@ public class HomeFragment extends Fragment {
         @Override
         public void onBindViewHolder(AbilityViewHolder vh, int position) {
             vh.name.setText(abilityList.get(position).getName());
-            vh.view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    popHandler.getInfoAlert(root2, abilityList.get(position).getName(), abilityList.get(position).getDesc()).show();
-                }
-            });
             //TODO set onclick to show abilityList.get(position).getDesc()
 
         }
