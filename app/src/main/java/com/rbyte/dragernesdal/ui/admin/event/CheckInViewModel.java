@@ -53,8 +53,8 @@ public class CheckInViewModel extends ViewModel {
         thread.start();
     }
 
-    public void startEPThread(int id) {
-        AddEPThread thread = new AddEPThread(id);
+    public void startEPThread(int eventID) {
+        AddEPThread thread = new AddEPThread(eventID);
         thread.start();
     }
 
@@ -72,10 +72,10 @@ public class CheckInViewModel extends ViewModel {
         }
     }
 
-    public void addEP(int id){
+    public void addEP(int eventID){
         daoC = new CheckInDAO();
         CheckInDTO dto = new CheckInDTO();
-        dto.setIdEvent(id);
+        dto.setIdEvent(eventID);
         dto.setCheckin(-1);
         dto.setIdChar(-1);
         daoC.addEP(dto);
@@ -89,8 +89,8 @@ public class CheckInViewModel extends ViewModel {
 
     class AddEPThread extends Thread {
         private int id;
-        public AddEPThread(int id){
-            this.id = id;
+        public AddEPThread(int eventID){
+            this.id = eventID;
         }
         @Override
         public void run() {
