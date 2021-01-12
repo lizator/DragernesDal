@@ -5,6 +5,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -107,7 +108,12 @@ public class PopupHandler {
         View alertView = LayoutInflater.from(context).inflate(R.layout.popup_spell_info, (ViewGroup) thisView.getRootView(), false);
         ((TextView) alertView.findViewById(R.id.itemValue)).setText(item);
         ((TextView) alertView.findViewById(R.id.durationValue)).setText(duration);
-        ((TextView) alertView.findViewById(R.id.spellInfo)).setText(msg);
+        String[] msgList = msg.split("#n");
+        String newmsg = "";
+        for (String part : msgList){
+            newmsg += Html.fromHtml(part + "<br>") ;
+        }
+        ((TextView) alertView.findViewById(R.id.spellInfo)).setText(newmsg);
         builder.setView(alertView);
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
