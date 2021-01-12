@@ -39,13 +39,17 @@ public class MagicRepository {
 
     private MagicRepository(){
         //initing tiercosts
-        tiercosts.put(1, 2);
-        tiercosts.put(2, 3);
-        tiercosts.put(3, 3);
-        tiercosts.put(4, 4);
-        tiercosts.put(5, 4);
+        this.tiercosts.put(0, 2);
+        this.tiercosts.put(1, 3);
+        this.tiercosts.put(2, 3);
+        this.tiercosts.put(3, 4);
+        this.tiercosts.put(4, 4);
 
         startGetThread();
+    }
+
+    public int getLvlCost(int lvl){
+        return this.tiercosts.get(lvl);
     }
 
     public ArrayList<SpellDTO> getSpellsBySchool(int schoolID){

@@ -46,11 +46,12 @@
             app:layout_constraintTop_toTopOf="@+id/levelHeader" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/buymagicbtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Stig i rang! (0 EP)"
             android:textSize="11dp"
+            android:clickable="true"
             style="@style/textSmall"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

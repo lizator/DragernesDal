@@ -20,12 +20,18 @@ public class MagicViewModel extends ViewModel {
     private ArrayList<Integer> ownedSpellIDs = new ArrayList<>();
     private CharacterRepository charRepo = CharacterRepository.getInstance();
 
+    private MutableLiveData<Integer> currentEP;
+    private MutableLiveData<Boolean> update;
+
     public static MagicViewModel getInstance(){
         if (instance == null) instance = new MagicViewModel();
         return instance;
     }
 
     private MagicViewModel() {
+        currentEP = new MutableLiveData<>();
+        update = new MutableLiveData<>();
+
         for(MagicTierDTO tier : magicRepo.getTiers()){
             if (tier.getSpell1ID() != 0) spellLvls.put(tier.getSpell1ID(), tier.getLvl());
             if (tier.getSpell2ID() != 0) spellLvls.put(tier.getSpell2ID(), tier.getLvl());
@@ -64,5 +70,21 @@ public class MagicViewModel extends ViewModel {
     private void addSpellToSpellBook(int spellID){
         ownedSpellIDs.add(spellID);
         characterSpells.add(getSpell(spellID));
+    }
+
+    public MutableLiveData<Integer> getCurrentEP() {
+        return currentEP;
+    }
+
+    public void setCurrentEP(int ep) {
+        currentEP.setValue(ep);
+    }
+
+    public MutableLiveData<Boolean> getUpdate() {
+        return update;
+    }
+
+    public void setUpdate(boolean update) {
+        this.update.setValue(update);
     }
 }

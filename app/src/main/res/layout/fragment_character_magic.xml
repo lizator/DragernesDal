@@ -30,7 +30,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/abilityEPValueTV"
+                android:id="@+id/magicEPValueTV"
                 style="@style/text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -47,8 +47,8 @@
                 android:layout_height="wrap_content"
                 android:text="Tilgængelige EP: "
 
-                app:layout_constraintEnd_toStartOf="@+id/abilityEPValueTV"
-                app:layout_constraintTop_toTopOf="@+id/abilityEPValueTV" />
+                app:layout_constraintEnd_toStartOf="@+id/magicEPValueTV"
+                app:layout_constraintTop_toTopOf="@+id/magicEPValueTV" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout android:id="@+id/spellBookLinear"

@@ -9,11 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,10 +43,14 @@ public class ElemtalFragment extends Fragment {
     private View root2;
     private int screenWidth = 0;
 
+    private MutableLiveData<Integer> currentLvl;
+    private boolean currentLvlFound = false;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_magic_elemtal, container, false);
+        currentLvl = new MutableLiveData<>(0);
         charRepo = CharacterRepository.getInstance();
         popHandler = new PopupHandler(getContext());
 
@@ -53,8 +60,24 @@ public class ElemtalFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
         recyclerView.getLayoutParams().height = (int) (getScreenWidth(root.getContext()));
         recyclerView.setAdapter(spellAdapter);
-        //spellAdapter.notifyDataSetChanged();
 
+        Button buybtn = root.findViewById(R.id.buymagicbtn);
+        TextView rank = root.findViewById(R.id.levelValue);
+
+        currentLvl.observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer lvl) {
+                rank.setText(lvl + "");
+                if (lvl < 5){
+                    String btnmsg =  "STIG I RANG (" + magicRepository.getLvlCost(lvl) + " EP)";
+                    buybtn.setText(btnmsg);
+                } else {
+                    String btnmsg = "Højeste rang opnået!";
+                    buybtn.setText(btnmsg);
+                    buybtn.setClickable(false);
+                }
+            }
+        });
 
 
         root2 = root;
@@ -109,7 +132,8 @@ public class ElemtalFragment extends Fragment {
         @Override
         public void onBindViewHolder(SpellViewHolder vh, int position) {
             vh.name.setText(spellList.get(position).getSpellname());
-            vh.lvl.setText(magicViewModel.getLvl(spellList.get(position).getId()) + "");
+            int lvl = magicViewModel.getLvl(spellList.get(position).getId());
+            vh.lvl.setText(lvl + "");
             vh.view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -125,6 +149,15 @@ public class ElemtalFragment extends Fragment {
                     break;
                 }
             }
+            if (lvl > currentLvl.getValue()){
+                if (bought && !currentLvlFound){
+                    currentLvl.setValue(lvl);
+                } else {
+                    currentLvlFound = true;
+                }
+            }
+
+
         }
     }
 }

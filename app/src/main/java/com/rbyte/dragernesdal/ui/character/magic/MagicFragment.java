@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -92,10 +93,10 @@ public class MagicFragment extends Fragment {
         magicViewModel = MagicViewModel.getInstance();
         View root = inflater.inflate(R.layout.fragment_character_magic, container, false);
         popHandler = new PopupHandler(getContext());
+        fm = getActivity().getSupportFragmentManager();
 
         ownedSpellIDs = magicViewModel.getOwnedSpellIDs();
         characterSpells = magicViewModel.getCharacterSpells();
-
 
         spellAdapter = new SpellAdapter();
 
@@ -105,9 +106,26 @@ public class MagicFragment extends Fragment {
         spellbookRecyclerView.setAdapter(spellAdapter);
         spellAdapter.notifyDataSetChanged();
 
+        magicViewModel.getCurrentEP().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                TextView eptv = root.findViewById(R.id.magicEPValueTV);
+                eptv.setText(integer+ "");
+            }
+        });
 
-
-        fm = getActivity().getSupportFragmentManager();
+        magicViewModel.getUpdate().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean update) {
+                if (update) {
+                    switchFrag(state);
+                    ownedSpellIDs = magicViewModel.getOwnedSpellIDs();
+                    characterSpells = magicViewModel.getCharacterSpells();
+                    spellAdapter.notifyDataSetChanged();
+                    magicViewModel.setUpdate(false);
+                }
+            }
+        });
 
         elementRadio = root.findViewById(R.id.tab_elementalism);
         divineRadio = root.findViewById(R.id.tab_divination);
@@ -156,7 +174,6 @@ public class MagicFragment extends Fragment {
                 }
             }
         });
-
 
 
 
