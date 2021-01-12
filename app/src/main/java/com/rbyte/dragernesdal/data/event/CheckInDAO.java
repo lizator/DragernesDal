@@ -22,7 +22,7 @@ public class CheckInDAO {
 
     Response<CheckInDTO> resp;
 
-    public CheckInDAO(){
+    public CheckInDAO() {
         this.retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl(WebServerPointer.getServerIP())
@@ -30,7 +30,7 @@ public class CheckInDAO {
         this.service = retrofit.create(EventCallService.class);
     }
 
-    public Result<CheckInDTO> setAttending(CheckInDTO dto){
+    public Result<CheckInDTO> setAttending(CheckInDTO dto) {
         try {
             Call<CheckInDTO> call = service.setAttending(dto);
             resp = call.execute();
@@ -41,7 +41,7 @@ public class CheckInDAO {
         }
     }
 
-    public Result<CheckInDTO> addEP(CheckInDTO dto){
+    public Result<CheckInDTO> addEP(CheckInDTO dto) {
         try {
             Call<CheckInDTO> call = service.addEP(dto);
             resp = call.execute();
@@ -56,6 +56,7 @@ public class CheckInDAO {
     public interface EventCallService {
         @POST("/event/checkin/set")
         Call<CheckInDTO> setAttending(@Body CheckInDTO CheckInDTO);
+
         @POST("/event/add/ep")
         Call<CheckInDTO> addEP(@Body CheckInDTO CheckInDTO);
     }
