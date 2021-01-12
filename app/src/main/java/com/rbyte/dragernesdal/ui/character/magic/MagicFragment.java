@@ -114,6 +114,8 @@ public class MagicFragment extends Fragment {
             }
         });
 
+        magicViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
+
         magicViewModel.getUpdate().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean update) {

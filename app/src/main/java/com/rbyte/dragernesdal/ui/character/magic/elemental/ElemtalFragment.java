@@ -1,6 +1,7 @@
 package com.rbyte.dragernesdal.ui.character.magic.elemental;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,6 +13,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -21,13 +23,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rbyte.dragernesdal.R;
+import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.data.magic.MagicRepository;
+import com.rbyte.dragernesdal.data.magic.magicSchool.model.MagicSchoolDTO;
+import com.rbyte.dragernesdal.data.magic.magicTier.model.MagicTierDTO;
 import com.rbyte.dragernesdal.data.magic.spell.model.SpellDTO;
 import com.rbyte.dragernesdal.ui.PopupHandler;
 import com.rbyte.dragernesdal.ui.character.magic.MagicViewModel;
 
 import java.util.ArrayList;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class ElemtalFragment extends Fragment {
 
@@ -54,7 +61,7 @@ public class ElemtalFragment extends Fragment {
         charRepo = CharacterRepository.getInstance();
         popHandler = new PopupHandler(getContext());
 
-        spellList = magicRepository.getSpellsBySchool(1);
+        spellList = magicRepository.getSpellsBySchool(3);
 
         recyclerView = (RecyclerView) root.findViewById(R.id.magicRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
@@ -82,7 +89,52 @@ public class ElemtalFragment extends Fragment {
         buybtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+                MagicSchoolDTO school = magicRepository.getSchools().get(2);
+                int tmp = 0;
+                switch (currentLvl.getValue()){
+                    case 0:
+                        tmp = school.getLvl1ID();
+                        break;
+                    case 1:
+                        tmp = school.getLvl2ID();
+                        break;
+                    case 2:
+                        tmp = school.getLvl3ID();
+                        break;
+                    case 3:
+                        tmp = school.getLvl4ID();
+                        break;
+                    case 4:
+                        tmp = school.getLvl5ID();
+                        break;
+                }
+                int tierID = tmp;
+                int currentEP = charRepo.getCurrentChar().getCurrentep();
+                if (currentEP >= magicRepository.getLvlCost(currentLvl.getValue())){
+                    popHandler.getConfirmBuyMagicAlert(root,
+                            currentLvl.getValue() + 1,
+                            school.getSchoolName(),
+                            magicRepository.getLvlCost(currentLvl.getValue()),
+                            charRepo.getCurrentChar().getCurrentep(), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Executor bgThread = Executors.newSingleThreadExecutor();
+                                    bgThread.execute(() -> {
+                                        Result<MagicTierDTO> res = magicRepository.buyMagicTier(charRepo.getCurrentChar().getIdcharacter(), tierID, magicRepository.getLvlCost(currentLvl.getValue()));
+                                        charRepo.getCharacterByID(charRepo.getCurrentChar().getIdcharacter());
+                                        uiThread.post(() -> {
+                                            if (res instanceof Result.Success) {
+                                                magicViewModel.setUpdate(true);
+                                                magicViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
+                                            } else {
+                                                Toast.makeText(getContext(), "Der skete en fejl, prøv igen", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });                                    });
+                                }
+                            }).show();
+                } else {
+                    Toast.makeText(getContext(), "Du har ikke nok EP", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

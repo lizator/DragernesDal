@@ -71,6 +71,23 @@ public class PopupHandler {
         return builder;
     }
 
+    public AlertDialog.Builder getConfirmBuyMagicAlert(View thisView, int newRanknumber, String schoolName, int tierCost, int currentEP, DialogInterface.OnClickListener okListener){
+        builder.setTitle("Køb Evne!");
+        View alertView = LayoutInflater.from(context).inflate(R.layout.popup_confirmation_buy_magic_tier, (ViewGroup) thisView.getRootView(), false);
+        String text = (String) ((TextView) alertView.findViewById(R.id.Alertmsg)).getText();
+        text = String.format(text, newRanknumber, schoolName, tierCost, currentEP-tierCost);
+        ((TextView) alertView.findViewById(R.id.Alertmsg)).setText(text);
+        builder.setView(alertView);
+        builder.setPositiveButton(android.R.string.ok, okListener);
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        return builder;
+    }
+
     public AlertDialog.Builder getInfoAlert(View thisView, String name, String msg){
         builder.setTitle(name);
         View alertView = LayoutInflater.from(context).inflate(R.layout.popup_ability_info, (ViewGroup) thisView.getRootView(), false);

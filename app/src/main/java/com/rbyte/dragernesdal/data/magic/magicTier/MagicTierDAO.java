@@ -56,6 +56,30 @@ public class MagicTierDAO {
         }
     }
 
+    public Result<MagicTierDTO> buyTier(int characterID, int tierID, int cost){
+        try {
+            Call<MagicTierDTO> call = service.buyTier(characterID, tierID, cost);
+            resp = call.execute();
+            if (resp.code() == 200) return new Result.Success<MagicTierDTO>(resp.body());
+            throw new IOException(resplst.message());
+        } catch (IOException e){
+            e.printStackTrace();
+            return new Result.Error(new IOException(e.getMessage()));
+        }
+    }
+
+    public Result<MagicTierDTO> getFreeTier(int characterID, int tierID){
+        try {
+            Call<MagicTierDTO> call = service.getFreeTier(characterID, tierID);
+            resp = call.execute();
+            if (resp.code() == 200) return new Result.Success<MagicTierDTO>(resp.body());
+            throw new IOException(resplst.message());
+        } catch (IOException e){
+            e.printStackTrace();
+            return new Result.Error(new IOException(e.getMessage()));
+        }
+    }
+
     public interface TierCallService {
 
         @GET("/magic/tiers")
@@ -64,8 +88,11 @@ public class MagicTierDAO {
         @GET("/magic/bycharid/{characterID}")
         Call<List<MagicTierDTO>> getTiersByCharacterID(@Path(value = "characterID") int characterID);
 
-        /*@GET("/race/krys/getCharacterRaces/{characterid}")
-        Call<List<RaceDTO>> getKrysRaces(@Path(value = "characterid") int characterid);
+        @GET("/magic/buy/{characterid}/{tierid}/{cost}")
+        Call<MagicTierDTO> buyTier(@Path(value = "characterid") int characterid, @Path(value = "tierid") int tierid, @Path(value = "cost") int cost);
+
+        @GET("/magic/getfree/{characterid}/{tierid}")
+        Call<MagicTierDTO> getFreeTier(@Path(value = "characterid") int characterid, @Path(value = "tierid") int tierid);
 
         /*@POST("/character/create")
         Call<CharacterDTO> createCharacter(@Body CharacterDTO character);

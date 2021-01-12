@@ -81,6 +81,13 @@ public class MagicRepository {
         return schoolSpells;
     }
 
+    public Result<MagicTierDTO> buyMagicTier(int characterID, int tier, int cost){
+        if(cost == 0){
+            return tierDAO.getFreeTier(characterID, tier);
+        }
+        return tierDAO.buyTier(characterID, tier, cost);
+    }
+
 
     public void startGetThread(){
         new GetSpellsThread().run();
@@ -123,8 +130,6 @@ public class MagicRepository {
             });
         }
     }
-
-
 
     public ArrayList<MagicSchoolDTO> getSchools() {
         return schools;
