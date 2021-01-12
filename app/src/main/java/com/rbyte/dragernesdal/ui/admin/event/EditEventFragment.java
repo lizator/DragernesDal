@@ -78,7 +78,7 @@ public class EditEventFragment extends Fragment {
                             n.getStartDate().toLocalDate().toString() :
                             n.getStartDate().toLocalDate().toString() + " - " + n.getEndDate().toLocalDate().toString();
                     eventCards.add(new EventCard(date, n.getInfo(),
-                            "Klokken: " + n.getStartDate().toLocalTime().toString()+":00", n.getEndDate().toLocalTime().toString()+":00", n.getAddress(), n.getName()));
+                            "Klokken: " + n.getStartDate().toLocalTime().toString() + ":00", n.getEndDate().toLocalTime().toString() + ":00", n.getAddress(), n.getName()));
                 });
                 eventAdapter.notifyDataSetChanged();
             }
@@ -122,7 +122,7 @@ public class EditEventFragment extends Fragment {
                             PopupHandler popupHandler = new PopupHandler(getContext());
                             events.get(position).setEventID(position);
                             System.out.println(events.get(position).getEventID());
-                            AlertDialog.Builder builder = popupHandler.editEvent(root2,events.get(position), uiThread, Navigation.findNavController(root2));
+                            AlertDialog.Builder builder = popupHandler.editEvent(root2, events.get(position), uiThread, Navigation.findNavController(root2));
                             builder.show();
                         }
                     });
@@ -176,8 +176,8 @@ public class EditEventFragment extends Fragment {
         public void onBindViewHolder(EventViewHolder vh, int position) {
             vh.date.setText(eventCards.get(position).getDate());
             vh.info.setText(eventCards.get(position).getInfo());
-            vh.time.setText(eventCards.get(position).getStartTime()+"-"+eventCards.get(position).getEndTime());
-            vh.address.setText("Adresse: "+eventCards.get(position).getAddress());
+            vh.time.setText(eventCards.get(position).getStartTime() + "-" + eventCards.get(position).getEndTime());
+            vh.address.setText("Adresse: " + eventCards.get(position).getAddress());
             vh.title.setText(eventCards.get(position).getTitle());
             vh.attending.setVisibility(View.INVISIBLE);
             vh.attending.setHeight(0);
@@ -266,8 +266,8 @@ public class EditEventFragment extends Fragment {
         }
 
         @Override
-        public String toString(){
-            return date+"\n"+info+"\n"+ startTime +"\n"+attending;
+        public String toString() {
+            return date + "\n" + info + "\n" + startTime + "\n" + attending;
         }
     }
 }
