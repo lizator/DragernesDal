@@ -30,6 +30,8 @@ public class MagicRepository {
     private HashMap<Integer, Integer> tiercosts = new HashMap<>();
     private ArrayList<SpellDTO> spells = new ArrayList<>();
 
+    private HashMap<Integer, SpellDTO> spellMap;
+
     public static MagicRepository getInstance(){
         if (instance == null) instance = new MagicRepository();
         return instance;
@@ -84,5 +86,31 @@ public class MagicRepository {
                 }
             });
         }
+    }
+
+    public ArrayList<MagicSchoolDTO> getSchools() {
+        return schools;
+    }
+
+    public ArrayList<MagicTierDTO> getTiers() {
+        return tiers;
+    }
+
+    public HashMap<Integer, Integer> getTiercosts() {
+        return tiercosts;
+    }
+
+    public ArrayList<SpellDTO> getSpells() {
+        return spells;
+    }
+
+    public SpellDTO getSpell(int spellID) {
+        if (spellMap == null){
+            spellMap = new HashMap<>();
+            for (SpellDTO dto : spells){
+                spellMap.put(dto.getId(), dto);
+            }
+        }
+        return spellMap.get(spellID);
     }
 }

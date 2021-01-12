@@ -12,6 +12,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 
 public class MagicTierDAO {
     private Retrofit retrofit;
@@ -30,9 +31,22 @@ public class MagicTierDAO {
             this.service = retrofit.create(TierCallService.class);
         }
     }
+
     public Result<List<MagicTierDTO>> getTiers(){
         try {
             Call<List<MagicTierDTO>> call = service.getAllTiers();
+            resplst = call.execute();
+            if (resplst.code() == 200) return new Result.Success<List<MagicTierDTO>>(resplst.body());
+            throw new IOException(resplst.message());
+        } catch (IOException e){
+            e.printStackTrace();
+            return new Result.Error(new IOException(e.getMessage()));
+        }
+    }
+
+    public Result<List<MagicTierDTO>> getTiersByCharacterID(int characterID){
+        try {
+            Call<List<MagicTierDTO>> call = service.getTiersByCharacterID(characterID);
             resplst = call.execute();
             if (resplst.code() == 200) return new Result.Success<List<MagicTierDTO>>(resplst.body());
             throw new IOException(resplst.message());
@@ -47,8 +61,8 @@ public class MagicTierDAO {
         @GET("/magic/tiers")
         Call<List<MagicTierDTO>> getAllTiers();
 
-        /*@GET("/race/info/single/{raceID}")
-        Call<RaceDTO> getRaceInfo(@Path(value = "raceID") int raceID);
+        @GET("/magic/bycharid/{characterID}")
+        Call<List<MagicTierDTO>> getTiersByCharacterID(@Path(value = "characterID") int characterID);
 
         /*@GET("/race/krys/getCharacterRaces/{characterid}")
         Call<List<RaceDTO>> getKrysRaces(@Path(value = "characterid") int characterid);

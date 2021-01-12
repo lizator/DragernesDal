@@ -2,18 +2,18 @@ package com.rbyte.dragernesdal.data.magic.spell.model;
 
 
 public class SpellDTO {
-    private int ID;
+    private int id;
     private String spellname;
     private String desc;
     private String item;
     private String duration;
 
-    public int getID() {
-        return ID;
+    public int getId() {
+        return id;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getSpellname() {

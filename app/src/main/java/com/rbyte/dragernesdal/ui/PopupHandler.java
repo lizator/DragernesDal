@@ -85,6 +85,22 @@ public class PopupHandler {
         return builder;
     }
 
+    public AlertDialog.Builder getSpellInfoAlert(View thisView, String name, String item, String duration, String msg){
+        builder.setTitle(name);
+        View alertView = LayoutInflater.from(context).inflate(R.layout.popup_spell_info, (ViewGroup) thisView.getRootView(), false);
+        ((TextView) alertView.findViewById(R.id.itemValue)).setText(item);
+        ((TextView) alertView.findViewById(R.id.durationValue)).setText(duration);
+        ((TextView) alertView.findViewById(R.id.spellInfo)).setText(msg);
+        builder.setView(alertView);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        return builder;
+    }
+
     public AlertDialog.Builder getKrysRaceAlert(View thisView, Context context, Handler uiThread){
         builder.setTitle("Krydsningen");
         View alertView = LayoutInflater.from(context).inflate(R.layout.popup_choice_krysracer, (ViewGroup) thisView.getRootView(), false);
