@@ -217,10 +217,18 @@ public class AbilityRepository {
                 case "VALG": //should return a string to init a popup
                     return dto.getCommand().split(",")[1];
                 case "KRYS3EP":
-                    return "KRYS3EP";
+                    ArrayList<RaceDTO> races3ep = (ArrayList<RaceDTO>) HomeViewModel.getInstance().getRaces().getValue();
+                    confirmBuy(characterID, abilityID);
+                    String fst3ep = tryBuy(characterID, races3ep.get(0).getStart(), true);
+                    String scd3ep = tryBuy(characterID, races3ep.get(1).getStart(), true);
+                    return "KRYS," + fst3ep + "," + scd3ep;
                 //TODO: make get both start abilities of races
                 case "KRYS4EP":
-                    return "KRYS4EP";
+                    ArrayList<RaceDTO> races4ep = (ArrayList<RaceDTO>) HomeViewModel.getInstance().getRaces().getValue();
+                    confirmBuy(characterID, abilityID);
+                    String fst4ep = tryBuy(characterID, races4ep.get(0).getEp2(), true);
+                    String scd4ep = tryBuy(characterID, races4ep.get(1).getEp2(), true);
+                    return "KRYS," + fst4ep + "," + scd4ep;
                 //TODO: make get both 2ep abilities of races
                 case "STARTEVNE":
                     return "STARTEVNE";
