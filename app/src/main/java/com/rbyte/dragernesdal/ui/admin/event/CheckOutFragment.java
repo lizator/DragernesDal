@@ -23,6 +23,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.rbyte.dragernesdal.R;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
 import com.rbyte.dragernesdal.data.event.model.CheckInDTO;
@@ -41,6 +42,7 @@ public class CheckOutFragment extends Fragment {
     private ArrayList<CharacterDTO> characterList;
     private RecyclerView recyclerView;
     private CheckInViewModel checkInViewModel;
+    private FloatingActionButton fab;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -48,10 +50,37 @@ public class CheckOutFragment extends Fragment {
         //final TextView textView = root.findViewById(R.id.text_home);
         SharedPreferences prefs = getDefaultSharedPreferences(getContext());
         characterList = new ArrayList<CharacterDTO>();
+        fab = root.findViewById(R.id.checkedIn);
         eventID = prefs.getInt(EVENT_ID_ARGUMENT, -1);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Check ud: " + prefs.getString(EVENT_SELECTED_NAME, ""));
         checkInViewModel = CheckInViewModel.getInstance();
         checkInViewModel.startGetThread(eventID, 1);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                alertDialog.setTitle("Vil du give alle: \"+1 EP?\"");
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Ja", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        alertDialog.dismiss();
+                        checkInViewModel.startEPThread(eventID);
+                        for(CharacterDTO character:characterList){
+                            character.setCurrentep(character.getCurrentep()+1);
+                        }
+                        characterAdapter.notifyDataSetChanged();
+                        Toast.makeText(getContext(),"1 EP tilføjet til alle",Toast.LENGTH_SHORT).show();
+                    }
+                });
+                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Nej", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        alertDialog.dismiss();
+                    }
+                });
+                alertDialog.show();
+            }
+        });
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
             public void handleOnBackPressed() {
@@ -118,7 +147,7 @@ public class CheckOutFragment extends Fragment {
         @Override
         public void onBindViewHolder(CharacterViewHolder vh, int position) {
             vh.name.setSingleLine(false);
-            vh.name.setText(characterList.get(position).getName() + "\nBrugerID: " + characterList.get(position).getIduser());
+            vh.name.setText(characterList.get(position).getName() + "\nBrugerID: " + characterList.get(position).getIduser()+"\nEP: "+ characterList.get(position).getCurrentep());
             int raceID = characterList.get(position).getIdrace();
             switch (raceID) {
                 case 1:

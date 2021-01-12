@@ -41,9 +41,22 @@ public class CheckInDAO {
         }
     }
 
+    public Result<CheckInDTO> addEP(CheckInDTO dto){
+        try {
+            Call<CheckInDTO> call = service.addEP(dto);
+            resp = call.execute();
+            return new Result.Success<CheckInDTO>(resp.body());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new Result.Error(new IOException("Error connection to database"));
+        }
+    }
+
 
     public interface EventCallService {
         @POST("/event/checkin/set")
         Call<CheckInDTO> setAttending(@Body CheckInDTO CheckInDTO);
+        @POST("/event/add/ep")
+        Call<CheckInDTO> addEP(@Body CheckInDTO CheckInDTO);
     }
 }

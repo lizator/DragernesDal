@@ -53,6 +53,11 @@ public class CheckInViewModel extends ViewModel {
         thread.start();
     }
 
+    public void startEPThread(int id) {
+        AddEPThread thread = new AddEPThread(id);
+        thread.start();
+    }
+
     public void getCharactersByEventID(int eventID, int checkin){
         Result<List<CharacterDTO>> result;
         result = repo.getCharactersByEventID(eventID, checkin);
@@ -67,9 +72,30 @@ public class CheckInViewModel extends ViewModel {
         }
     }
 
+    public void addEP(int id){
+        daoC = new CheckInDAO();
+        CheckInDTO dto = new CheckInDTO();
+        dto.setIdEvent(id);
+        dto.setCheckin(-1);
+        dto.setIdChar(-1);
+        daoC.addEP(dto);
+    }
+
     public void setCharacterByEventID(CheckInDTO dto){
         daoC = new CheckInDAO();
         daoC.setAttending(dto);
+    }
+
+
+    class AddEPThread extends Thread {
+        private int id;
+        public AddEPThread(int id){
+            this.id = id;
+        }
+        @Override
+        public void run() {
+            addEP(id);
+        }
     }
 
 
