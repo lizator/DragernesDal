@@ -154,7 +154,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/address" />
 
             <TextView
-                android:id="@+id/information"
+                android:id="@+id/hyperlink"
                 style="@style/text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -162,12 +162,46 @@
 
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="@string/information"
+                android:text="@string/hyperlink"
                 android:textSize="36sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/editText_Address" />
+
+            <EditText
+                android:id="@+id/editText_hyperlink"
+                style="@style/TextZone"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:autofillHints=""
+                android:hint="@string/hyperlink"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:selectAllOnFocus="true"
+                android:textSize="24sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.524"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/hyperlink" />
+
+            <TextView
+                android:id="@+id/information"
+                style="@style/text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/information"
+                android:textSize="36sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editText_hyperlink" />
 
             <EditText
                 android:id="@+id/eventInformation"

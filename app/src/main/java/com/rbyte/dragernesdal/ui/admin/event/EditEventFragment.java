@@ -78,7 +78,7 @@ public class EditEventFragment extends Fragment {
                             n.getStartDate().toLocalDate().toString() :
                             n.getStartDate().toLocalDate().toString() + " - " + n.getEndDate().toLocalDate().toString();
                     eventCards.add(new EventCard(date, n.getInfo(),
-                            "Klokken: " + n.getStartDate().toLocalTime().toString() + ":00", n.getEndDate().toLocalTime().toString() + ":00", n.getAddress(), n.getName()));
+                            "Klokken: " + n.getStartDate().toLocalTime().toString() + ":00", n.getEndDate().toLocalTime().toString() + ":00", n.getAddress(), n.getName(),n.getHyperlink()));
                 });
                 eventAdapter.notifyDataSetChanged();
             }
@@ -98,7 +98,7 @@ public class EditEventFragment extends Fragment {
 
     class EventViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
-        TextView date, info, time, attending, address, title;
+        TextView date, info, time, attending, address, title, hyperlink;
 
         public EventViewHolder(View eventViews) {
             super(eventViews);
@@ -109,6 +109,7 @@ public class EditEventFragment extends Fragment {
             title = eventViews.findViewById(R.id.textTitle);
             attending = eventViews.findViewById(R.id.textAttending);
             address = eventViews.findViewById(R.id.textAddress);
+            hyperlink = eventViews.findViewById(R.id.textLink);
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -179,6 +180,7 @@ public class EditEventFragment extends Fragment {
             vh.time.setText(eventCards.get(position).getStartTime() + "-" + eventCards.get(position).getEndTime());
             vh.address.setText("Adresse: " + eventCards.get(position).getAddress());
             vh.title.setText(eventCards.get(position).getTitle());
+            vh.hyperlink.setText(eventCards.get(position).getHyperlink());
             vh.attending.setVisibility(View.INVISIBLE);
             vh.attending.setHeight(0);
             vh.attending.setText("");
@@ -195,14 +197,16 @@ public class EditEventFragment extends Fragment {
         private Boolean attending = false;
         private String address = "";
         private String title = "";
+        private String hyperlink = "";
 
-        public EventCard(String date, String info, String startTime, String endTime, String address, String title) {
+        public EventCard(String date, String info, String startTime, String endTime, String address, String title, String hyperlink) {
             this.title = title;
             this.date = date;
             this.info = info;
             this.startTime = startTime;
             this.endTime = endTime;
             this.address = address;
+            this.hyperlink = hyperlink;
         }
 
         public EventCard() {
@@ -251,6 +255,14 @@ public class EditEventFragment extends Fragment {
 
         public void setEndTime(String endTime) {
             this.endTime = endTime;
+        }
+
+        public String getHyperlink() {
+            return hyperlink;
+        }
+
+        public void setHyperlink(String hyperlink) {
+            this.hyperlink = hyperlink;
         }
 
         public String getAddress() {
