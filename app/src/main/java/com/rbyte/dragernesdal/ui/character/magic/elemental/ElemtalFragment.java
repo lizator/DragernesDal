@@ -79,6 +79,13 @@ public class ElemtalFragment extends Fragment {
             }
         });
 
+        buybtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
+            }
+        });
+
 
         root2 = root;
         return root;

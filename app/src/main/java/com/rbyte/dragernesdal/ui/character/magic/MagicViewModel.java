@@ -55,7 +55,8 @@ public class MagicViewModel extends ViewModel {
     }
 
     public ArrayList<Integer> getOwnedSpellIDs() {
-        ownedSpellIDs = new ArrayList<>();
+        ownedSpellIDs.clear();
+        characterSpells.clear();
         ArrayList<MagicTierDTO> charTiers = charRepo.getCurrentTierList();
         for (MagicTierDTO tier : charTiers){
             if (tier.getSpell1ID() != 0) addSpellToSpellBook(tier.getSpell1ID());
