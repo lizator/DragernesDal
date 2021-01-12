@@ -968,7 +968,7 @@ public class PopupHandler {
     public AlertDialog.Builder editEvent(View thisView, EventDTO eventDTO, Handler uiThread, NavController navController) {
         builder.setTitle("Rediger Event");
         View alertView = LayoutInflater.from(context).inflate(R.layout.fragment_admin_create_event, (ViewGroup) thisView.getRootView(), false);
-        final EditText title, startDate, endDate, address, info;
+        final EditText title, startDate, endDate, address, info, hyperlink;
         final String[] timeStart = new String[1];
         final String[] timeEnd = new String[1];
         Button create;
@@ -978,6 +978,7 @@ public class PopupHandler {
         address = alertView.findViewById(R.id.editText_Address);
         info = alertView.findViewById(R.id.eventInformation);
         create = alertView.findViewById(R.id.create_event);
+        hyperlink = alertView.findViewById(R.id.editText_hyperlink);
         create.setEnabled(false);
         create.setVisibility(View.INVISIBLE);
         create.setHeight(0);
@@ -986,6 +987,7 @@ public class PopupHandler {
         endDate.setText("Sæt ny dato");
         address.setText(eventDTO.getAddress());
         info.setText(eventDTO.getInfo());
+        hyperlink.setText(eventDTO.getHyperlink());
 
         startDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1079,6 +1081,7 @@ public class PopupHandler {
                 eventDTO.setStartDate(timeStart[0]);
                 eventDTO.setEndDate(timeEnd[0]);
                 eventDTO.setInfo(info.getText() + "");
+                eventDTO.setHyperlink(hyperlink.getText()+"");
                 Executor bgThread = Executors.newSingleThreadExecutor();
                 bgThread.execute(() -> {
                     Log.d("Event", "Event edited: " + eventDTO.getEventID());

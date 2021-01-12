@@ -90,4 +90,6 @@
     <string name="checkin">Bekræft check ind af:</string>
     <string name="checkout">Bekræft fjernelse af check ind af:</string>
     <string name="checked_ind">Checked ind</string>
+    <string name="textLink">https://google.com</string>
+    <string name="hyperlink">Event link(s)</string>
 </resources>

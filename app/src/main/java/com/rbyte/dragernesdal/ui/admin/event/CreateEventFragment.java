@@ -41,7 +41,7 @@ import java.util.concurrent.Executors;
 public class CreateEventFragment extends Fragment {
 
     private Button createEvent;
-    private EditText title, startDate, endDate, address, info;
+    private EditText title, startDate, endDate, address, info, hyperlink;
     private int mYear, mMonth, mDay, mHour, mMinute;
     private String timeStart = "", timeEnd = "";
     private Handler uiThread = new Handler();
@@ -133,6 +133,7 @@ public class CreateEventFragment extends Fragment {
         });
         address = root.findViewById(R.id.editText_Address);
         info = root.findViewById(R.id.eventInformation);
+        hyperlink = root.findViewById(R.id.editText_hyperlink);
 
         createEvent.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -145,6 +146,7 @@ public class CreateEventFragment extends Fragment {
                 eventDTO.setStartDate(timeStart);
                 eventDTO.setEndDate(timeEnd);
                 eventDTO.setInfo(info.getText()+"");
+                eventDTO.setHyperlink(hyperlink.getText()+"");
                 Executor bgThread = Executors.newSingleThreadExecutor();
                 bgThread.execute(() ->{
                     Log.d("Event","Event created");
