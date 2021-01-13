@@ -113,7 +113,6 @@ public class CreateRaceFragment extends Fragment {
                 ep3name.clear();
                 ep4name.clear();
                 for (AbilityDTO dtos : abilityDTOS) {
-                    System.out.println(dtos.getCost());
                     switch (dtos.getCost()) {
                         case 0:
                             ep0.add(dtos);
