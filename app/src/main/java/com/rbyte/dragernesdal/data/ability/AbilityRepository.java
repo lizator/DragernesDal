@@ -252,9 +252,7 @@ public class AbilityRepository {
     }
 
     public Result<AbilityDTO> craftBuy(int characterID, String craft){
-        AbilityDTO dto = new AbilityDTO();
-        dto.setName(craft);
-        Result res = abilityDAO.addCraft(characterID, dto);
+        Result res = abilityDAO.addCraft(characterID, craft);
         return res;
     }
 
