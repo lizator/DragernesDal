@@ -8,9 +8,6 @@ public class CharacterDTO {
     String raceName;
     int age;
     int currentep;
-    String status;
-    String date;
-    String timestamp;
     int strength;
     int health;
     String background;
@@ -34,9 +31,6 @@ public class CharacterDTO {
         this.raceName = raceName;
         this.age = age;
         this.currentep = currentep;
-        this.status = status;
-        this.date = date;
-        this.timestamp = timestamp;
         this.strength = strength;
         this.health = health;
     }
@@ -95,30 +89,6 @@ public class CharacterDTO {
 
     public void setCurrentep(int currentep) {
         this.currentep = currentep;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
     }
 
     public int getStrength() {
