@@ -80,6 +80,18 @@ public class AbilityDAO {
         }
     }
 
+    public Result<List<AbilityDTO>> getAllUnCommonAbilities(){
+        try {
+            Call<List<AbilityDTO>> call = service.getAllUnCommonAbilities();
+            respList = call.execute();
+            if (respList.code() == 200) return new Result.Success<List<AbilityDTO>>(respList.body());
+            return new Result.Error(new IOException(respList.message()));
+        } catch (IOException e){
+            e.printStackTrace();
+            return new Result.Error(new IOException("Error connection to database"));
+        }
+    }
+
 
     public Result<AbilityDTO> getAbilityByID(int abilityID){
         try {
@@ -172,6 +184,8 @@ public class AbilityDAO {
 
         @GET("/ability/raceStaters")
         Call<List<AbilityDTO>> getStarters();
+        @GET("/ability/allUnCommonAbilities")
+        Call<List<AbilityDTO>> getAllUnCommonAbilities();
 
         @GET("/ability/buy/{characterID}/{abilityID}")
         Call<AbilityDTO> buyAbility(@Path(value = "characterID") int characterID, @Path(value = "abilityID") int abilityID);

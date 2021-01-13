@@ -23,6 +23,7 @@ public class SkillViewModel extends ViewModel {
     private MutableLiveData<ArrayList<AbilityDTO>> videnAbilities;
     private MutableLiveData<ArrayList<AbilityDTO>> alleAbilities;
     private MutableLiveData<ArrayList<AbilityDTO>> raceAbilities;
+    private MutableLiveData<ArrayList<AbilityDTO>> uncommonAbilities;
     private MutableLiveData<ArrayList<Integer>> currentAbilityIDs;
     private Handler uiThread = new Handler();
     private AbilityRepository abilityRepo = AbilityRepository.getInstance();
@@ -40,6 +41,7 @@ public class SkillViewModel extends ViewModel {
         videnAbilities = new MutableLiveData<>();
         alleAbilities = new MutableLiveData<>();
         raceAbilities = new MutableLiveData<>();
+        uncommonAbilities = new MutableLiveData<>();
         currentAbilityIDs = new MutableLiveData<>();
 
         updateKamp();
