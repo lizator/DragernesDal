@@ -25,6 +25,7 @@ import androidx.navigation.NavController;
 
 import com.rbyte.dragernesdal.R;
 import com.rbyte.dragernesdal.data.Result;
+import com.rbyte.dragernesdal.data.StringTimeFormatter;
 import com.rbyte.dragernesdal.data.ability.AbilityRepository;
 import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
@@ -1369,11 +1370,14 @@ public class PopupHandler {
         create.setVisibility(View.INVISIBLE);
         create.setHeight(0);
         title.setText(eventDTO.getName());
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-YYYY");
-        DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
+        /*DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-YYYY");
+        DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");*/
 
-        startDate.setText(dateFormat.format(eventDTO.getStartDate().toLocalDate())+" "+ timeFormat.format(eventDTO.getStartDate().toLocalTime())+":00");
-        endDate.setText(dateFormat.format(eventDTO.getEndDate().toLocalDate())+" "+ timeFormat.format(eventDTO.getEndDate().toLocalTime())+":00");
+//        startDate.setText(dateFormat.format(eventDTO.getStartDate().toLocalDate())+" "+ timeFormat.format(eventDTO.getStartDate().toLocalTime())+":00");
+//        endDate.setText(dateFormat.format(eventDTO.getEndDate().toLocalDate())+" "+ timeFormat.format(eventDTO.getEndDate().toLocalTime())+":00");
+        StringTimeFormatter stringTimeFormatter = new StringTimeFormatter();
+        startDate.setText(stringTimeFormatter.format(eventDTO.getStartDate()));
+        endDate.setText(stringTimeFormatter.format(eventDTO.getEndDate()));
         final Boolean[] startChanged = {false};
         final Boolean[] endChanged = { false };
         address.setText(eventDTO.getAddress());

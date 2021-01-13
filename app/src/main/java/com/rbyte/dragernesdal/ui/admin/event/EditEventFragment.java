@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rbyte.dragernesdal.R;
+import com.rbyte.dragernesdal.data.StringTimeFormatter;
 import com.rbyte.dragernesdal.data.event.model.AttendingDTO;
 import com.rbyte.dragernesdal.data.event.model.EventDTO;
 import com.rbyte.dragernesdal.ui.PopupHandler;
@@ -67,18 +68,20 @@ public class EditEventFragment extends Fragment {
         eventAdapter.notifyDataSetChanged();
 
         eventViewModel.getEvents().observe(getViewLifecycleOwner(), new Observer<List<EventDTO>>() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onChanged(List<EventDTO> eventDTOS) {
                 eventCards.clear();
                 events.clear();
+                StringTimeFormatter stringTimeFormatter = new StringTimeFormatter();
                 eventDTOS.forEach((n) -> {
                     events.add(n);
-                    String date = n.getStartDate().toLocalDate().toString().equals((n.getEndDate().toLocalDate().toString())) ?
-                            n.getStartDate().toLocalDate().toString() :
-                            n.getStartDate().toLocalDate().toString() + " - " + n.getEndDate().toLocalDate().toString();
+                    String start = stringTimeFormatter.format(n.getStartDate());
+                    String end = stringTimeFormatter.format(n.getEndDate());
+                    String date =  stringTimeFormatter.equalDate(start, end)?
+                            stringTimeFormatter.getDate(start) :
+                            stringTimeFormatter.getDate(start) + " - " + stringTimeFormatter.getDate(end);
                     eventCards.add(new EventCard(date, n.getInfo(),
-                            "Klokken: " + n.getStartDate().toLocalTime().toString() + ":00", n.getEndDate().toLocalTime().toString() + ":00", n.getAddress(), n.getName(),n.getHyperlink()));
+                            "Klokken: " + stringTimeFormatter.getTime(n.getStartDate()), stringTimeFormatter.getTime(n.getEndDate()), n.getAddress(), n.getName(),n.getHyperlink()));
                 });
                 eventAdapter.notifyDataSetChanged();
             }

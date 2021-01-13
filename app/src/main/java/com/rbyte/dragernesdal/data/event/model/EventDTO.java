@@ -39,19 +39,18 @@ public class EventDTO {
         this.name = name;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public LocalDateTime getStartDate() {
-        System.out.println(LocalDateTime.parse(startDate) + "LocalDateTime");
-        return LocalDateTime.parse(startDate);
+    public String getStartDate() {
+        //System.out.println(LocalDateTime.parse(startDate) + "LocalDateTime");
+        return startDate;
     }
 
     public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public LocalDateTime getEndDate() {
-        return LocalDateTime.parse(endDate);
+
+    public String getEndDate() {
+        return endDate;
     }
 
     public void setEndDate(String endDate) {
