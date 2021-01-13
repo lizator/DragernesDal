@@ -49,6 +49,7 @@ public class CreateRaceFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_admin_create_race, container, false);
         skillViewModel = SkillViewModel.getInstance();
+        skillViewModel.updateUncommon();
         raceViewModel = RaceViewModel.getInstance();
         startSpin = root.findViewById(R.id.startAbility);
         ep2Spin = root.findViewById(R.id.ep2Ability);
@@ -140,6 +141,7 @@ public class CreateRaceFragment extends Fragment {
                 ep4adapter.notifyDataSetChanged();
             }
         });
+
         skillViewModel.getUncommonAbilities();
 
         startSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

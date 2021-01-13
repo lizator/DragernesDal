@@ -108,6 +108,7 @@ public class EditRaceFragment extends Fragment {
             cardViewLeft.setBackgroundResource(android.R.drawable.list_selector_background);
             cardViewLeft.setOnClickListener(this);
             skillViewModel = SkillViewModel.getInstance();
+            skillViewModel.updateUncommon();
         }
 
 
