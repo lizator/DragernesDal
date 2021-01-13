@@ -222,7 +222,6 @@ public class AlleFragment extends Fragment {
                     vh.buybtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            //TODO: make popup, buy ability and refresh
                             popHandler.getConfirmBuyAlert(root2,
                                     abilityList.get(position).getName(),
                                     abilityList.get(position).getCost(),
@@ -243,7 +242,6 @@ public class AlleFragment extends Fragment {
                                                                 break;
                                                         }
 
-                                                        //TODO: create more popups
                                                     }
                                                     skillViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
                                                     abilityAdapter.notifyDataSetChanged();
@@ -320,7 +318,6 @@ public class AlleFragment extends Fragment {
                     vh.buybtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            //TODO: make popup, buy ability and refresh
                             popHandler.getConfirmBuyAlert(root2,
                                     raceAbilityList.get(position).getName(),
                                     raceAbilityList.get(position).getCost(),
@@ -346,6 +343,7 @@ public class AlleFragment extends Fragment {
                                                                 popHandler.get4EPChoiceAlert(root2, getContext(), uiThread, currentAbilityIDs).show();
                                                                 break;
                                                             case "EVNE":
+                                                                popHandler.getEvneChoiceAlert(root2, getContext(), uiThread, currentAbilityIDs).show();
                                                                 break;
                                                             case "KRYS2EP":
                                                                 popHandler.getKrys2EPAlert(root2, getContext(), uiThread, currentAbilityIDs).show();
@@ -379,7 +377,6 @@ public class AlleFragment extends Fragment {
                                                                 break;
                                                         }
 
-                                                        //TODO: create more popups
                                                     }
                                                     skillViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
                                                     raceAbilityAdapter.notifyDataSetChanged();

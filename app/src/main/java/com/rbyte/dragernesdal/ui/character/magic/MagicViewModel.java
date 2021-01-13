@@ -88,4 +88,8 @@ public class MagicViewModel extends ViewModel {
     public void setUpdate(boolean update) {
         this.update.setValue(update);
     }
+
+    public void postUpdate(boolean update) {
+        this.update.postValue(update);
+    }
 }

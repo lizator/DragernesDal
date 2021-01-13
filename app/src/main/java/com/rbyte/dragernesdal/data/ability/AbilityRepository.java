@@ -4,6 +4,7 @@ import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
+import com.rbyte.dragernesdal.data.magic.spell.model.SpellDTO;
 import com.rbyte.dragernesdal.data.race.model.RaceDTO;
 import com.rbyte.dragernesdal.ui.home.HomeViewModel;
 
@@ -54,7 +55,6 @@ public class AbilityRepository {
     public String tryBuy(int characterID, int abilityID){
         Result<AbilityDTO> res = abilityDAO.getAbilityByID(abilityID);
         if (res instanceof Result.Error){
-            //TODO: handle errors with error msg to frontend
             return null;
         } else {
             AbilityDTO dto = ((Result.Success<AbilityDTO>) res).getData();
@@ -127,14 +127,12 @@ public class AbilityRepository {
                     String fst3ep = tryBuy(characterID, races3ep.get(0).getStart(), true);
                     String scd3ep = tryBuy(characterID, races3ep.get(1).getStart(), true);
                     return "KRYS," + fst3ep + "," + scd3ep;
-                    //TODO: make get both start abilities of races
                 case "KRYS4EP":
                     ArrayList<RaceDTO> races4ep = (ArrayList<RaceDTO>) HomeViewModel.getInstance().getRaces().getValue();
                     confirmBuy(characterID, abilityID);
                     String fst4ep = tryBuy(characterID, races4ep.get(0).getEp2(), true);
                     String scd4ep = tryBuy(characterID, races4ep.get(1).getEp2(), true);
                     return "KRYS," + fst4ep + "," + scd4ep;
-                    //TODO: make get both 2ep abilities of races
                 case "STARTEVNE":
                     return "STARTEVNE";
                 default: // NULL or new
@@ -149,7 +147,6 @@ public class AbilityRepository {
     public String tryBuy(int characterID, int abilityID, boolean free){
         Result<AbilityDTO> res = abilityDAO.getAbilityByID(abilityID);
         if (res instanceof Result.Error){
-            //TODO: handle errors with error msg to frontend
             return null;
         } else {
             AbilityDTO dto = ((Result.Success<AbilityDTO>) res).getData();
@@ -222,14 +219,12 @@ public class AbilityRepository {
                     String fst3ep = tryBuy(characterID, races3ep.get(0).getStart(), true);
                     String scd3ep = tryBuy(characterID, races3ep.get(1).getStart(), true);
                     return "KRYS," + fst3ep + "," + scd3ep;
-                //TODO: make get both start abilities of races
                 case "KRYS4EP":
                     ArrayList<RaceDTO> races4ep = (ArrayList<RaceDTO>) HomeViewModel.getInstance().getRaces().getValue();
                     confirmBuy(characterID, abilityID);
                     String fst4ep = tryBuy(characterID, races4ep.get(0).getEp2(), true);
                     String scd4ep = tryBuy(characterID, races4ep.get(1).getEp2(), true);
                     return "KRYS," + fst4ep + "," + scd4ep;
-                //TODO: make get both 2ep abilities of races
                 case "STARTEVNE":
                     return "STARTEVNE";
                 default: // NULL or new
@@ -257,7 +252,9 @@ public class AbilityRepository {
     }
 
     public Result<AbilityDTO> craftBuy(int characterID, String craft){
-        Result res = abilityDAO.addCraft(characterID, craft);
+        AbilityDTO dto = new AbilityDTO();
+        dto.setName(craft);
+        Result res = abilityDAO.addCraft(characterID, dto);
         return res;
     }
 

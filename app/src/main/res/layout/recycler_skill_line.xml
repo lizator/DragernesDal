@@ -47,7 +47,7 @@
                 android:textSize="10sp"
                 style="@style/textSmall"
                 android:text="Køb!"
-                android:clickable="false"/><!-- TODO: fix color -->
+                android:clickable="false"/>
         </LinearLayout>
         <ImageView
             android:id="@+id/line2"

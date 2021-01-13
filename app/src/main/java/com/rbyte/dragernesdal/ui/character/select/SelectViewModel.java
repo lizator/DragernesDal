@@ -34,7 +34,7 @@ public class SelectViewModel extends ViewModel {
         Executor bgThread = Executors.newSingleThreadExecutor();
         bgThread.execute(() -> {
             if (mCharacters.getValue() != null && userID != -1)
-                mCharacters.postValue(((Result.Success<List<CharacterDTO>>) repo.getCharactersByUserID(userID)).getData()); //TODO Could maybe check to see if is the same? might not be needed
+                mCharacters.postValue(((Result.Success<List<CharacterDTO>>) repo.getCharactersByUserID(userID)).getData());
         });
     }
 

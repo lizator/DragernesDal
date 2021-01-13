@@ -253,7 +253,7 @@ public class HomeFragment extends Fragment {
 
     }
 
-    class AbilityAdapter extends RecyclerView.Adapter<AbilityViewHolder> { //TODO make use onclick
+    class AbilityAdapter extends RecyclerView.Adapter<AbilityViewHolder> {
         @Override
         public int getItemCount() {
             return abilityList.size();
@@ -275,7 +275,6 @@ public class HomeFragment extends Fragment {
                     popHandler.getInfoAlert(root2, abilityList.get(position).getName(), abilityList.get(position).getDesc()).show();
                 }
             });
-            //TODO set onclick to show abilityList.get(position).getDesc()
 
         }
     }

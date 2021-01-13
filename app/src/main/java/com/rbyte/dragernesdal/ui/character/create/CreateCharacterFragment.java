@@ -172,7 +172,6 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
         return root;
     }
 
-    //TODO implement SwipeRefreshLayout
 
     @Override
     public void onClick(View v) {
@@ -207,7 +206,7 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
                         bgThread3.execute(() ->{
                             String commandType = abilityRepo.tryBuy(foundDTO.getIdcharacter(), startAbilityID);
                             uiThread.post(()-> {
-                                switch (commandType) { //TODO: copy in popup-getStartChoice
+                                switch (commandType) {
                                     case "auto": //do nothing
                                         Log.d("CharacterCreation", "correct auto getting ability");
                                         break;
