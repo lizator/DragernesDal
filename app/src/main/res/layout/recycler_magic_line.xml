@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
-            android:text="abilityName"
+            android:text="magicName"
             android:textColor="#000000"/>
         <ImageView
             android:id="@+id/line1"
@@ -40,14 +40,6 @@
                 android:layout_height="26dp"
                 app:srcCompat="@drawable/ic_baseline_check_24"
                 android:visibility="gone"/>
-            <Button
-                android:id="@+id/buyAbilitybtn"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textSize="10sp"
-                style="@style/textSmall"
-                android:text="Køb!"
-                android:clickable="false"/>
         </LinearLayout>
         <ImageView
             android:id="@+id/line2"
@@ -57,13 +49,13 @@
 
         <TextView
             style="@style/textSmall"
-            android:id="@+id/abilityCostTv"
+            android:id="@+id/magicLevelTv"
+            android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:gravity="center"
             android:layout_marginTop="5dp"
-            android:layout_height="wrap_content"
-            android:text="4" />
+            android:text="0" />
 
 
     </LinearLayout>

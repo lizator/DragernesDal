@@ -29,13 +29,7 @@ public class ProfileDAO {
         this.service = retrofit.create(profileCallService.class);
     }
 
-    public ProfileDTO getProfileByEmail(String email) throws IOException { //TODO Remove
-        ProfileDTO dto = new ProfileDTO();
-        dto.setEmail(email);
-        Call<ProfileDTO> call = service.getByEmail(dto);
-        resp = call.execute();
-        return resp.body();
-    }
+
 
     public Result<ProfileDTO> login(String email, String password) throws IOException {
         ProfileDTO dto = new ProfileDTO();

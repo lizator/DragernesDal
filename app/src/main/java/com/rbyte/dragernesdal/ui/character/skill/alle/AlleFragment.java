@@ -12,13 +12,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -160,7 +157,7 @@ public class AlleFragment extends Fragment {
         public AbilityViewHolder(View abilityViews) {
             super(abilityViews);
             view = abilityViews;
-            name = abilityViews.findViewById(R.id.abilityName);
+            name = abilityViews.findViewById(R.id.magicName);
             cost = abilityViews.findViewById(R.id.abilityCostTv);
             buybtn = abilityViews.findViewById(R.id.buyAbilitybtn);
             checkimg = abilityViews.findViewById(R.id.checkImage);
@@ -225,7 +222,6 @@ public class AlleFragment extends Fragment {
                     vh.buybtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            //TODO: make popup, buy ability and refresh
                             popHandler.getConfirmBuyAlert(root2,
                                     abilityList.get(position).getName(),
                                     abilityList.get(position).getCost(),
@@ -246,7 +242,6 @@ public class AlleFragment extends Fragment {
                                                                 break;
                                                         }
 
-                                                        //TODO: create more popups
                                                     }
                                                     skillViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
                                                     abilityAdapter.notifyDataSetChanged();
@@ -323,7 +318,6 @@ public class AlleFragment extends Fragment {
                     vh.buybtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            //TODO: make popup, buy ability and refresh
                             popHandler.getConfirmBuyAlert(root2,
                                     raceAbilityList.get(position).getName(),
                                     raceAbilityList.get(position).getCost(),
@@ -349,6 +343,7 @@ public class AlleFragment extends Fragment {
                                                                 popHandler.get4EPChoiceAlert(root2, getContext(), uiThread, currentAbilityIDs).show();
                                                                 break;
                                                             case "EVNE":
+                                                                popHandler.getEvneChoiceAlert(root2, getContext(), uiThread, currentAbilityIDs).show();
                                                                 break;
                                                             case "KRYS2EP":
                                                                 popHandler.getKrys2EPAlert(root2, getContext(), uiThread, currentAbilityIDs).show();
@@ -382,7 +377,6 @@ public class AlleFragment extends Fragment {
                                                                 break;
                                                         }
 
-                                                        //TODO: create more popups
                                                     }
                                                     skillViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
                                                     raceAbilityAdapter.notifyDataSetChanged();

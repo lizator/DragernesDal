@@ -27,6 +27,8 @@ import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
 import com.rbyte.dragernesdal.data.inventory.model.InventoryDTO;
+import com.rbyte.dragernesdal.data.magic.MagicRepository;
+import com.rbyte.dragernesdal.data.magic.magicTier.MagicTierDAO;
 import com.rbyte.dragernesdal.data.race.model.RaceDTO;
 import com.rbyte.dragernesdal.ui.PopupHandler;
 import com.rbyte.dragernesdal.ui.character.select.SelectFragment;
@@ -54,6 +56,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
+        MagicRepository.getInstance(); //Starting getting data about magic
         popHandler = new PopupHandler(getContext());
         SharedPreferences prefs = getDefaultSharedPreferences(getContext());
         Bundle args = getArguments();
@@ -243,14 +246,14 @@ public class HomeFragment extends Fragment {
         public AbilityViewHolder(View abilityViews) {
             super(abilityViews);
             view = abilityViews;
-            name = abilityViews.findViewById(R.id.abilityName);
+            name = abilityViews.findViewById(R.id.magicName);
             // Gør listeelementer klikbare og vis det ved at deres baggrunsfarve ændrer sig ved berøring
             name.setBackgroundResource(android.R.drawable.list_selector_background);
         }
 
     }
 
-    class AbilityAdapter extends RecyclerView.Adapter<AbilityViewHolder> { //TODO make use onclick
+    class AbilityAdapter extends RecyclerView.Adapter<AbilityViewHolder> {
         @Override
         public int getItemCount() {
             return abilityList.size();
@@ -272,7 +275,6 @@ public class HomeFragment extends Fragment {
                     popHandler.getInfoAlert(root2, abilityList.get(position).getName(), abilityList.get(position).getDesc()).show();
                 }
             });
-            //TODO set onclick to show abilityList.get(position).getDesc()
 
         }
     }
