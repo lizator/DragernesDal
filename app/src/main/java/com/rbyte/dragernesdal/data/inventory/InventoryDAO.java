@@ -42,7 +42,7 @@ public class InventoryDAO {
 
 
     public interface InventoryCallService {
-        @GET("/inventory/byCharacterID/{characterid}")
+        @GET("/inventory/actualByCharacterID/{characterid}")
         Call<List<InventoryDTO>> getByCharacterID(@Path(value = "characterid") int characterid);
 
         /*@GET("/character/byUserID/{userid}")
