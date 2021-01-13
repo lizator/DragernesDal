@@ -44,6 +44,7 @@ public class SkillViewModel extends ViewModel {
         uncommonAbilities = new MutableLiveData<>();
         currentAbilityIDs = new MutableLiveData<>();
 
+        updateUncommon();
         updateKamp();
         updateSniger();
         updateViden();
@@ -117,6 +118,23 @@ public class SkillViewModel extends ViewModel {
         });
     }
 
+    public void updateUncommon() {
+        Executor bgThread5 = Executors.newSingleThreadExecutor();
+        bgThread5.execute(() -> {
+            Result<List<AbilityDTO>> res = abilityRepo.getAllUnCommonAbilities();
+            uiThread.post(() -> {
+                if (res instanceof Result.Success) {
+                    ArrayList<AbilityDTO> data = (ArrayList<AbilityDTO>) ((Result.Success) res).getData();
+                    if (data != null) {
+                        uncommonAbilities.postValue(data);
+                        System.out.println("Alle uncommon abilities");
+                    }
+                }
+            });
+        });
+    }
+
+
     public void setRaceAbilities(int raceID){
         Executor bgThread1 = Executors.newSingleThreadExecutor();
         bgThread1.execute(() -> {
@@ -154,6 +172,8 @@ public class SkillViewModel extends ViewModel {
     public MutableLiveData<ArrayList<AbilityDTO>> getRaceAbilities() {
         return raceAbilities;
     }
+
+    public MutableLiveData<ArrayList<AbilityDTO>> getUncommonAbilities() {return uncommonAbilities;}
 
     public MutableLiveData<Integer> getCurrentEP() {
         return currentEP;
