@@ -17,23 +17,23 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.rbyte.dragernesdal.R;
+import com.rbyte.dragernesdal.data.character.CharacterRepository;
 
 public class InventoryFragment extends Fragment {
 
     private InventoryViewModel inventoryViewModel;
+    private CharacterRepository charRepo = CharacterRepository.getInstance();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        inventoryViewModel =
-                new ViewModelProvider(this).get(InventoryViewModel.class);
+        inventoryViewModel = InventoryViewModel.getInstance();
         View root = inflater.inflate(R.layout.fragment_character_inventory, container, false);
-        final TextView textView = root.findViewById(R.id.text_home);
-        inventoryViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
+
+
+
+
+
+
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="36dp"
+    android:layout_marginRight="3dp"
+    android:layout_marginLeft="3dp">
+
+    <LinearLayout
+        android:id="@+id/itemLine"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <EditText
+            android:id="@+id/itemNameEdit"
+            style="@style/TextZone"
+            android:layout_width="0dp"
+            android:layout_weight="4"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:textSize="22sp"
+            android:layout_marginEnd="2dp"
+            android:hint="Navn"
+            android:textColor="#000000"/>
+
+        <ImageView
+            android:id="@+id/line1"
+            android:layout_width="4dp"
+            android:layout_height="match_parent"
+            app:srcCompat="@drawable/tabledraws_vertical_line" />
+
+        <EditText
+            style="@style/TextZone"
+            android:id="@+id/itemAmountEdit"
+            android:inputType="number"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="22sp"
+            android:layout_marginTop="5dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:hint="Antal" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/newItemLine"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/newLineBtn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Tilføj ny linje!"
+            android:clickable="false"
+            style="@style/textSmall"/>
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

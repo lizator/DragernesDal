@@ -5,15 +5,14 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 public class InventoryViewModel extends ViewModel {
+    private static InventoryViewModel instance;
 
-    private MutableLiveData<String> mText;
-
-    public InventoryViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is inventory fragment");
+    public static InventoryViewModel getInstance(){
+        if (instance == null) instance = new InventoryViewModel();
+        return instance;
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    private InventoryViewModel() {
     }
+
 }
