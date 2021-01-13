@@ -8,7 +8,6 @@ public class RaceDTO {
     private int ep2;
     private int ep3;
     private int ep4;
-    private String desc;
 
     public int getID() {
         return ID;
@@ -56,14 +55,6 @@ public class RaceDTO {
 
     public void setEp4(int ep4) {
         this.ep4 = ep4;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
     }
 }
 

@@ -16,7 +16,7 @@ public class AbilityRepository {
     private AbilityDAO abilityDAO;
     private CharacterRepository characterRepo;
     private ArrayList<AbilityDTO> starterAbilities = new ArrayList<>();
-    private ArrayList<AbilityDTO> getAllUnCommonAbilities = new ArrayList<>();
+    private ArrayList<AbilityDTO> allUnCommonAbilities = new ArrayList<>();
 
     public static AbilityRepository getInstance(){
         if (instance == null) instance = new AbilityRepository();
@@ -55,8 +55,9 @@ public class AbilityRepository {
 
     public Result<List<AbilityDTO>> getAllUnCommonAbilities(){
         Result<List<AbilityDTO>> res = abilityDAO.getAllUnCommonAbilities();
+        System.out.println("Success");
         if (res instanceof Result.Success){
-            starterAbilities = (ArrayList<AbilityDTO>) ((Result.Success<List<AbilityDTO>>) res).getData();
+            allUnCommonAbilities = (ArrayList<AbilityDTO>) ((Result.Success<List<AbilityDTO>>) res).getData();
         }
         return res;
     }
