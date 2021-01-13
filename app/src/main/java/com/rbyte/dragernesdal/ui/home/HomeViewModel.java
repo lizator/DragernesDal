@@ -112,7 +112,7 @@ public class HomeViewModel extends ViewModel {
             ArrayList<InventoryDTO> tmpLst = ((Result.Success<ArrayList<InventoryDTO>>) result).getData();
             //We only want to show money here (ID's: 1 gold, 2 silver, 3 kobber)
             ArrayList<InventoryDTO> moneyLst = new ArrayList<InventoryDTO>();
-            if (tmpLst.size() == 0) return;
+            if (tmpLst == null || tmpLst.size() == 0) return;
             moneyLst.add(tmpLst.get(0));//Gold first
             moneyLst.add(tmpLst.get(1));//Silver next
             moneyLst.add(tmpLst.get(2));//Kobber last
