@@ -2,7 +2,7 @@ package com.rbyte.dragernesdal.data.race.model;
 
 
 public class RaceDTO {
-    private int ID;
+    private int id;
     private String racename;
     private int start;
     private int ep2;
@@ -10,11 +10,11 @@ public class RaceDTO {
     private int ep4;
 
     public int getID() {
-        return ID;
+        return id;
     }
 
     public void setID(int ID) {
-        this.ID = ID;
+        this.id = ID;
     }
 
     public String getRacename() {
