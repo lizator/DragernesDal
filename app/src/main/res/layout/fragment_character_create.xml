@@ -113,7 +113,7 @@
             android:layout_width="378dp"
             android:layout_height="294dp"
             android:layout_marginTop="8dp"
-            android:gravity="top|left"
+            android:gravity="top|start"
             android:imeOptions="actionNext"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"

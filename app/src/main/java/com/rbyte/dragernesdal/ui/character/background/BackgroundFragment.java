@@ -27,7 +27,10 @@ public class BackgroundFragment extends Fragment {
         backgroundViewModel = BackgroundViewModel.getInstance();
 
         View root = inflater.inflate(R.layout.fragment_character_background, container, false);
-        //final TextView textView = root.findViewById(R.id.text_home);
+
+
+
+
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
