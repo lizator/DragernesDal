@@ -11,6 +11,7 @@ import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
 import com.rbyte.dragernesdal.data.event.CheckInDAO;
 import com.rbyte.dragernesdal.data.event.model.CheckInDTO;
 import com.rbyte.dragernesdal.data.inventory.InventoryDAO;
+import com.rbyte.dragernesdal.data.inventory.InventoryRepository;
 import com.rbyte.dragernesdal.data.inventory.model.InventoryDTO;
 import com.rbyte.dragernesdal.data.magic.magicSchool.MagicSchoolDAO;
 import com.rbyte.dragernesdal.data.magic.magicTier.MagicTierDAO;
@@ -31,7 +32,6 @@ public class CharacterRepository { //Class for getting characters and saving the
     private CharacterDTO currentChar;
     private ArrayList<CharacterDTO> currentCharList;
     private ArrayList<AbilityDTO> abilitiesList; //current characters List of abilities
-    private ArrayList<InventoryDTO> inventoryList; //current characters List of inventory
     private RaceDTO race; //current race info
     private ArrayList<RaceDTO> raceList; //race tracking for kryslings
     private ArrayList<MagicTierDTO> magicTiers;
@@ -54,7 +54,6 @@ public class CharacterRepository { //Class for getting characters and saving the
         this.tierDAO = new MagicTierDAO();
         this.currentCharList = new ArrayList<>();
         this.abilitiesList = new ArrayList<>();
-        this.inventoryList = new ArrayList<>();
         this.raceList = new ArrayList<>();
         this.magicTiers = new ArrayList<>();
         this.abilityUpdate = new MutableLiveData<>(true);
@@ -106,8 +105,8 @@ public class CharacterRepository { //Class for getting characters and saving the
             CharacterDTO character = (CharacterDTO) ((Result.Success) result).getData();
             currentChar = character;
 
+            InventoryRepository.getInstance().startGetThread();
             getAbilitiesByCharacterID(characterID);
-            getInventoryByCharacterID(characterID);
             getmagicTiers(characterID);
             getSingleRace(character.getIdrace());
             if (character.getIdrace() == 6) {
@@ -133,15 +132,6 @@ public class CharacterRepository { //Class for getting characters and saving the
             currentChar = ((Result.Success<CharacterDTO>) resp).getData();
         }
         return resp;
-    }
-
-    public Result<List<InventoryDTO>> getInventoryByCharacterID(int characterID){
-        Result<List<InventoryDTO>> result = inventoryDAO.getActualInventoryByCharacterID(characterID);
-        if (result instanceof Result.Success) {
-            ArrayList<InventoryDTO> inventory = (ArrayList<InventoryDTO>) ((Result.Success) result).getData();
-            inventoryList = inventory;
-        }
-        return result;
     }
 
     public Result<RaceDTO> getSingleRace(int raceID){

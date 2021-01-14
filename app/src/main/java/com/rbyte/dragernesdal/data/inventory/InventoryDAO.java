@@ -62,9 +62,9 @@ public class InventoryDAO {
 
     public String getState(int relationid){
         try {
-            Call<String> call = service.getState(relationid);
-            respString = call.execute();
-            if (respString.code() == 200) return respString.body();
+            Call<InventoryDTO> call = service.getState(relationid);
+            resp = call.execute();
+            if (resp.code() == 200) return resp.body().getItemName();
             return "Error";
         } catch (IOException e){
             e.printStackTrace();
@@ -86,9 +86,9 @@ public class InventoryDAO {
 
     public boolean deny(int relationid){
         try {
-            Call<Boolean> call = service.deny(relationid);
-            respBool = call.execute();
-            if (respBool.code() == 200) return respBool.body();
+            Call<InventoryDTO> call = service.deny(relationid);
+            resp = call.execute();
+            if (resp.code() == 200) return resp.body().getAmount() == 1;
             Log.d("Inventory", "deny: error in data from backend: " + respBool.message());
             return false;
         } catch (IOException e){
@@ -99,9 +99,9 @@ public class InventoryDAO {
 
     public boolean denyAll(){
         try {
-            Call<Boolean> call = service.denyAll();
-            respBool = call.execute();
-            if (respBool.code() == 200) return respBool.body();
+            Call<InventoryDTO> call = service.denyAll();
+            resp = call.execute();
+            if (resp.code() == 200) return resp.body().getAmount() == 1;
             Log.d("Inventory", "denyAll: error in data from backend: " + respBool.message());
             return false;
         } catch (IOException e){
@@ -113,9 +113,9 @@ public class InventoryDAO {
 
     public boolean confirm(int characterID){
         try {
-            Call<Boolean> call = service.confirm(characterID);
-            respBool = call.execute();
-            if (respBool.code() == 200) return respBool.body();
+            Call<InventoryDTO> call = service.confirm(characterID);
+            resp = call.execute();
+            if (resp.code() == 200) return resp.body().getAmount() == 1;
             Log.d("Inventory", "confirm: error in data from backend: " + respBool.message());
             return false;
         } catch (IOException e){
@@ -133,18 +133,18 @@ public class InventoryDAO {
         Call<List<InventoryDTO>> getCurrentByCharacterID(@Path(value = "characterid") int characterid);
 
         @GET("/inventory/state/{relationid}")
-        Call<String> getState(@Path(value = "relationid") int relationid);
+        Call<InventoryDTO> getState(@Path(value = "relationid") int relationid);
 
         @POST("/inventory/save/{characterID}")
         Call<List<InventoryDTO>> saveInventory(@Path(value = "characterID") int characterid, @Body ArrayList<InventoryDTO> inventory);
 
         @GET("/inventory/deny/{relationid}")
-        Call<Boolean> deny(@Path(value = "relationid") int relationid);
+        Call<InventoryDTO> deny(@Path(value = "relationid") int relationid);
 
         @GET("/inventory/denyall")
-        Call<Boolean> denyAll();
+        Call<InventoryDTO> denyAll();
 
         @GET("/inventory/confirm/{characterid}")
-        Call<Boolean> confirm(@Path(value = "characterid") int characterid);
+        Call<InventoryDTO> confirm(@Path(value = "characterid") int characterid);
     }
 }

@@ -9,6 +9,7 @@ import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
 import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
+import com.rbyte.dragernesdal.data.inventory.InventoryRepository;
 import com.rbyte.dragernesdal.data.inventory.model.InventoryDTO;
 import com.rbyte.dragernesdal.data.race.model.RaceDTO;
 
@@ -24,6 +25,7 @@ public class HomeViewModel extends ViewModel {
     private MutableLiveData<List<RaceDTO>> mOtherRace;
     private ArrayList<AbilityDTO> potential3epRaceAbilities;
     private CharacterRepository repo;
+    private InventoryRepository inventoryRepo;
     private static HomeViewModel instance;
 
     public static HomeViewModel getInstance(){
@@ -39,6 +41,7 @@ public class HomeViewModel extends ViewModel {
         this.mOtherRace = new MutableLiveData<>();
         this.potential3epRaceAbilities = new ArrayList<>();
         this.repo = CharacterRepository.getInstance();
+        this.inventoryRepo = InventoryRepository.getInstance();
         //initialing observers
     }
 
@@ -106,7 +109,7 @@ public class HomeViewModel extends ViewModel {
 
     public void getMoneyByCharacterID(int characterid){
         Result<List<InventoryDTO>> result;
-        result = repo.getInventoryByCharacterID(characterid);
+        result = inventoryRepo.getActualInventory(characterid);
 
         if (result instanceof Result.Success) {
             ArrayList<InventoryDTO> tmpLst = ((Result.Success<ArrayList<InventoryDTO>>) result).getData();
