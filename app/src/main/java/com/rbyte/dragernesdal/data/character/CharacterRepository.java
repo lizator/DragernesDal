@@ -136,7 +136,7 @@ public class CharacterRepository { //Class for getting characters and saving the
     }
 
     public Result<List<InventoryDTO>> getInventoryByCharacterID(int characterID){
-        Result<List<InventoryDTO>> result = inventoryDAO.getInventoryByCharacterID(characterID);
+        Result<List<InventoryDTO>> result = inventoryDAO.getActualInventoryByCharacterID(characterID);
         if (result instanceof Result.Success) {
             ArrayList<InventoryDTO> inventory = (ArrayList<InventoryDTO>) ((Result.Success) result).getData();
             inventoryList = inventory;

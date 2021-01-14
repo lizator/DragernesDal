@@ -1,5 +1,7 @@
 package com.rbyte.dragernesdal.data.inventory;
 
+import android.util.Log;
+
 import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.WebServerPointer;
 import com.rbyte.dragernesdal.data.inventory.model.InventoryDTO;
@@ -79,6 +81,46 @@ public class InventoryDAO {
         } catch (IOException e){
             e.printStackTrace();
             return new Result.Error(new IOException("Error connection to database"));
+        }
+    }
+
+    public boolean deny(int relationid){
+        try {
+            Call<Boolean> call = service.deny(relationid);
+            respBool = call.execute();
+            if (respBool.code() == 200) return respBool.body();
+            Log.d("Inventory", "deny: error in data from backend: " + respBool.message());
+            return false;
+        } catch (IOException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean denyAll(){
+        try {
+            Call<Boolean> call = service.denyAll();
+            respBool = call.execute();
+            if (respBool.code() == 200) return respBool.body();
+            Log.d("Inventory", "denyAll: error in data from backend: " + respBool.message());
+            return false;
+        } catch (IOException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    public boolean confirm(int characterID){
+        try {
+            Call<Boolean> call = service.confirm(characterID);
+            respBool = call.execute();
+            if (respBool.code() == 200) return respBool.body();
+            Log.d("Inventory", "confirm: error in data from backend: " + respBool.message());
+            return false;
+        } catch (IOException e){
+            e.printStackTrace();
+            return false;
         }
     }
 
