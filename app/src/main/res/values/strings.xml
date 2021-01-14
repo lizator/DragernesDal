@@ -92,4 +92,9 @@
     <string name="checked_ind">Checked ind</string>
     <string name="textLink">https://google.com</string>
     <string name="hyperlink">Event link(s)</string>
+    <string name="type">Type:</string>
+    <string name="ep">EP:</string>
+    <string name="beskrivelse">Beskrivelse</string>
+    <string name="racenavn">Racenavn</string>
+    <string name="indtast">Indtast</string>
 </resources>
