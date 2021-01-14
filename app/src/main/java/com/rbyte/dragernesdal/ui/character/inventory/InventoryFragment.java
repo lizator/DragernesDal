@@ -13,11 +13,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -48,6 +50,10 @@ public class InventoryFragment extends Fragment {
     private EditText goldEdit;
     private EditText silverEdit;
     private EditText copperEdit;
+    private TextView updateTV;
+    private InventoryDTO gold;
+    private InventoryDTO silver;
+    private InventoryDTO copper;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -55,32 +61,40 @@ public class InventoryFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_character_inventory, container, false);
         popHandler = new PopupHandler(getContext());
 
-        ArrayList<InventoryDTO> inventory = inventoryRepo.getInventory();
-        InventoryDTO gold = inventory.get(0);
-        InventoryDTO silver = inventory.get(1);
-        InventoryDTO copper = inventory.get(2);
+        updateTV = root.findViewById(R.id.updateTV);
         goldEdit = root.findViewById(R.id.goldEdit);
         silverEdit = root.findViewById(R.id.silverEdit);
         copperEdit = root.findViewById(R.id.copperEdit);
 
-        goldEdit.setText(gold.getAmount() +"");
-        silverEdit.setText(silver.getAmount() +"");
-        copperEdit.setText(copper.getAmount() +"");
+        inventoryViewModel.getInventory().observe(getViewLifecycleOwner(), new Observer<ArrayList<InventoryDTO>>() {
+            @Override
+            public void onChanged(ArrayList<InventoryDTO> inventory) {
+                if (inventory != null && inventory.size() != 0) {
+                    gold = inventory.get(0);
+                    silver = inventory.get(1);
+                    copper = inventory.get(2);
+                    goldEdit.setText(gold.getAmount() + "");
+                    silverEdit.setText(silver.getAmount() + "");
+                    copperEdit.setText(copper.getAmount() + "");
 
-        if (inventory.size() > 3){
-            items.clear();
-            for (int i = 3; i < inventory.size(); i++){
-                items.add(inventory.get(i));
+                    if (inventory.size() > 3) {
+                        items.clear();
+                        for (int i = 3; i < inventory.size(); i++) {
+                            items.add(inventory.get(i));
+                        }
+                    } else {
+                        items.clear();
+                        InventoryDTO dto = new InventoryDTO();
+                        dto.setIdItem(3);
+                        dto.setIdInventoryRelation(inventoryRepo.getRelationID());
+                        dto.setItemName("Indsæt Genstand");
+                        dto.setAmount(0);
+                        items.add(dto);
+                    }
+                    adapter.notifyDataSetChanged();
+                }
             }
-        } else {
-            items.clear();
-            InventoryDTO dto = new InventoryDTO();
-            dto.setIdItem(3);
-            dto.setIdInventoryRelation(inventoryRepo.getRelationID());
-            dto.setItemName("Indsæt Genstand");
-            dto.setAmount(0);
-            items.add(dto);
-        }
+        });
 
         recyclerView = (RecyclerView) root.findViewById(R.id.inventoryRecycler);
         llm = new LinearLayoutManager(root.getContext());
@@ -119,8 +133,7 @@ public class InventoryFragment extends Fragment {
                     inventoryRepo.startGetThread();
 
                     uithread.post(() -> {
-                       root2.findViewById(R.id.updateTV).setVisibility(View.VISIBLE);
-                        Toast.makeText(getContext(), "testing", Toast.LENGTH_SHORT);
+                        inventoryViewModel.updateStatus();
                     });
 
                 });
@@ -128,6 +141,16 @@ public class InventoryFragment extends Fragment {
         });
 
 
+        inventoryViewModel.getStatus().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                if (s.equals("update")){
+                    updateTV.setVisibility(View.VISIBLE);
+                } else {
+                    updateTV.setVisibility(View.GONE);
+                }
+            }
+        });
 
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
@@ -139,6 +162,8 @@ public class InventoryFragment extends Fragment {
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+        inventoryViewModel.updateStatus();
+        inventoryViewModel.updateInventory();
         root2 = root;
         return root;
     }

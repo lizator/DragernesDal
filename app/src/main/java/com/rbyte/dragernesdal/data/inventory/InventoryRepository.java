@@ -11,6 +11,7 @@ import com.rbyte.dragernesdal.data.inventory.model.InventoryDTO;
 import com.rbyte.dragernesdal.data.magic.magicSchool.model.MagicSchoolDTO;
 import com.rbyte.dragernesdal.data.magic.magicTier.model.MagicTierDTO;
 import com.rbyte.dragernesdal.data.magic.spell.model.SpellDTO;
+import com.rbyte.dragernesdal.ui.character.inventory.InventoryViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +54,11 @@ public class InventoryRepository {
         new GetInventoryThread().run();
     }
 
+    public String updateState(){
+        state = inventoryDAO.getState(relationID);
+        return state;
+    }
+
     class GetInventoryThread extends Thread {
 
         public GetInventoryThread() {
@@ -76,6 +82,7 @@ public class InventoryRepository {
                     else Log.d("InventoryRepository", "getThread: All inventory data recieved");
                     count++;
                 }
+                InventoryViewModel.getInstance().updateStatus();
             });
         }
     }
@@ -91,4 +98,5 @@ public class InventoryRepository {
     public String getState() {
         return state;
     }
+
 }

@@ -12,6 +12,7 @@ import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.data.inventory.InventoryRepository;
 import com.rbyte.dragernesdal.data.inventory.model.InventoryDTO;
 import com.rbyte.dragernesdal.data.race.model.RaceDTO;
+import com.rbyte.dragernesdal.ui.character.inventory.InventoryViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,7 @@ public class HomeViewModel extends ViewModel {
 
 
     public void startGetThread(int characterID){
+        InventoryViewModel.getInstance();
         GetCharacterThread thread = new GetCharacterThread(characterID);
         thread.start();
     }

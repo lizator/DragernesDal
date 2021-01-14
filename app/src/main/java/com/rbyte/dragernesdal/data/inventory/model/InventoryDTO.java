@@ -1,26 +1,26 @@
 package com.rbyte.dragernesdal.data.inventory.model;
 
 public class InventoryDTO {
-    int idinventoryrelation;
+    int idInventoryRelation;
     int idItem;
     String itemName;
     int amount;
 
     public InventoryDTO() {}
 
-    public InventoryDTO(int idItem, int idCharacter, String itemName, int amount) {
-        this.idinventoryrelation = idCharacter;
+    public InventoryDTO(int idRelation, int idItem, String itemName, int amount) {
+        this.idInventoryRelation = idRelation;
         this.idItem = idItem;
         this.itemName = itemName;
         this.amount = amount;
     }
 
     public int getIdInventoryRelation() {
-        return idinventoryrelation;
+        return idInventoryRelation;
     }
 
     public void setIdInventoryRelation(int idInventoryRelation) {
-        this.idinventoryrelation = idInventoryRelation;
+        this.idInventoryRelation = idInventoryRelation;
     }
 
     public int getIdItem() {
