@@ -2,11 +2,9 @@ package com.rbyte.dragernesdal.ui.character.magic.necro;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,8 +24,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.rbyte.dragernesdal.R;
 import com.rbyte.dragernesdal.data.Result;
-import com.rbyte.dragernesdal.data.ability.AbilityRepository;
-import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.data.magic.MagicRepository;
 import com.rbyte.dragernesdal.data.magic.magicSchool.model.MagicSchoolDTO;
@@ -35,16 +31,10 @@ import com.rbyte.dragernesdal.data.magic.magicTier.model.MagicTierDTO;
 import com.rbyte.dragernesdal.data.magic.spell.model.SpellDTO;
 import com.rbyte.dragernesdal.ui.PopupHandler;
 import com.rbyte.dragernesdal.ui.character.magic.MagicViewModel;
-import com.rbyte.dragernesdal.ui.character.magic.divine.DivineFragment;
-import com.rbyte.dragernesdal.ui.character.skill.SkillViewModel;
-import com.rbyte.dragernesdal.ui.home.HomeFragment;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-
-import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 public class NecroFragment extends Fragment {
     private MagicViewModel magicViewModel = MagicViewModel.getInstance();
@@ -173,7 +163,7 @@ public class NecroFragment extends Fragment {
         public SpellViewHolder(View spellViews) {
             super(spellViews);
             view = spellViews;
-            name = spellViews.findViewById(R.id.magicName);
+            name = spellViews.findViewById(R.id.lineName);
             lvl = spellViews.findViewById(R.id.magicLevelTv);
             checkimg = spellViews.findViewById(R.id.checkImage);
             // Gør listeelementer klikbare og vis det ved at deres baggrunsfarve ændrer sig ved berøring

@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -21,7 +20,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,8 +27,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.rbyte.dragernesdal.R;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
-import com.rbyte.dragernesdal.data.magic.MagicRepository;
-import com.rbyte.dragernesdal.data.magic.magicTier.model.MagicTierDTO;
 import com.rbyte.dragernesdal.data.magic.spell.model.SpellDTO;
 import com.rbyte.dragernesdal.ui.PopupHandler;
 import com.rbyte.dragernesdal.ui.character.magic.demon.DemonFragment;
@@ -38,10 +34,6 @@ import com.rbyte.dragernesdal.ui.character.magic.divine.DivineFragment;
 import com.rbyte.dragernesdal.ui.character.magic.elemental.ElemtalFragment;
 import com.rbyte.dragernesdal.ui.character.magic.necro.NecroFragment;
 import com.rbyte.dragernesdal.ui.character.magic.transform.TransformFragment;
-import com.rbyte.dragernesdal.ui.character.skill.alle.AlleFragment;
-import com.rbyte.dragernesdal.ui.character.skill.kamp.KampFragment;
-import com.rbyte.dragernesdal.ui.character.skill.sniger.SnigerFragment;
-import com.rbyte.dragernesdal.ui.character.skill.viden.VidenFragment;
 
 import java.util.ArrayList;
 
@@ -201,7 +193,7 @@ public class MagicFragment extends Fragment {
         public SpellViewHolder(View abilityViews) {
             super(abilityViews);
             view = abilityViews;
-            name = abilityViews.findViewById(R.id.magicName);
+            name = abilityViews.findViewById(R.id.lineName);
             lvl = abilityViews.findViewById(R.id.spelllvlTV);
             // Gør listeelementer klikbare og vis det ved at deres baggrunsfarve ændrer sig ved berøring
             name.setBackgroundResource(android.R.drawable.list_selector_background);

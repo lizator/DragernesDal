@@ -71,4 +71,16 @@ public class InventoryRepository {
             });
         }
     }
+
+    public ArrayList<InventoryDTO> getInventory() {
+        return inventory;
+    }
+
+    public int getRelationID() {
+        return relationID;
+    }
+
+    public String getState() {
+        return state;
+    }
 }
