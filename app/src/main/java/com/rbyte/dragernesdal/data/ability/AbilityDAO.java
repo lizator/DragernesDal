@@ -3,6 +3,7 @@ package com.rbyte.dragernesdal.data.ability;
 import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.WebServerPointer;
 import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
+import com.rbyte.dragernesdal.data.event.model.EventDTO;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,6 +23,7 @@ public class AbilityDAO {
 
     Response<AbilityDTO> resp;
     Response<List<AbilityDTO>> respList;
+    Response<List<String>> respStrings;
 
     public AbilityDAO(){
         this.retrofit = new Retrofit.Builder()
@@ -86,6 +88,18 @@ public class AbilityDAO {
             respList = call.execute();
             if (respList.code() == 200) return new Result.Success<List<AbilityDTO>>(respList.body());
             return new Result.Error(new IOException(respList.message()));
+        } catch (IOException e){
+            e.printStackTrace();
+            return new Result.Error(new IOException("Error connection to database"));
+        }
+    }
+
+    public Result<List<String>> getTypes(){
+        try {
+            Call<List<String>> call = service.getTypes();
+            respStrings = call.execute();
+            if (respStrings.code() == 200) return new Result.Success<List<String>>(respStrings.body());
+            return new Result.Error(new IOException(respStrings.message()));
         } catch (IOException e){
             e.printStackTrace();
             return new Result.Error(new IOException("Error connection to database"));
@@ -168,6 +182,17 @@ public class AbilityDAO {
         }
     }
 
+    public Result<AbilityDTO> createAbility(AbilityDTO dto){
+        try {
+            Call<AbilityDTO> call = service.createAbility(dto);
+            resp = call.execute();
+            return new Result.Success<AbilityDTO>(resp.body());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new Result.Error(new IOException("Error connection to database"));
+        }
+    }
+
 
     public interface AbilityCallService {
         @GET("/ability/byCharacterID/{characterID}")
@@ -184,6 +209,10 @@ public class AbilityDAO {
 
         @GET("/ability/raceStaters")
         Call<List<AbilityDTO>> getStarters();
+
+        @GET("/ability/getTypes")
+        Call<List<String>> getTypes();
+
         @GET("/ability/allUnCommonAbilities")
         Call<List<AbilityDTO>> getAllUnCommonAbilities();
 
@@ -201,5 +230,8 @@ public class AbilityDAO {
 
         @POST("/ability/craft/{characterID}")
         Call<AbilityDTO> addCraft(@Path(value = "characterID") int characterID, @Body AbilityDTO craft);
+
+        @POST("/ability/create")
+        Call<AbilityDTO> createAbility(@Body AbilityDTO abilityDTO);
     }
 }

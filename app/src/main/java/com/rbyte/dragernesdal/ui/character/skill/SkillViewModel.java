@@ -25,6 +25,7 @@ public class SkillViewModel extends ViewModel {
     private MutableLiveData<ArrayList<AbilityDTO>> raceAbilities;
     private MutableLiveData<ArrayList<AbilityDTO>> uncommonAbilities;
     private MutableLiveData<ArrayList<Integer>> currentAbilityIDs;
+    private MutableLiveData<ArrayList<String>> types;
     private Handler uiThread = new Handler();
     private AbilityRepository abilityRepo = AbilityRepository.getInstance();
 
@@ -43,7 +44,9 @@ public class SkillViewModel extends ViewModel {
         raceAbilities = new MutableLiveData<>();
         uncommonAbilities = new MutableLiveData<>();
         currentAbilityIDs = new MutableLiveData<>();
+        types = new MutableLiveData<>();
 
+        getTypes();
         updateUncommon();
         updateKamp();
         updateSniger();
@@ -134,6 +137,29 @@ public class SkillViewModel extends ViewModel {
         });
     }
 
+    public void getTypes() {
+        Executor bgThread6 = Executors.newSingleThreadExecutor();
+        bgThread6.execute(() -> {
+            Result<List<String>> res = abilityRepo.getTypes();
+            uiThread.post(() -> {
+                if (res instanceof Result.Success) {
+                    ArrayList<String> data = (ArrayList<String>) ((Result.Success) res).getData();
+                    if (data != null) {
+                        types.postValue(data);
+                        System.out.println("Alle types abilities");
+                    }
+                }
+            });
+        });
+    }
+
+
+    public void createAbility(AbilityDTO dto){
+        Executor bgThread7 = Executors.newSingleThreadExecutor();
+        bgThread7.execute(()-> {
+            abilityRepo.createAbility(dto);
+        });
+    }
 
     public void setRaceAbilities(int raceID){
         Executor bgThread1 = Executors.newSingleThreadExecutor();
@@ -174,6 +200,8 @@ public class SkillViewModel extends ViewModel {
     }
 
     public MutableLiveData<ArrayList<AbilityDTO>> getUncommonAbilities() {return uncommonAbilities;}
+
+    public MutableLiveData<ArrayList<String>> getAbilityTypes() {return types;}
 
     public MutableLiveData<Integer> getCurrentEP() {
         return currentEP;
