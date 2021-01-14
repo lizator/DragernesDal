@@ -108,7 +108,7 @@ public class KampFragment extends Fragment {
         public AbilityViewHolder(View abilityViews) {
             super(abilityViews);
             view = abilityViews;
-            name = abilityViews.findViewById(R.id.magicName);
+            name = abilityViews.findViewById(R.id.lineName);
             cost = abilityViews.findViewById(R.id.abilityCostTv);
             buybtn = abilityViews.findViewById(R.id.buyAbilitybtn);
             checkimg = abilityViews.findViewById(R.id.checkImage);

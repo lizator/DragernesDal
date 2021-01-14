@@ -28,7 +28,6 @@ import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
 import com.rbyte.dragernesdal.data.inventory.model.InventoryDTO;
 import com.rbyte.dragernesdal.data.magic.MagicRepository;
-import com.rbyte.dragernesdal.data.magic.magicTier.MagicTierDAO;
 import com.rbyte.dragernesdal.data.race.model.RaceDTO;
 import com.rbyte.dragernesdal.ui.PopupHandler;
 import com.rbyte.dragernesdal.ui.character.select.SelectFragment;
@@ -246,7 +245,7 @@ public class HomeFragment extends Fragment {
         public AbilityViewHolder(View abilityViews) {
             super(abilityViews);
             view = abilityViews;
-            name = abilityViews.findViewById(R.id.magicName);
+            name = abilityViews.findViewById(R.id.lineName);
             // Gør listeelementer klikbare og vis det ved at deres baggrunsfarve ændrer sig ved berøring
             name.setBackgroundResource(android.R.drawable.list_selector_background);
         }

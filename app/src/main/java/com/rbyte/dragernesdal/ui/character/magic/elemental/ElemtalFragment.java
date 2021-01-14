@@ -163,7 +163,7 @@ public class ElemtalFragment extends Fragment {
         public SpellViewHolder(View spellViews) {
             super(spellViews);
             view = spellViews;
-            name = spellViews.findViewById(R.id.magicName);
+            name = spellViews.findViewById(R.id.lineName);
             lvl = spellViews.findViewById(R.id.magicLevelTv);
             checkimg = spellViews.findViewById(R.id.checkImage);
             // Gør listeelementer klikbare og vis det ved at deres baggrunsfarve ændrer sig ved berøring
