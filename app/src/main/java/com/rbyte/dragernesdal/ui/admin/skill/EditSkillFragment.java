@@ -46,6 +46,7 @@ public class EditSkillFragment extends Fragment {
         recyclerView = (RecyclerView) root.findViewById(R.id.adminRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
         recyclerView.setAdapter(abilityAdapter);
+        if(abilityList.size()==0)skillViewModel.getAll();
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
@@ -76,7 +77,7 @@ public class EditSkillFragment extends Fragment {
 
 
     private class AbilityViewHolder extends RecyclerView.ViewHolder {
-        TextView name;
+        TextView name, cost;
         ImageView checkimg;
         View view;
 
@@ -84,6 +85,7 @@ public class EditSkillFragment extends Fragment {
             super(abilityViews);
             view = abilityViews;
             name = abilityViews.findViewById(R.id.lineName);
+            cost = abilityViews.findViewById(R.id.abilityCostTv);
             checkimg = abilityViews.findViewById(R.id.checkImage);
             // Gør listeelementer klikbare og vis det ved at deres baggrunsfarve ændrer sig ved berøring
             name.setBackgroundResource(android.R.drawable.list_selector_background);
@@ -108,8 +110,15 @@ public class EditSkillFragment extends Fragment {
         @Override
         public void onBindViewHolder(AbilityViewHolder vh, int position) {
             vh.name.setText(abilityList.get(position).getName());
-            if (position % 2 == 1)
-                vh.view.setBackgroundColor(getResources().getColor(R.color.colorTableLine1));
+            vh.cost.setText(abilityList.get(position).getCost()+"");
+            vh.view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    System.out.println("Clicked on:" + abilityList.get(position).getName());
+                }
+            });
+//            if (position % 2 == 1)
+//                vh.view.setBackgroundColor(getResources().getColor(R.color.colorTableLine1));
         }
     }
 }
