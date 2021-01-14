@@ -44,6 +44,10 @@ public class AbilityRepository {
         return abilityDAO.getAbilitiesByRaceID(raceID);
     }
 
+    public Result<AbilityDTO> updateAbility(AbilityDTO dto){
+        return abilityDAO.updateAbility(dto);
+    }
+
     public Result<List<AbilityDTO>> getTypeAbilities(String type){
         return abilityDAO.getAbilitiesByType(type);
     }

@@ -131,6 +131,18 @@ public class AbilityDAO {
         }
     }
 
+    public Result<AbilityDTO> updateAbility(AbilityDTO dto){
+        try {
+            Call<AbilityDTO> call = service.updateAbility(dto);
+            resp = call.execute();
+            if (resp.code() == 200) return new Result.Success<AbilityDTO>(resp.body());
+            return new Result.Error(new IOException(resp.message()));
+        } catch (IOException e){
+            e.printStackTrace();
+            return new Result.Error(new IOException("Error connection to database"));
+        }
+    }
+
     public Result<AbilityDTO> buyAbility(int characterID, int abilityID){
         try {
             Call<AbilityDTO> call = service.buyAbility(characterID, abilityID);
@@ -224,6 +236,9 @@ public class AbilityDAO {
 
         @GET("/ability/getTypes")
         Call<List<String>> getTypes();
+
+        @POST("/ability/edit")
+        Call<AbilityDTO> updateAbility(@Body AbilityDTO abilityDTO);
 
         @GET("/ability/all")
         Call<List<AbilityDTO>> getAll();

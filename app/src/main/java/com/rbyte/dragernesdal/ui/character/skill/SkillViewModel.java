@@ -180,6 +180,13 @@ public class SkillViewModel extends ViewModel {
         });
     }
 
+    public void updateAbility(AbilityDTO dto){
+        Executor bgThread8 = Executors.newSingleThreadExecutor();
+        bgThread8.execute(()-> {
+            abilityRepo.updateAbility(dto);
+        });
+    }
+
     public void setRaceAbilities(int raceID){
         Executor bgThread1 = Executors.newSingleThreadExecutor();
         bgThread1.execute(() -> {
