@@ -33,6 +33,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/inventoryTitle" />
 
+        <Button
+            android:id="@+id/newLinebtn"
+            style="@style/textSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Ny linje"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/inventoryTitle" />
+
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
@@ -56,8 +67,9 @@
                     android:text="Kobber: " />
 
                 <EditText
-                    android:id="@+id/kobberEdit"
+                    android:id="@+id/copperEdit"
                     style="@style/TextZone"
+                    android:inputType="number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="00" />
@@ -80,6 +92,7 @@
                 <EditText
                     android:id="@+id/silverEdit"
                     style="@style/TextZone"
+                    android:inputType="number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="00" />
@@ -102,6 +115,7 @@
                 <EditText
                     android:id="@+id/goldEdit"
                     style="@style/TextZone"
+                    android:inputType="number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="00" />
@@ -113,7 +127,6 @@
             style="@style/textSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:background="@drawable/tv_rounded"
             android:gravity="center"
             android:padding="4dp"
@@ -121,8 +134,10 @@
             android:textSize="16sp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/savebtn"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/savebtn" />
+            app:layout_constraintEnd_toEndOf="@+id/inventoryTitle"
+            app:layout_constraintStart_toStartOf="@+id/inventoryTitle"
+            app:layout_constraintTop_toTopOf="@+id/savebtn"
+            app:layout_constraintVertical_bias="0.5" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
