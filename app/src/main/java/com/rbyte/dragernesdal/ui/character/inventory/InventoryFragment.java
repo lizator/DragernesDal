@@ -91,7 +91,8 @@ public class InventoryFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 InventoryDTO dto = new InventoryDTO();
-                dto.setIdItem(items.get(items.size()-1).getIdItem()+1);
+                if (items.size() > 0) dto.setIdItem(items.get(items.size()-1).getIdItem()+1);
+                else  dto.setIdItem(3);
                 dto.setIdInventoryRelation(inventoryRepo.getRelationID());
                 dto.setItemName("");
                 dto.setAmount(0);
