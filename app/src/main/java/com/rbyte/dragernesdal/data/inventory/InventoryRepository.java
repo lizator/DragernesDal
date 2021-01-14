@@ -3,12 +3,15 @@ package com.rbyte.dragernesdal.data.inventory;
 import android.os.IInterface;
 import android.util.Log;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.data.inventory.model.InventoryDTO;
 import com.rbyte.dragernesdal.data.magic.magicSchool.model.MagicSchoolDTO;
 import com.rbyte.dragernesdal.data.magic.magicTier.model.MagicTierDTO;
 import com.rbyte.dragernesdal.data.magic.spell.model.SpellDTO;
+import com.rbyte.dragernesdal.ui.character.inventory.InventoryViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,8 +46,17 @@ public class InventoryRepository {
         return inventoryRes;
     }
 
+    public Result<List<InventoryDTO>> saveInventory(int characterID, ArrayList<InventoryDTO> inventory){
+        return inventoryDAO.saveInventory(characterID, inventory);
+    }
+
     public void startGetThread(){
         new GetInventoryThread().run();
+    }
+
+    public String updateState(){
+        state = inventoryDAO.getState(relationID);
+        return state;
     }
 
     class GetInventoryThread extends Thread {
@@ -58,7 +70,8 @@ public class InventoryRepository {
             bgThread.execute(() -> {
                 inventory.clear();
                 boolean errorFound = true;
-                while (errorFound) {
+                int count = 0;
+                while (errorFound && count < 10) {
                     Log.d("InventoryRepository", "getThread: running loop");
                     errorFound = false;
 
@@ -67,7 +80,9 @@ public class InventoryRepository {
                     if (inventory == null || inventory.size() == 0 || relationID == -1)
                         errorFound = true; //loop because of error
                     else Log.d("InventoryRepository", "getThread: All inventory data recieved");
+                    count++;
                 }
+                InventoryViewModel.getInstance().updateStatus();
             });
         }
     }
@@ -83,4 +98,5 @@ public class InventoryRepository {
     public String getState() {
         return state;
     }
+
 }

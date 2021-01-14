@@ -15,18 +15,39 @@
         android:orientation="horizontal"
         android:visibility="visible">
 
-        <EditText
-            android:id="@+id/itemNameEdit"
-            style="@style/TextZone"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_weight="4"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="5dp"
-            android:textSize="22sp"
-            android:layout_marginEnd="2dp"
-            android:hint="Navn"
-            android:textColor="#000000"/>
+            android:layout_height="match_parent"
+            >
+
+            <EditText
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="2dp"
+                android:id="@+id/itemNameEdit"
+                style="@style/TextZone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:hint="Indsæt Genstand!"
+                android:inputType="textNoSuggestions"
+                android:textColor="#000000"
+                android:textSize="22sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/closeLine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="20dp"
+                app:layout_constraintBottom_toBottomOf="@+id/itemNameEdit"
+                app:layout_constraintEnd_toEndOf="@+id/itemNameEdit"
+                app:layout_constraintTop_toTopOf="@+id/itemNameEdit"
+                app:srcCompat="@drawable/ic_close" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageView
             android:id="@+id/line1"
@@ -41,28 +62,12 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:textSize="22sp"
             android:layout_marginTop="5dp"
             android:layout_height="wrap_content"
+
+            android:textSize="22sp"
             android:layout_marginStart="2dp"
             android:hint="Antal" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/newItemLine"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:visibility="gone">
-
-        <Button
-            android:id="@+id/newLineBtn"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Tilføj ny linje!"
-            android:clickable="false"
-            style="@style/textSmall"/>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
