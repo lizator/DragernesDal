@@ -214,7 +214,6 @@
                 android:layout_marginBottom="16dp"
                 android:gravity="top|left"
                 android:imeOptions="actionNext"
-                android:inputType="text"
                 android:paddingLeft="16dp"
                 android:paddingTop="16dp"
                 android:paddingRight="16dp"

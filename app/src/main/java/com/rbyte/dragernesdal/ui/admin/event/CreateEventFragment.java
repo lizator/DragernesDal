@@ -34,6 +34,7 @@ import com.rbyte.dragernesdal.ui.character.background.BackgroundViewModel;
 import com.rbyte.dragernesdal.ui.event.EventViewModel;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.concurrent.Executor;
