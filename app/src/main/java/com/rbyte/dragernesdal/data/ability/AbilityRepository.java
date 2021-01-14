@@ -8,6 +8,7 @@ import com.rbyte.dragernesdal.data.magic.spell.model.SpellDTO;
 import com.rbyte.dragernesdal.data.race.model.RaceDTO;
 import com.rbyte.dragernesdal.ui.home.HomeViewModel;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class AbilityRepository {
     private CharacterRepository characterRepo;
     private ArrayList<AbilityDTO> starterAbilities = new ArrayList<>();
     private ArrayList<AbilityDTO> allUnCommonAbilities = new ArrayList<>();
+    private ArrayList<AbilityDTO> allAbilities = new ArrayList<>();
     private ArrayList<String> types = new ArrayList<>();
 
     public static AbilityRepository getInstance(){
@@ -68,6 +70,15 @@ public class AbilityRepository {
         System.out.println("Success");
         if (res instanceof Result.Success){
             types = (ArrayList<String>) ((Result.Success<List<String>>) res).getData();
+        }
+        return res;
+    }
+
+    public Result<List<AbilityDTO>> getAll(){
+        Result<List<AbilityDTO>> res = abilityDAO.getAll();
+        System.out.println("Success");
+        if (res instanceof Result.Success){
+            allAbilities = (ArrayList<AbilityDTO>) ((Result.Success<List<AbilityDTO>>) res).getData();
         }
         return res;
     }
