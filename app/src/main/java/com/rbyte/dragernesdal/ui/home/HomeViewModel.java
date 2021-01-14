@@ -103,9 +103,8 @@ public class HomeViewModel extends ViewModel {
         if (result instanceof Result.Success) {
             ArrayList<AbilityDTO> tmpLst = ((Result.Success<ArrayList<AbilityDTO>>) result).getData();
             if (!tmpLst.equals((ArrayList<AbilityDTO>) mAbilities.getValue())) mAbilities.postValue(tmpLst);
-            //loginResult.postValue(new LoginResult(new LoggedInUserView(data.getFirstName() + " " + data.getLastName(), data.getEmail(), data.getPassHash())));
         } else {
-            //loginResult.postValue(new LoginResult(R.string.login_failed));
+
         }
     }
 

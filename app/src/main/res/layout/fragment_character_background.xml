@@ -33,6 +33,7 @@
             android:textSize="24sp" />
         <Button
             android:id="@+id/addBadbtn"
+            android:clickable="false"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/text"
@@ -47,10 +48,11 @@
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp">
-        <include layout="@layout/recycler_skill_header" />
+        <include layout="@layout/recycler_bad_header" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/badRecycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -87,7 +89,7 @@
 
 
     <EditText
-        android:id="@+id/textView8"
+        android:id="@+id/backgroundEdit"
         android:gravity="top|start"
         android:textSize="16sp"
         android:maxLength="5000"

@@ -51,10 +51,10 @@ import android.os.Handler;
 public class PopupHandler {
     private AlertDialog.Builder builder;
     private Context context;
-    CharacterRepository charRepo = CharacterRepository.getInstance();
-    SkillViewModel skillViewModel = SkillViewModel.getInstance();
-    BackgroundViewModel backgroundViewModel = BackgroundViewModel.getInstance();
-    AbilityRepository abilityRepo = AbilityRepository.getInstance();
+    private CharacterRepository charRepo = CharacterRepository.getInstance();
+    private SkillViewModel skillViewModel = SkillViewModel.getInstance();
+    private BackgroundViewModel backgroundViewModel = BackgroundViewModel.getInstance();
+    private AbilityRepository abilityRepo = AbilityRepository.getInstance();
 
     public PopupHandler(Context context){
         builder = new AlertDialog.Builder(context);
@@ -619,6 +619,76 @@ public class PopupHandler {
         });
         return builder;
     } // Mørkskabt start
+
+    public AlertDialog.Builder getBadChoiceAlert(View thisView, Context context, Handler uiThread, ArrayList<Integer> currAbilities, ArrayList<AbilityDTO> badAbilities){
+        builder.setTitle("Dårligt karaktertræk!");
+        View alertView = LayoutInflater.from(context).inflate(R.layout.popup_choice_bad, (ViewGroup) thisView.getRootView(), false);
+        builder.setView(alertView);
+        Spinner spin = alertView.findViewById(R.id.badspinner);
+
+        ArrayList<AbilityDTO> badDTOS = new ArrayList<>(); // finding all possible 3ep abilities
+        ArrayList<String> names = new ArrayList<>();
+
+        names.add("Vælg karaktertræk!");
+        for (AbilityDTO dto : badAbilities){
+            boolean notOwned = true;
+            for (int id : currAbilities){
+                if (id == dto.getId()){
+                    notOwned = false;
+                    break;
+                }
+            }
+
+            if (notOwned){
+                badDTOS.add(dto);
+                names.add(dto.getName());
+            }
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, names);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spin.setAdapter(adapter);
+
+
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                int pos = spin.getSelectedItemPosition() - 1;
+                if (pos != -1) {
+                    Executor bgThread = Executors.newSingleThreadExecutor();
+                    bgThread.execute(() -> { // id 4 == lille talent (3EP evnen)
+                        String command = abilityRepo.tryBuy(charRepo.getCurrentChar().getIdcharacter(), badDTOS.get(pos).getId());
+                        charRepo.getCharacterByID(charRepo.getCurrentChar().getIdcharacter());
+                        HomeViewModel.getInstance().getAbilitiesByCharacterID(charRepo.getCurrentChar().getIdcharacter());
+                        uiThread.post(() -> {
+                            if (command != null) {
+                                Toast.makeText(context, String.format("Karaktertrækket '%s' opnået!", badDTOS.get(pos).getName()), Toast.LENGTH_SHORT).show();
+                                skillViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
+                                skillViewModel.getUpdate().postValue(true);
+                                backgroundViewModel.postUpdate(true);
+                                dialog.dismiss();
+                            } else {
+                                Toast.makeText(context, "Fejl i at få karaktertræk, prøv igen!", Toast.LENGTH_SHORT).show();
+                                getBadChoiceAlert(thisView, context, uiThread, currAbilities, badAbilities).show();
+                            }
+                        });
+                    });
+                } else {
+                    Toast.makeText(context, "husk at vælge!", Toast.LENGTH_SHORT).show();
+                    getBadChoiceAlert(thisView, context, uiThread, currAbilities, badAbilities).show();
+                }
+            }
+        });
+
+
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        return builder;
+    }
 
     public AlertDialog.Builder get3EPChoiceAlert(View thisView, Context context, Handler uiThread, ArrayList<Integer> currAbilities){
         builder.setTitle("3EP Evne!");
