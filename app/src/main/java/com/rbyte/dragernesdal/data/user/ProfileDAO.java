@@ -45,6 +45,18 @@ public class ProfileDAO {
         }
     }
 
+    public Result<ProfileDTO> updateUser(ProfileDTO user){
+        try {
+            Call<ProfileDTO> call = service.updateUser(user);
+            resp = call.execute();
+            if (resp.code() == 200) return new Result.Success<ProfileDTO>(resp.body());
+            return new Result.Error( new IOException(resp.message()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new Result.Error(e);
+        }
+    }
+
 
     public Result<ProfileDTO> login(String email, String password) throws IOException {
         ProfileDTO dto = new ProfileDTO();
@@ -91,6 +103,12 @@ public class ProfileDAO {
     public interface profileCallService {
         @POST("user/getbyemail")
         Call<ProfileDTO> getByEmail(@Body ProfileDTO dto);
+
+        @POST("user/update")
+        Call<ProfileDTO> updateUser(@Body ProfileDTO dto);
+
+        @POST("/user/updatePass")
+        Call<ProfileDTO> updatePassword(@Body ProfileDTO dto); //Actual password in passhash place
 
         @POST("user/login")
         Call<ProfileDTO> login(@Body ProfileDTO dto);

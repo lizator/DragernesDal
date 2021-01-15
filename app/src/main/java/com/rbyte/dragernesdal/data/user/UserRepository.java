@@ -54,7 +54,13 @@ public class UserRepository {
     public Result<ProfileDTO> getUserByEmail(String email) {
         Result<ProfileDTO> result = dao.getByEmail(email);
         if (result instanceof Result.Success) {
+        }
+        return result;
+    }
 
+    public Result<ProfileDTO> updateUser(ProfileDTO user) {
+        Result<ProfileDTO> result = dao.updateUser(user);
+        if (result instanceof Result.Success) {
         }
         return result;
     }

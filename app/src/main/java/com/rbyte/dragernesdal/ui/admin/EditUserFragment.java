@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -108,12 +109,39 @@ public class EditUserFragment extends Fragment {
             }
         });
 
+        saveUserbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String first = firstNameEdit.getText().toString();
+                String last = lastNameEdit.getText().toString();
+                String email = emailEdit.getText().toString();
+                String phone = phoneEdit.getText().toString();
 
+                if (first.length() != 0 && last.length() != 0 && email.length() != 0 && phone.length() == 8) {
+                    user.setFirstName(first);
+                    user.setLastName(last);
+                    user.setEmail(email);
+                    user.setPhone(Integer.parseInt(phone));
+                    user.setAdmin(adminCheckBox.isChecked());
 
+                    Executor bgThread = Executors.newSingleThreadExecutor();
+                    bgThread.execute(() -> {
+                        Result res = userRepo.updateUser(user);
+                        uiThread.post(() -> {
+                            if (res instanceof Result.Success){
+                                Toast.makeText(getContext(), "Brugeren blev gemt!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Result.Error fail = (Result.Error) res;
+                                popHandler.getInfoAlert(root2, "Fejl", fail.getError().getMessage()).show();
+                            }
+                        });
+                    });
 
-
-
-
+                } else {
+                    popHandler.getInfoAlert(root2, "Fejl", "Nogle af felterne er ikke udfyldt korrekt").show();
+                }
+            }
+        });
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
