@@ -136,6 +136,16 @@ public class CharacterRepository { //Class for getting characters and saving the
         return result;
     }
 
+    public Result<List<AbilityDTO>> getAbilitiesByCharacterID(int characterID, boolean save){
+        Result<List<AbilityDTO>> result = abilityDAO.getAbilitiesByCharacterID(characterID);
+        if (result instanceof Result.Success && save) {
+            ArrayList<AbilityDTO> abilities = (ArrayList<AbilityDTO>) ((Result.Success) result).getData();
+            abilitiesList = abilities;
+            abilityUpdate.postValue(true);
+        }
+        return result;
+    }
+
     public Result<CharacterDTO> createCharacter(CharacterDTO dto){
         Result<CharacterDTO> resp = characterDAO.createCharacter(dto);
         if (resp instanceof Result.Success){
@@ -163,6 +173,14 @@ public class CharacterRepository { //Class for getting characters and saving the
     public Result<List<MagicTierDTO>> getmagicTiers(int characterID){
         Result<List<MagicTierDTO>> res = tierDAO.getTiersByCharacterID(characterID);
         if (res instanceof Result.Success){
+            this.magicTiers = (ArrayList<MagicTierDTO>) ((Result.Success<List<MagicTierDTO>>) res).getData();
+        }
+        return res;
+    }
+
+    public Result<List<MagicTierDTO>> getmagicTiers(int characterID, boolean save){
+        Result<List<MagicTierDTO>> res = tierDAO.getTiersByCharacterID(characterID);
+        if (res instanceof Result.Success && save){
             this.magicTiers = (ArrayList<MagicTierDTO>) ((Result.Success<List<MagicTierDTO>>) res).getData();
         }
         return res;

@@ -32,6 +32,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
                 android:layout_margin="4dp"
+                android:singleLine="true"
                 style="@style/TextZone"/>
         </LinearLayout>
         <Button
@@ -47,7 +48,7 @@
             android:orientation="vertical"
             android:id="@+id/emailChosenView"
             android:gravity="center"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -60,6 +61,7 @@
                     android:orientation="horizontal"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
+                    android:paddingBottom="10dp"
                     android:gravity="center">
                     <TextView
                         android:layout_width="wrap_content"
@@ -238,7 +240,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="10dp"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <!-- Rediger karakter -->
                 <LinearLayout
@@ -410,13 +412,38 @@
                         android:paddingBottom="3dp"
                         android:layout_marginBottom="6dp"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="18sp"
-                        android:text="Alle Evne"
-                        style="@style/text"
-                        android:layout_marginBottom="4dp"/>
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="4dp">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textSize="18sp"
+                            android:text="Alle Evne"
+                            android:gravity="center"
+                            style="@style/text"
+                            />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Type:"
+                                style="@style/text"/>
+                            <Spinner
+                                android:id="@+id/typeSpinner"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"/>
+
+                        </LinearLayout>
+                    </LinearLayout>
 
 
                     <LinearLayout

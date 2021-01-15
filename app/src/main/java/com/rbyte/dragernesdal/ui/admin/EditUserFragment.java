@@ -1,11 +1,13 @@
 package com.rbyte.dragernesdal.ui.admin;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -22,8 +24,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.rbyte.dragernesdal.R;
 import com.rbyte.dragernesdal.data.Result;
+import com.rbyte.dragernesdal.data.ability.AbilityRepository;
+import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
+import com.rbyte.dragernesdal.data.magic.MagicRepository;
+import com.rbyte.dragernesdal.data.magic.magicTier.model.MagicTierDTO;
+import com.rbyte.dragernesdal.data.race.RaceDAO;
+import com.rbyte.dragernesdal.data.race.model.RaceDTO;
 import com.rbyte.dragernesdal.data.user.UserRepository;
 import com.rbyte.dragernesdal.data.user.model.ProfileDTO;
 import com.rbyte.dragernesdal.ui.PopupHandler;
@@ -36,6 +44,9 @@ import java.util.concurrent.Executors;
 public class EditUserFragment extends Fragment {
     private UserRepository userRepo = UserRepository.getInstance();
     private CharacterRepository charRepo = CharacterRepository.getInstance();
+    private MagicRepository magicRepo = MagicRepository.getInstance();
+    private AbilityRepository abilityRepo = AbilityRepository.getInstance();
+    private RaceDAO raceDAO = new RaceDAO();
     private Handler uiThread = new Handler();
     private PopupHandler popHandler;
     private View root2;
@@ -43,6 +54,16 @@ public class EditUserFragment extends Fragment {
     private ProfileDTO user;
     private ArrayList<CharacterDTO> characters;
     private ArrayList<String> characterChoices = new ArrayList<>();
+    private CharacterDTO chosenCharacter;
+    private ArrayList<RaceDTO> standartRaces = new ArrayList<>();
+    private ArrayList<RaceDTO> customRaces = new ArrayList<>();
+    private ArrayList<RaceDTO> racesCollected = new ArrayList<>();
+    private ArrayList<String> raceNames = new ArrayList<>();
+    private ArrayList<AbilityDTO> ownedAbilities = new ArrayList<>();
+    private ArrayList<String> abilityTypes = new ArrayList<>();
+    private ArrayList<AbilityDTO> allAbilities = new ArrayList<>();
+    private ArrayList<AbilityDTO> shownAbilities = new ArrayList<>();
+    private ArrayList<MagicTierDTO> ownedTiers = new ArrayList<>();
 
     private Button chooseUserbtn;
     private EditText chooseUserEmailEdit;
@@ -72,6 +93,7 @@ public class EditUserFragment extends Fragment {
 
     private Button saveAbilitiesbtn;
     private RecyclerView ownedRecycler;
+    private Spinner typeSpin;
     private RecyclerView allRecycler;
 
     private Button saveMagicbtn;
@@ -170,6 +192,47 @@ public class EditUserFragment extends Fragment {
             }
         });
 
+        chooseCharacterbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int pos = chooseCharacterSpin.getSelectedItemPosition() - 1;
+                if (pos != -1) {
+                    chosenCharacter = characters.get(pos);
+                    Executor bgThread = Executors.newSingleThreadExecutor();
+                    bgThread.execute(() -> {
+                        Result<List<MagicTierDTO>> magicRes = charRepo.getmagicTiers(chosenCharacter.getIdcharacter(), false);
+                        Result<List<AbilityDTO>> abilityRes = charRepo.getAbilitiesByCharacterID(chosenCharacter.getIdcharacter(), false);
+                        Result<List<AbilityDTO>> allAbilityRes = abilityRepo.getAll();
+                        Result<List<String>> abilityTypesRes = abilityRepo.getTypes();
+                        Result<List<RaceDTO>> standartRacesRes = raceDAO.getRaceInfoStandart();
+                        Result<List<RaceDTO>> customRacesRes = raceDAO.getRaceInfoCustom();
+                        uiThread.post(() -> {
+                            if (magicRes instanceof Result.Success && abilityRes instanceof Result.Success &&
+                                    allAbilityRes instanceof Result.Success && standartRacesRes instanceof Result.Success &&
+                                    customRacesRes instanceof Result.Success && abilityTypesRes instanceof Result.Success)
+                            {
+                                characterChosenView.setVisibility(View.VISIBLE);
+                                ownedTiers = ((Result.Success<ArrayList<MagicTierDTO>>) magicRes).getData();
+                                ownedAbilities = ((Result.Success<ArrayList<AbilityDTO>>) abilityRes).getData();
+                                allAbilities = ((Result.Success<ArrayList<AbilityDTO>>) allAbilityRes).getData();
+                                shownAbilities.addAll(allAbilities);
+                                abilityTypes = ((Result.Success<ArrayList<String>>) abilityTypesRes).getData();
+                                standartRaces = ((Result.Success<ArrayList<RaceDTO>>) standartRacesRes).getData();
+                                customRaces = ((Result.Success<ArrayList<RaceDTO>>) customRacesRes).getData();
+                                racesCollected.addAll(standartRaces);
+                                racesCollected.addAll(customRaces);
+                                setupCharacter();
+                            } else {
+                                popHandler.getInfoAlert(root2, "Fejl", "Kunne ikke hente alt data fra karakteren").show();
+                            }
+                        });
+                    });
+                } else {
+                    popHandler.getInfoAlert(root2, "Fejl", "Ingen karakter valgt").show();
+                }
+            }
+        });
+
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
             public void handleOnBackPressed() {
@@ -211,6 +274,7 @@ public class EditUserFragment extends Fragment {
 
         saveAbilitiesbtn = root2.findViewById(R.id.saveAbilitiesbtn);
         ownedRecycler = root2.findViewById(R.id.owningRecycler);
+        typeSpin = root2.findViewById(R.id.typeSpinner);
         allRecycler = root2.findViewById(R.id.allRecycler);
 
         saveMagicbtn = root2.findViewById(R.id.saveMagicbtn);
@@ -248,11 +312,28 @@ public class EditUserFragment extends Fragment {
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     chooseCharacterSpin.setAdapter(adapter);
 
+                    hideKeyboard(getActivity());
+
                 } else {
                     popHandler.getInfoAlert(root2, "Fejl", "Karakterene kunne ikke blive hentet").show();
                     userChosenView.setVisibility(View.GONE);
                 }
             });
         });
+    }
+
+    private void setupCharacter(){
+        
+    }
+
+    private void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }
