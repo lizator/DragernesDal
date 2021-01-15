@@ -18,6 +18,7 @@
             android:orientation="horizontal"
             android:gravity="center"
             android:padding="10dp"
+            android:layout_marginTop="10dp"
             android:paddingBottom="6dp">
             <TextView
                 android:layout_width="wrap_content"
@@ -45,7 +46,8 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:id="@+id/emailChosenView"
-            android:gravity="center">
+            android:gravity="center"
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -234,7 +236,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="10dp">
+                android:padding="10dp"
+                android:visibility="gone">
 
                 <!-- Rediger karakter -->
                 <LinearLayout
@@ -430,9 +433,7 @@
 
                 </LinearLayout>
 
-
                 <!-- Rediger Magi -->
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -473,30 +474,35 @@
                             <CheckBox
                                 android:id="@+id/elem1"
                                 android:text="Elementalisme 1"
+                                android:buttonTint="@color/colorNecro"
                                 style="@style/text"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"/>
                             <CheckBox
                                 android:id="@+id/elem2"
                                 android:text="Elementalisme 2"
+                                android:buttonTint="@color/colorNecro"
                                 style="@style/text"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"/>
                             <CheckBox
                                 android:id="@+id/elem3"
                                 android:text="Elementalisme 3"
+                                android:buttonTint="@color/colorNecro"
                                 style="@style/text"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"/>
                             <CheckBox
                                 android:id="@+id/elem4"
                                 android:text="Elementalisme 4"
+                                android:buttonTint="@color/colorNecro"
                                 style="@style/text"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"/>
                             <CheckBox
                                 android:id="@+id/elem5"
                                 android:text="Elementalisme 5"
+                                android:buttonTint="@color/colorNecro"
                                 style="@style/text"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"/>
@@ -513,30 +519,35 @@
                             <CheckBox
                                 android:id="@+id/divi1"
                                 android:text="Divination 1"
+                                android:buttonTint="@color/colorNecro"
                                 style="@style/text"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"/>
                             <CheckBox
                                 android:id="@+id/divi2"
                                 android:text="Divination 2"
+                                android:buttonTint="@color/colorNecro"
                                 style="@style/text"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"/>
                             <CheckBox
                                 android:id="@+id/divi3"
                                 android:text="Divination 3"
+                                android:buttonTint="@color/colorNecro"
                                 style="@style/text"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"/>
                             <CheckBox
                                 android:id="@+id/divi4"
                                 android:text="Divination 4"
+                                android:buttonTint="@color/colorNecro"
                                 style="@style/text"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"/>
                             <CheckBox
                                 android:id="@+id/divi5"
                                 android:text="Divination 5"
+                                android:buttonTint="@color/colorNecro"
                                 style="@style/text"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"/>
@@ -560,6 +571,7 @@
                             <CheckBox
                                 android:id="@+id/necro1"
                                 android:text="Næcromani 1"
+                                android:buttonTint="@color/colorDivine"
                                 android:textColor="@color/colorBackground"
                                 style="@style/text"
                                 android:layout_width="wrap_content"
@@ -567,6 +579,7 @@
                             <CheckBox
                                 android:id="@+id/necro2"
                                 android:text="Næcromani 2"
+                                android:buttonTint="@color/colorDivine"
                                 android:textColor="@color/colorBackground"
                                 style="@style/text"
                                 android:layout_width="wrap_content"
@@ -574,6 +587,7 @@
                             <CheckBox
                                 android:id="@+id/necro3"
                                 android:text="Næcromani 3"
+                                android:buttonTint="@color/colorDivine"
                                 android:textColor="@color/colorBackground"
                                 style="@style/text"
                                 android:layout_width="wrap_content"
@@ -581,6 +595,7 @@
                             <CheckBox
                                 android:id="@+id/necro4"
                                 android:text="Næcromani 4"
+                                android:buttonTint="@color/colorDivine"
                                 android:textColor="@color/colorBackground"
                                 style="@style/text"
                                 android:layout_width="wrap_content"
@@ -588,6 +603,7 @@
                             <CheckBox
                                 android:id="@+id/necro5"
                                 android:text="Næcromani 5"
+                                android:buttonTint="@color/colorDivine"
                                 android:textColor="@color/colorBackground"
                                 style="@style/text"
                                 android:layout_width="wrap_content"
@@ -605,30 +621,35 @@
                             <CheckBox
                                 android:id="@+id/demon1"
                                 android:text="Dæmonologi 1"
+                                android:buttonTint="@color/colorNecro"
                                 style="@style/text"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"/>
                             <CheckBox
                                 android:id="@+id/demon2"
                                 android:text="Dæmonologi 2"
+                                android:buttonTint="@color/colorNecro"
                                 style="@style/text"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"/>
                             <CheckBox
                                 android:id="@+id/demon3"
                                 android:text="Dæmonologi 3"
+                                android:buttonTint="@color/colorNecro"
                                 style="@style/text"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"/>
                             <CheckBox
                                 android:id="@+id/demon4"
                                 android:text="Dæmonologi 4"
+                                android:buttonTint="@color/colorNecro"
                                 style="@style/text"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"/>
                             <CheckBox
                                 android:id="@+id/demon5"
                                 android:text="Dæmonologi 5"
+                                android:buttonTint="@color/colorNecro"
                                 style="@style/text"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"/>
@@ -648,30 +669,35 @@
                         <CheckBox
                             android:id="@+id/transform1"
                             android:text="Transformation 1"
+                            android:buttonTint="@color/colorNecro"
                             style="@style/text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
                         <CheckBox
                             android:id="@+id/transform2"
                             android:text="Transformation 2"
+                            android:buttonTint="@color/colorNecro"
                             style="@style/text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
                         <CheckBox
                             android:id="@+id/transform3"
                             android:text="Transformation 3"
+                            android:buttonTint="@color/colorNecro"
                             style="@style/text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
                         <CheckBox
                             android:id="@+id/transform4"
                             android:text="Transformation 4"
+                            android:buttonTint="@color/colorNecro"
                             style="@style/text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
                         <CheckBox
                             android:id="@+id/transform5"
                             android:text="Transformation 5"
+                            android:buttonTint="@color/colorNecro"
                             style="@style/text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
@@ -679,8 +705,6 @@
                     </LinearLayout>
 
                 </LinearLayout>
-
-
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
