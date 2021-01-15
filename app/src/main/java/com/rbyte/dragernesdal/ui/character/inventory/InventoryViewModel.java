@@ -65,8 +65,13 @@ public class InventoryViewModel extends ViewModel {
             }
             Result<List<InventoryDTO>> finRes = inventoryRes;
             uithread.post(() -> {
-                ArrayList<InventoryDTO> inventory = (ArrayList<InventoryDTO>) ((Result.Success) finRes).getData();
-                postInventory(inventory);
+                try{
+                    ArrayList<InventoryDTO> inventory = (ArrayList<InventoryDTO>) ((Result.Success) finRes).getData();
+                    postInventory(inventory);
+                }
+                catch (ClassCastException c){
+                    c.printStackTrace();
+                }
             });
         });
     }
