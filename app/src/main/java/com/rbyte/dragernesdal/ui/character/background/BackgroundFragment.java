@@ -128,7 +128,7 @@ public class BackgroundFragment extends Fragment {
             addBadbtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    popHandler.getInfoAlert(root2, "Overmuteret", "Du har allerede det maksimale antal dårlige karaktertræk!");
+                    popHandler.getInfoAlert(root2, "Overmuteret", "Du har allerede det maksimale antal dårlige karaktertræk!").show();
                 }
             });
         }
