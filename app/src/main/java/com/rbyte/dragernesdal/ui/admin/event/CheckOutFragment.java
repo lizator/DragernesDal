@@ -38,6 +38,7 @@ public class CheckOutFragment extends Fragment {
     public static final String EVENT_ID_ARGUMENT = "eventIDArgument";
     private static final String EVENT_SELECTED_NAME = "eventName";
     private int eventID;
+    private View root;
     private CharacterAdapter characterAdapter;
     private ArrayList<CharacterDTO> characterList;
     private RecyclerView recyclerView;
@@ -104,6 +105,7 @@ public class CheckOutFragment extends Fragment {
                 characterAdapter.notifyDataSetChanged();
             }
         });
+        this.root = root;
         return root;
     }
 
@@ -124,10 +126,15 @@ public class CheckOutFragment extends Fragment {
                 public void onClick(View v) {
                     Log.i("test", "Running");
                     final int position = getAdapterPosition(); // listeelementets position
-                    AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                    InventoryCheckout inventoryCheckout = new InventoryCheckout(getContext(), root, getCharacter(position));
+                    inventoryCheckout.showInventory();
 
                 }
             });
+        }
+
+        private CharacterDTO getCharacter(int position){
+            return characterList.get(position);
         }
     }
 

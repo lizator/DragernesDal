@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
+import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
 import com.rbyte.dragernesdal.data.inventory.InventoryRepository;
 import com.rbyte.dragernesdal.data.inventory.model.InventoryDTO;
 
@@ -51,6 +52,7 @@ public class InventoryViewModel extends ViewModel {
             });
         });
     }
+
 
     public void updateStatus(){
         Executor bgThread = Executors.newSingleThreadExecutor();
