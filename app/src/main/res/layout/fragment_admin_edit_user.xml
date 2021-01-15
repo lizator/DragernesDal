@@ -1,10 +1,713 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackground"
     tools:context=".ui.main.MainActivity">
-    
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="10dp"
+            android:layout_marginTop="10dp"
+            android:paddingBottom="6dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Indtast Email: "
+                android:textSize="18sp"
+                style="@style/text"/>
+            <EditText
+                android:id="@+id/chooseUserEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:layout_margin="4dp"
+                style="@style/TextZone"/>
+        </LinearLayout>
+        <Button
+            android:id="@+id/chooseUserbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="vælg bruger"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:id="@+id/emailChosenView"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:gravity="center">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bruger"
+                        android:textSize="22sp"
+                        style="@style/text"
+                        android:layout_marginHorizontal="26dp"
+                        android:layout_marginBottom="4dp"/>
+                    <Button
+                        android:id="@+id/saveUserbtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Gem bruger"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        style="@style/text"
+                        android:text="Fornavn: "/>
+                    <EditText
+                        android:id="@+id/userFirstnameEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginRight="4dp"
+                        style="@style/TextZone"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        style="@style/text"
+                        android:text="Efternavn: "/>
+                    <EditText
+                        android:id="@+id/userLastnameEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginRight="4dp"
+                        style="@style/TextZone"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        style="@style/text"
+                        android:text="Email: "/>
+                    <EditText
+                        android:id="@+id/userEmailEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginRight="4dp"
+                        style="@style/TextZone"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        style="@style/text"
+                        android:text="Telefon: "/>
+                    <EditText
+                        android:id="@+id/userPhoneEdit"
+                        android:inputType="number"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginRight="4dp"
+                        style="@style/TextZone"/>
+                </LinearLayout>
+                    <CheckBox
+                        android:id="@+id/adminCheckBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:text="Admin" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginBottom="4dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        style="@style/text"
+                        android:layout_marginHorizontal="26dp"
+                        android:text="Skift Kodeord"/>
+                    <Button
+                        android:id="@+id/changePassbtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Skift kodeord"/>
+                </LinearLayout>
+                <EditText
+                    android:id="@+id/passwordChange"
+                    android:inputType="textPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:layout_marginHorizontal="10dp"
+                    style="@style/TextZone"/>
+                <EditText
+                    android:id="@+id/passwordConfirm"
+                    android:inputType="textPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:layout_marginHorizontal="10dp"
+                    style="@style/TextZone"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                android:padding="10dp"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Vælg karakter: "
+                    android:textSize="18sp"
+                    style="@style/text"/>
+
+                <Spinner
+                    android:id="@+id/characterSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+            <Button
+                android:id="@+id/chooseCharacterbtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="vælg karakter"/>
+
+            <LinearLayout
+                android:id="@+id/characterChosenView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:visibility="gone">
+
+                <!-- Rediger karakter -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_marginBottom="16dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Karakter"
+                            style="@style/text"
+                            android:textSize="22dp"
+                            android:layout_marginRight="20dp"/>
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/saveCharacterbtn"
+                            android:text="Gem karakter"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="4dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Race: "
+                            style="@style/text"
+                            android:textSize="16sp"/>
+                        <Spinner
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/raceSpinner"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="4dp">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="EP:"
+                                style="@style/text"
+                                android:textSize="16sp"/>
+                            <EditText
+                                android:id="@+id/epEdit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:inputType="number"
+                                style="@style/TextZone"
+                                android:layout_margin="4dp"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Styrke:"
+                                style="@style/text"
+                                android:textSize="16sp"/>
+                            <EditText
+                                android:id="@+id/strengthEdit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                style="@style/TextZone"
+                                android:inputType="number"
+                                android:layout_margin="4dp"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="KP:"
+                                style="@style/text"
+                                android:inputType="number"
+                                android:textSize="16sp"/>
+                            <EditText
+                                android:id="@+id/kpEdit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                style="@style/TextZone"
+                                android:layout_margin="4dp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:text="Baggrund"
+                        style="@style/text"/>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/TextZone"
+                        android:text="test\ntest"
+                        android:textSize="14sp"
+                        android:singleLine="false"
+                        android:layout_margin="4dp"/>
+                </LinearLayout>
+
+                <!-- Rediger Evner -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_marginBottom="16dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="10dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Evner"
+                            style="@style/text"
+                            android:textSize="22dp"
+                            android:layout_marginRight="20dp"/>
+                        <Button
+                            android:id="@+id/saveAbilitiesbtn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Gem Evner"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:text="Karaterens Evne"
+                        style="@style/text"
+                        android:layout_marginBottom="4dp"/>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/back_table">
+                        <include layout="@layout/recycler_skill_header" />
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/owningRecycler"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/back_table"
+                        android:paddingBottom="3dp"
+                        android:layout_marginBottom="6dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:text="Alle Evne"
+                        style="@style/text"
+                        android:layout_marginBottom="4dp"/>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/back_table">
+                        <include layout="@layout/recycler_skill_header" />
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/allRecycler"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/back_table"
+                        android:paddingBottom="3dp"/>
+
+                </LinearLayout>
+
+                <!-- Rediger Magi -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_marginBottom="16dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="10dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Magi"
+                            style="@style/text"
+                            android:textSize="22dp"
+                            android:layout_marginRight="20dp"/>
+                        <Button
+                            android:id="@+id/saveMagicbtn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Gem Magi"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:background="@color/colorElemtal"
+                            android:gravity="center"
+                            android:paddingTop="6dp">
+                            <CheckBox
+                                android:id="@+id/elem1"
+                                android:text="Elementalisme 1"
+                                android:buttonTint="@color/colorNecro"
+                                style="@style/text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                            <CheckBox
+                                android:id="@+id/elem2"
+                                android:text="Elementalisme 2"
+                                android:buttonTint="@color/colorNecro"
+                                style="@style/text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                            <CheckBox
+                                android:id="@+id/elem3"
+                                android:text="Elementalisme 3"
+                                android:buttonTint="@color/colorNecro"
+                                style="@style/text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                            <CheckBox
+                                android:id="@+id/elem4"
+                                android:text="Elementalisme 4"
+                                android:buttonTint="@color/colorNecro"
+                                style="@style/text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                            <CheckBox
+                                android:id="@+id/elem5"
+                                android:text="Elementalisme 5"
+                                android:buttonTint="@color/colorNecro"
+                                style="@style/text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:background="@color/colorDivine"
+                            android:gravity="center"
+                            android:paddingTop="6dp">
+                            <CheckBox
+                                android:id="@+id/divi1"
+                                android:text="Divination 1"
+                                android:buttonTint="@color/colorNecro"
+                                style="@style/text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                            <CheckBox
+                                android:id="@+id/divi2"
+                                android:text="Divination 2"
+                                android:buttonTint="@color/colorNecro"
+                                style="@style/text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                            <CheckBox
+                                android:id="@+id/divi3"
+                                android:text="Divination 3"
+                                android:buttonTint="@color/colorNecro"
+                                style="@style/text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                            <CheckBox
+                                android:id="@+id/divi4"
+                                android:text="Divination 4"
+                                android:buttonTint="@color/colorNecro"
+                                style="@style/text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                            <CheckBox
+                                android:id="@+id/divi5"
+                                android:text="Divination 5"
+                                android:buttonTint="@color/colorNecro"
+                                style="@style/text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:background="@color/colorNecro"
+                            android:gravity="center"
+                            android:paddingTop="6dp">
+                            <CheckBox
+                                android:id="@+id/necro1"
+                                android:text="Næcromani 1"
+                                android:buttonTint="@color/colorDivine"
+                                android:textColor="@color/colorBackground"
+                                style="@style/text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                            <CheckBox
+                                android:id="@+id/necro2"
+                                android:text="Næcromani 2"
+                                android:buttonTint="@color/colorDivine"
+                                android:textColor="@color/colorBackground"
+                                style="@style/text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                            <CheckBox
+                                android:id="@+id/necro3"
+                                android:text="Næcromani 3"
+                                android:buttonTint="@color/colorDivine"
+                                android:textColor="@color/colorBackground"
+                                style="@style/text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                            <CheckBox
+                                android:id="@+id/necro4"
+                                android:text="Næcromani 4"
+                                android:buttonTint="@color/colorDivine"
+                                android:textColor="@color/colorBackground"
+                                style="@style/text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                            <CheckBox
+                                android:id="@+id/necro5"
+                                android:text="Næcromani 5"
+                                android:buttonTint="@color/colorDivine"
+                                android:textColor="@color/colorBackground"
+                                style="@style/text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:background="@color/colorDemon"
+                            android:gravity="center"
+                            android:paddingTop="6dp">
+                            <CheckBox
+                                android:id="@+id/demon1"
+                                android:text="Dæmonologi 1"
+                                android:buttonTint="@color/colorNecro"
+                                style="@style/text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                            <CheckBox
+                                android:id="@+id/demon2"
+                                android:text="Dæmonologi 2"
+                                android:buttonTint="@color/colorNecro"
+                                style="@style/text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                            <CheckBox
+                                android:id="@+id/demon3"
+                                android:text="Dæmonologi 3"
+                                android:buttonTint="@color/colorNecro"
+                                style="@style/text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                            <CheckBox
+                                android:id="@+id/demon4"
+                                android:text="Dæmonologi 4"
+                                android:buttonTint="@color/colorNecro"
+                                style="@style/text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                            <CheckBox
+                                android:id="@+id/demon5"
+                                android:text="Dæmonologi 5"
+                                android:buttonTint="@color/colorNecro"
+                                style="@style/text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@color/colorTransform"
+                        android:gravity="center"
+                        android:paddingTop="6dp"
+                        android:paddingHorizontal="20dp">
+                        <CheckBox
+                            android:id="@+id/transform1"
+                            android:text="Transformation 1"
+                            android:buttonTint="@color/colorNecro"
+                            style="@style/text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                        <CheckBox
+                            android:id="@+id/transform2"
+                            android:text="Transformation 2"
+                            android:buttonTint="@color/colorNecro"
+                            style="@style/text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                        <CheckBox
+                            android:id="@+id/transform3"
+                            android:text="Transformation 3"
+                            android:buttonTint="@color/colorNecro"
+                            style="@style/text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                        <CheckBox
+                            android:id="@+id/transform4"
+                            android:text="Transformation 4"
+                            android:buttonTint="@color/colorNecro"
+                            style="@style/text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                        <CheckBox
+                            android:id="@+id/transform5"
+                            android:text="Transformation 5"
+                            android:buttonTint="@color/colorNecro"
+                            style="@style/text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

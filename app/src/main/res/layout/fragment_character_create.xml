@@ -110,7 +110,7 @@
         <EditText
             android:id="@+id/eventInformation"
             style="@style/TextZone"
-            android:layout_width="378dp"
+            android:layout_width="match_parent"
             android:layout_height="294dp"
             android:layout_marginTop="8dp"
             android:gravity="top|start"
@@ -121,6 +121,7 @@
             android:paddingBottom="16dp"
             android:selectAllOnFocus="true"
             android:textSize="16dp"
+            android:maxLength="5000"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.31"
             app:layout_constraintStart_toStartOf="parent"

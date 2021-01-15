@@ -84,6 +84,16 @@ public class CharacterRepository { //Class for getting characters and saving the
         return new Result.Success<List<CharacterDTO>>(this.currentCharList);
     }
 
+    public Result<List<CharacterDTO>> getCharactersByUserID(int userID, boolean withNoSaving){
+        Result<List<CharacterDTO>> result;
+        result = characterDAO.getCharactersByUserID(userID);
+        if (result instanceof Result.Success && !withNoSaving) {
+            this.currentCharList = (ArrayList<CharacterDTO>) ((Result.Success) result).getData();
+            Log.i("GetCharacters Results", "b");
+        }
+        return result;
+    }
+
     public Result<List<CharacterDTO>> getCharactersByEventID(int eventID, int checkin){
             Result<List<CharacterDTO>> result;
             result = characterDAO.getCharactersByEventID(eventID, checkin);
