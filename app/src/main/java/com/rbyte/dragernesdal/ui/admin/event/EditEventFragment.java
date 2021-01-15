@@ -81,7 +81,7 @@ public class EditEventFragment extends Fragment {
                             stringTimeFormatter.getDate(start) :
                             stringTimeFormatter.getDate(start) + " - " + stringTimeFormatter.getDate(end);
                     eventCards.add(new EventCard(date, n.getInfo(),
-                            "Klokken: " + stringTimeFormatter.getTime(n.getStartDate()), stringTimeFormatter.getTime(n.getEndDate()), n.getAddress(), n.getName(),n.getHyperlink()));
+                            "Klokken: " + stringTimeFormatter.getTime(n.getStartDate()), stringTimeFormatter.getTime(n.getEndDate()), n.getAddress(), n.getName(),n.getHyperlink(),n.getEventID()));
                 });
                 eventAdapter.notifyDataSetChanged();
             }
@@ -124,8 +124,8 @@ public class EditEventFragment extends Fragment {
                         public void onClick(DialogInterface dialog, int which) {
                             alertDialog.dismiss();
                             PopupHandler popupHandler = new PopupHandler(getContext());
-                            events.get(position).setEventID(position);
-                            System.out.println(events.get(position).getEventID());
+                            events.get(position).setEventID(eventCards.get(position).getEventID());
+                            System.out.println(eventCards.get(position).getEventID());
                             AlertDialog.Builder builder = popupHandler.editEvent(root2, events.get(position), uiThread, Navigation.findNavController(root2));
                             builder.show();
                         }
@@ -201,8 +201,9 @@ public class EditEventFragment extends Fragment {
         private String address = "";
         private String title = "";
         private String hyperlink = "";
+        private int eventID = -1;
 
-        public EventCard(String date, String info, String startTime, String endTime, String address, String title, String hyperlink) {
+        public EventCard(String date, String info, String startTime, String endTime, String address, String title, String hyperlink, int eventID) {
             this.title = title;
             this.date = date;
             this.info = info;
@@ -210,10 +211,19 @@ public class EditEventFragment extends Fragment {
             this.endTime = endTime;
             this.address = address;
             this.hyperlink = hyperlink;
+            this.eventID = eventID;
         }
 
         public EventCard() {
 
+        }
+
+        public int getEventID() {
+            return eventID;
+        }
+
+        public void setEventID(int eventID) {
+            this.eventID = eventID;
         }
 
         public String getTitle() {

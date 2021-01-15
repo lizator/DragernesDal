@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
+import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
 import com.rbyte.dragernesdal.data.inventory.InventoryRepository;
 import com.rbyte.dragernesdal.data.inventory.model.InventoryDTO;
 
@@ -51,6 +52,32 @@ public class InventoryViewModel extends ViewModel {
             });
         });
     }
+
+    public void updateInventory(CharacterDTO dto){
+        Executor bgThread = Executors.newSingleThreadExecutor();
+        bgThread.execute(() -> {
+            Result<List<InventoryDTO>> inventoryRes = new Result<>();
+            int count = 0;
+            while (count < 10) {
+                inventoryRes = inventoryRepository.getActualInventory(dto.getIdcharacter());
+                if (inventoryRes instanceof Result.Success) break;
+                count++;
+            }
+            Result<List<InventoryDTO>> finRes = inventoryRes;
+            uithread.post(() -> {
+                try{
+                    ArrayList<InventoryDTO> inventory = (ArrayList<InventoryDTO>) ((Result.Success) finRes).getData();
+                    postInventory(inventory);
+                }
+                catch (ClassCastException c){
+                    c.printStackTrace();
+                }
+            });
+        });
+    }
+
+
+
 
     public void updateStatus(){
         Executor bgThread = Executors.newSingleThreadExecutor();
