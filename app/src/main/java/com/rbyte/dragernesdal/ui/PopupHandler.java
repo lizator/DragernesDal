@@ -48,6 +48,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import android.os.Handler;
 
+import static java.lang.Math.abs;
+
 public class PopupHandler {
     private AlertDialog.Builder builder;
     private Context context;
@@ -641,7 +643,7 @@ public class PopupHandler {
 
             if (notOwned){
                 badDTOS.add(dto);
-                names.add(dto.getName());
+                names.add(abs(dto.getCost()) + ":" + dto.getName());
             }
         }
 
