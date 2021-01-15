@@ -143,6 +143,33 @@ public class EditUserFragment extends Fragment {
             }
         });
 
+        changePassbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String p1 = pass1.getText().toString();
+                String p2 = pass2.getText().toString();
+
+                if (p1.length() > 5 && p1.equals(p2)){
+                    user.setPassHash(p1);
+                    Executor bgThread = Executors.newSingleThreadExecutor();
+                    bgThread.execute(() -> {
+                        Result<ProfileDTO> res = userRepo.updatePassword(user);
+                        uiThread.post(() -> {
+                           if (res instanceof Result.Success){
+                               user = ((Result.Success<ProfileDTO>) res).getData();
+                               Toast.makeText(getContext(), "Password ændret", Toast.LENGTH_SHORT).show();
+                               pass1.setText("");
+                               pass2.setText("");
+                           }
+                        });
+
+                    });
+                } else {
+                    popHandler.getInfoAlert(root2, "Fejl", "Indtastet kodeord er ikke stort nok (6 tegn) eller ikke ens").show();
+                }
+            }
+        });
+
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
             public void handleOnBackPressed() {

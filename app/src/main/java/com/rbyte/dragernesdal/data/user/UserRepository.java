@@ -65,6 +65,13 @@ public class UserRepository {
         return result;
     }
 
+    public Result<ProfileDTO> updatePassword(ProfileDTO user) {
+        Result<ProfileDTO> result = dao.updatePassword(user);
+        if (result instanceof Result.Success) {
+        }
+        return result;
+    }
+
     public Result<ProfileDTO> login(String username, String password) {
         // handle login
         try {

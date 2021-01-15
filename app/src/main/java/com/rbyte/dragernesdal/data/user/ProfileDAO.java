@@ -57,6 +57,18 @@ public class ProfileDAO {
         }
     }
 
+    public Result<ProfileDTO> updatePassword(ProfileDTO user){
+        try {
+            Call<ProfileDTO> call = service.updatePassword(user);
+            resp = call.execute();
+            if (resp.code() == 200) return new Result.Success<ProfileDTO>(resp.body());
+            return new Result.Error( new IOException(resp.message()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new Result.Error(e);
+        }
+    }
+
 
     public Result<ProfileDTO> login(String email, String password) throws IOException {
         ProfileDTO dto = new ProfileDTO();
