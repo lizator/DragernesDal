@@ -87,13 +87,13 @@ public class InventoryCheckout {
             if(inventoryDTOS.size() > 0){
                 for(int i = inventoryDTOS.size()-1; i >= 0; i--){
                     final InventoryDTO n = inventoryDTOS.get(i);
-                    if (n.getIdItem() == 0) {
+                    if (n.getIdItem() == 2) {
                         copper.setText(n.getAmount() + "");
                         InventoryCheckout.this.inventoryDTOS.remove(i);
-                    } else if (n.getIdItem() == 1) {
+                    } else if (n.getIdItem() == 0) {
                         gold.setText(n.getAmount() + "");
                         InventoryCheckout.this.inventoryDTOS.remove(i);
-                    } else if (n.getIdItem() == 2) {
+                    } else if (n.getIdItem() == 1) {
                         silver.setText(n.getAmount() + "");
                         InventoryCheckout.this.inventoryDTOS.remove(i);
                     }
