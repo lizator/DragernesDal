@@ -28,6 +28,8 @@ import com.rbyte.dragernesdal.ui.PopupHandler;
 import com.rbyte.dragernesdal.ui.character.inventory.InventoryFragment;
 import com.rbyte.dragernesdal.ui.character.inventory.InventoryViewModel;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -82,18 +84,22 @@ public class InventoryCheckout {
         if (inventoryDTOS != null && inventoryDTOS.size() != 0) {
             InventoryCheckout.this.inventoryDTOS.clear();
             InventoryCheckout.this.inventoryDTOS.addAll(inventoryDTOS);
-            for(int i = inventoryDTOS.size()-1; i >= 0; i--){
-                final InventoryDTO n = inventoryDTOS.get(i);
-                if (n.getIdItem() == 0) {
-                    copper.setText(n.getAmount() + "");
-                    InventoryCheckout.this.inventoryDTOS.remove(i);
-                } else if (n.getIdItem() == 1) {
-                    gold.setText(n.getAmount() + "");
-                    InventoryCheckout.this.inventoryDTOS.remove(i);
-                } else if (n.getIdItem() == 2) {
-                    silver.setText(n.getAmount() + "");
-                    InventoryCheckout.this.inventoryDTOS.remove(i);
+            if(inventoryDTOS.size() > 0){
+                for(int i = inventoryDTOS.size()-1; i >= 0; i--){
+                    final InventoryDTO n = inventoryDTOS.get(i);
+                    if (n.getIdItem() == 0) {
+                        copper.setText(n.getAmount() + "");
+                        InventoryCheckout.this.inventoryDTOS.remove(i);
+                    } else if (n.getIdItem() == 1) {
+                        gold.setText(n.getAmount() + "");
+                        InventoryCheckout.this.inventoryDTOS.remove(i);
+                    } else if (n.getIdItem() == 2) {
+                        silver.setText(n.getAmount() + "");
+                        InventoryCheckout.this.inventoryDTOS.remove(i);
+                    }
                 }
+            } else {
+                InventoryCheckout.this.inventoryDTOS.add(new InventoryDTO(inventoryRepo.getRelationID(), 3, "Indsæt Genstand!", 0));
             }
             adapter.notifyDataSetChanged();
         }
@@ -146,14 +152,13 @@ public class InventoryCheckout {
                     newInventory.add(goldI);
                     newInventory.add(silverI);
                     newInventory.add(copperI);
-                    //newInventory.addAll(inventoryDTOS);
-
-
+                    newInventory.addAll(inventoryDTOS);
                     inventoryRepo.saveInventory(characterDTO.getIdcharacter(), newInventory);
                     inventoryRepo.startGetThread();
 
                     uithread.post(() -> {
                         inventoryViewModel.updateStatus();
+                        dialog.dismiss();
                     });
 
                 });
@@ -192,29 +197,66 @@ public class InventoryCheckout {
             return vh;
         }
 
+        private TextWatcher textWatcher() {
+            TextWatcher lineChangeWatcher = new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    // ignore
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    // ignore
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    Log.d("Text changed InventoryCheckout","After text changed");
+                    for (int i = 0; i < inventoryDTOS.size(); i++){
+                        View view = linearLayoutManager.findViewByPosition(i);
+                        if (view != null) {
+                            String itemName = ((EditText) view.findViewById(R.id.itemNameEdit)).getText().toString();
+                            String number = ((EditText) view.findViewById(R.id.itemAmountEdit)).getText().toString();
+                            inventoryDTOS.get(i).setItemName(itemName);
+                            try {
+                                int amount = Integer.parseInt(number);
+                                inventoryDTOS.get(i).setAmount(amount);
+                            } catch (NumberFormatException e){
+                                Log.d("InventoryFragment", "lineChangeWatcher: amount not found error");
+                            }
+
+                        }
+                    }
+                }
+            };
+            return lineChangeWatcher;
+        }
+
         @Override
         public void onBindViewHolder(InventoryViewHolder vh, int position) {
             InventoryDTO newInv = inventoryDTOS.get(position);
             vh.name.setText(newInv.getItemName() + "");
             vh.amount.setText(newInv.getAmount() + "");
             vh.closeImg.setOnClickListener(removeItem(position));
+            TextWatcher textWatcher = textWatcher();
+            vh.name.addTextChangedListener(textWatcher);
+            vh.amount.addTextChangedListener(textWatcher);
         }
-
-        private View.OnClickListener removeItem(int position){
-            View.OnClickListener click = new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    PopupHandler popHandler = new PopupHandler(context);
-                    popHandler.getConfirmRemoveInventoryAlert(view, inventoryDTOS.get(position).getItemName(), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            inventoryDTOS.remove(position);
-                            adapter.notifyDataSetChanged();
-                        }
-                    }).show();
-                }
-            };
-            return click;
-        }
+    }
+    private View.OnClickListener removeItem(int position){
+        View.OnClickListener click = new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                PopupHandler popHandler = new PopupHandler(context);
+                popHandler.getConfirmRemoveInventoryAlert(view, inventoryDTOS.get(position).getItemName(), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        inventoryDTOS.remove(position);
+                        adapter.notifyDataSetChanged();
+                    }
+                }).show();
+            }
+        };
+        return click;
     }
 }
