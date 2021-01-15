@@ -53,6 +53,26 @@ public class InventoryViewModel extends ViewModel {
         });
     }
 
+    public void updateInventory(CharacterDTO dto){
+        Executor bgThread = Executors.newSingleThreadExecutor();
+        bgThread.execute(() -> {
+            Result<List<InventoryDTO>> inventoryRes = new Result<>();
+            int count = 0;
+            while (count < 10) {
+                inventoryRes = inventoryRepository.getActualInventory(dto.getIdcharacter());
+                if (inventoryRes instanceof Result.Success) break;
+                count++;
+            }
+            Result<List<InventoryDTO>> finRes = inventoryRes;
+            uithread.post(() -> {
+                ArrayList<InventoryDTO> inventory = (ArrayList<InventoryDTO>) ((Result.Success) finRes).getData();
+                postInventory(inventory);
+            });
+        });
+    }
+
+
+
 
     public void updateStatus(){
         Executor bgThread = Executors.newSingleThreadExecutor();

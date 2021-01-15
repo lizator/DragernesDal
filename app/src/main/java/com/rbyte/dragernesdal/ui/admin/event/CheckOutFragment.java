@@ -126,8 +126,8 @@ public class CheckOutFragment extends Fragment {
                 public void onClick(View v) {
                     Log.i("test", "Running");
                     final int position = getAdapterPosition(); // listeelementets position
-                    InventoryCheckout inventoryCheckout = new InventoryCheckout(getContext(), root, getCharacter(position));
-                    inventoryCheckout.showInventory();
+                    InventoryCheckout inventoryCheckout = new InventoryCheckout(getContext(), root, getCharacter(position), getViewLifecycleOwner());
+                    //inventoryCheckout.showInventory();
 
                 }
             });
