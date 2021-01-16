@@ -149,6 +149,9 @@ public class InventoryCheckout {
                     goldI.setIdItem(0);
                     silverI.setIdItem(1);
                     copperI.setIdItem(2);
+                    goldI.setItemName("Guld");
+                    silverI.setItemName("Sølv");
+                    copperI.setItemName("Kobber");
                     newInventory.add(goldI);
                     newInventory.add(silverI);
                     newInventory.add(copperI);
