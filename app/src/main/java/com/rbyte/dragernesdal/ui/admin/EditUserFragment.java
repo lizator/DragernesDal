@@ -279,6 +279,13 @@ public class EditUserFragment extends Fragment {
             }
         });
 
+        saveInventorybtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                
+            }
+        });
+
         typeSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -460,7 +467,7 @@ public class EditUserFragment extends Fragment {
 
     private void loadIntoShownAbilities(String type){
         shownAbilities.clear();
-        if (type.equals("Alle typer")){
+        if (type.equals("Alle Typer")){
             for (AbilityDTO newDto : allAbilities) {
                 boolean owned = false;
                 for (AbilityDTO ownDto : ownedAbilities){
