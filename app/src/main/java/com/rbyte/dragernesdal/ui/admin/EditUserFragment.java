@@ -109,6 +109,9 @@ public class EditUserFragment extends Fragment {
 
     private Button saveCharacterbtn;
     private Spinner characterRaceSpin;
+    private View krysRacerView;
+    private Spinner krysRace1Spin;
+    private Spinner krysRace2Spin;
     private EditText epEdit;
     private EditText strengthEdit;
     private EditText kpEdit;
@@ -267,6 +270,31 @@ public class EditUserFragment extends Fragment {
             }
         });
 
+        saveCharacterbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        characterRaceSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                String choice = raceNames.get(position);
+                if (choice.equals("Krysling") || (position == 0 && chosenCharacter.getIdrace() == 6)){
+                    krysRacerView.setVisibility(View.VISIBLE);
+                    //TODO: fix
+                } else {
+                    krysRacerView.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+            }
+
+        });
+
         newLinebtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -412,6 +440,9 @@ public class EditUserFragment extends Fragment {
 
         saveCharacterbtn = root2.findViewById(R.id.saveCharacterbtn);
         characterRaceSpin = root2.findViewById(R.id.raceSpinner);
+        krysRacerView = root2.findViewById(R.id.kryslingRacerView);
+        krysRace1Spin = root2.findViewById(R.id.krysRace1);
+        krysRace2Spin = root2.findViewById(R.id.krysRace2);
         epEdit = root2.findViewById(R.id.epEdit);
         strengthEdit = root2.findViewById(R.id.strengthEdit);
         kpEdit = root2.findViewById(R.id.kpEdit);
