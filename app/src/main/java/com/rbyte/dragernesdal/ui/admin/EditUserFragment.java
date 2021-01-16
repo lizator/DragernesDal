@@ -21,6 +21,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
@@ -46,7 +47,6 @@ import com.rbyte.dragernesdal.data.race.model.RaceDTO;
 import com.rbyte.dragernesdal.data.user.UserRepository;
 import com.rbyte.dragernesdal.data.user.model.ProfileDTO;
 import com.rbyte.dragernesdal.ui.PopupHandler;
-import com.rbyte.dragernesdal.ui.character.inventory.InventoryFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,9 +78,11 @@ public class EditUserFragment extends Fragment {
     private LinearLayoutManager inventoryLLM;
     private InventoryAdapter inventoryAdapter = new InventoryAdapter();
     private ArrayList<AbilityDTO> ownedAbilities = new ArrayList<>();
+    private OwnedAbilityAdapter ownedAbilityAdapter = new OwnedAbilityAdapter();
     private ArrayList<String> abilityTypes = new ArrayList<>();
     private ArrayList<AbilityDTO> allAbilities = new ArrayList<>();
     private ArrayList<AbilityDTO> shownAbilities = new ArrayList<>();
+    private ShownAbilityAdapter shownAbilityAdapter = new ShownAbilityAdapter();
     private ArrayList<MagicTierDTO> ownedTiers = new ArrayList<>();
 
     private Button chooseUserbtn;
@@ -116,9 +118,9 @@ public class EditUserFragment extends Fragment {
     private RecyclerView inventoryRecycler;
 
     private Button saveAbilitiesbtn;
-    private RecyclerView ownedRecycler;
+    private RecyclerView ownedAbilitiesRecycler;
     private Spinner typeSpin;
-    private RecyclerView allRecycler;
+    private RecyclerView shownAbilitiesRecycler;
 
     private Button saveMagicbtn;
     private int[] checkBoxIDs;
@@ -242,7 +244,6 @@ public class EditUserFragment extends Fragment {
                                 ownedAbilities = ((Result.Success<ArrayList<AbilityDTO>>) abilityRes).getData();
                                 allAbilities = ((Result.Success<ArrayList<AbilityDTO>>) allAbilityRes).getData();
                                 inventory = ((Result.Success<ArrayList<InventoryDTO>>) inventoryRes).getData();
-                                shownAbilities.addAll(allAbilities);
                                 abilityTypes.clear();
                                 abilityTypes.add("Alle Typer");
                                 abilityTypes.addAll(((Result.Success<ArrayList<String>>) abilityTypesRes).getData());
@@ -309,11 +310,11 @@ public class EditUserFragment extends Fragment {
         inventoryRecycler.getLayoutParams().height = (int) (getScreenWidth(root2.getContext()) / 2);
 
         saveAbilitiesbtn = root2.findViewById(R.id.saveAbilitiesbtn);
-        ownedRecycler = root2.findViewById(R.id.owningRecycler);
-        ownedRecycler.getLayoutParams().height = (int) (getScreenWidth(root2.getContext()) / 2);
+        ownedAbilitiesRecycler = root2.findViewById(R.id.owningRecycler);
+        ownedAbilitiesRecycler.getLayoutParams().height = (int) (getScreenWidth(root2.getContext()) / 2);
         typeSpin = root2.findViewById(R.id.typeSpinner);
-        allRecycler = root2.findViewById(R.id.allRecycler);
-        allRecycler.getLayoutParams().height = (int) (getScreenWidth(root2.getContext()) / 2);
+        shownAbilitiesRecycler = root2.findViewById(R.id.allRecycler);
+        shownAbilitiesRecycler.getLayoutParams().height = (int) (getScreenWidth(root2.getContext()) / 2);
 
         saveMagicbtn = root2.findViewById(R.id.saveMagicbtn);
         checkBoxIDs = new int[]{
@@ -384,6 +385,9 @@ public class EditUserFragment extends Fragment {
 
     private void setupInventory(){
 
+
+        loadIntoShownAbilities("Alle typer");
+
         goldEdit.setText(inventory.get(0).getAmount() + "");
         silverEdit.setText(inventory.get(1).getAmount() + "");
         copperEdit.setText(inventory.get(2).getAmount() + "");
@@ -391,8 +395,7 @@ public class EditUserFragment extends Fragment {
         for (int i = 3; i < inventory.size(); i++){
             items.add(inventory.get(i));
         }
-        
-        inventoryRecycler = (RecyclerView) root2.findViewById(R.id.inventoryRecycler);
+
         inventoryLLM = new LinearLayoutManager(root2.getContext());
         inventoryRecycler.setLayoutManager(inventoryLLM);
         inventoryRecycler.setAdapter(inventoryAdapter);
@@ -402,6 +405,14 @@ public class EditUserFragment extends Fragment {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, abilityTypes);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         typeSpin.setAdapter(adapter);
+
+        ownedAbilitiesRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        ownedAbilitiesRecycler.setAdapter(ownedAbilityAdapter);
+        shownAbilitiesRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        shownAbilitiesRecycler.setAdapter(shownAbilityAdapter);
+
+
+
     }
 
     private void setupMagic(){
@@ -416,7 +427,26 @@ public class EditUserFragment extends Fragment {
         }
     }
 
+    private void loadIntoShownAbilities(String type){
+        shownAbilities.clear();
+        if (type.equals("Alle typer")){
+            for (AbilityDTO newDto : allAbilities) {
+                boolean owned = false;
+                for (AbilityDTO ownDto : ownedAbilities){
+                    if (newDto.getId() == ownDto.getId()){
+                        owned = true;
+                        break;
+                    }
+                }
+                if (!owned) shownAbilities.add(newDto);
+            }
+        }
+    }
 
+    private void updateAbilityAdapters() {
+        ownedAbilityAdapter.notifyDataSetChanged();
+        shownAbilityAdapter.notifyDataSetChanged();
+    }
 
     private void hideKeyboard(Activity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -521,6 +551,104 @@ public class EditUserFragment extends Fragment {
                     }).show();
                 }
             });
+        }
+    }
+
+    private class AbilityViewHolder extends RecyclerView.ViewHolder{
+        TextView name;
+        TextView cost;
+        Button btn;
+        ImageView checkimg;
+        View view;
+        public AbilityViewHolder(View abilityViews) {
+            super(abilityViews);
+            view = abilityViews;
+            name = abilityViews.findViewById(R.id.lineName);
+            cost = abilityViews.findViewById(R.id.abilityCostTv);
+            btn = abilityViews.findViewById(R.id.Abilitybtn);
+            checkimg = abilityViews.findViewById(R.id.checkImage);
+            // Gør listeelementer klikbare og vis det ved at deres baggrunsfarve ændrer sig ved berøring
+            name.setBackgroundResource(android.R.drawable.list_selector_background);
+            cost.setBackgroundResource(android.R.drawable.list_selector_background);
+            btn.setBackgroundResource(android.R.drawable.list_selector_background);
+            checkimg.setBackgroundResource(android.R.drawable.list_selector_background);
+        }
+
+    }
+
+    private class OwnedAbilityAdapter extends RecyclerView.Adapter<AbilityViewHolder> {
+        @Override
+        public int getItemCount() {
+            if (ownedAbilities != null) return ownedAbilities.size();
+            return 0;
+        }
+
+        @Override
+        public AbilityViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View listElementViews = getLayoutInflater().inflate(R.layout.recycler_skill_owned_line, parent, false);
+            AbilityViewHolder vh = new AbilityViewHolder(listElementViews);
+            return vh;
+        }
+
+        @Override
+        public void onBindViewHolder(AbilityViewHolder vh, int position) {
+            vh.name.setText(ownedAbilities.get(position).getName());
+            vh.cost.setText(ownedAbilities.get(position).getCost() + "");
+            vh.view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popHandler.getInfoAlert(root2, ownedAbilities.get(position).getName(), ownedAbilities.get(position).getDesc()).show();
+                }
+            });
+            if (position % 2 == 1) vh.view.setBackgroundColor(getResources().getColor(R.color.colorTableLine1));
+
+            vh.btn.setClickable(true);
+            vh.btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    shownAbilities.add(ownedAbilities.get(position));
+                    ownedAbilities.remove(position);
+                    updateAbilityAdapters();
+                }
+            });
+        }
+    }
+
+    private class ShownAbilityAdapter extends RecyclerView.Adapter<AbilityViewHolder> {
+        @Override
+        public int getItemCount() {
+            if (shownAbilities != null) return shownAbilities.size();
+            return 0;
+        }
+
+        @Override
+        public AbilityViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View listElementViews = getLayoutInflater().inflate(R.layout.recycler_skill_line, parent, false);
+            AbilityViewHolder vh = new AbilityViewHolder(listElementViews);
+            return vh;
+        }
+
+        @Override
+        public void onBindViewHolder(AbilityViewHolder vh, int position) {
+            vh.name.setText(shownAbilities.get(position).getName());
+            vh.cost.setText(shownAbilities.get(position).getCost() + "");
+            vh.view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popHandler.getInfoAlert(root2, shownAbilities.get(position).getName(), shownAbilities.get(position).getDesc()).show();
+                }
+            });
+            if (position % 2 == 1) vh.view.setBackgroundColor(getResources().getColor(R.color.colorTableLine1));
+            vh.btn.setClickable(true);
+            vh.btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ownedAbilities.add(shownAbilities.get(position));
+                    shownAbilities.remove(position);
+                    updateAbilityAdapters();
+                }
+            });
+
         }
     }
 }
