@@ -39,6 +39,7 @@ import com.rbyte.dragernesdal.data.ability.AbilityRepository;
 import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
+import com.rbyte.dragernesdal.data.inventory.InventoryDAO;
 import com.rbyte.dragernesdal.data.inventory.InventoryRepository;
 import com.rbyte.dragernesdal.data.inventory.model.InventoryDTO;
 import com.rbyte.dragernesdal.data.magic.MagicRepository;
@@ -60,6 +61,7 @@ public class EditUserFragment extends Fragment {
     private MagicRepository magicRepo = MagicRepository.getInstance();
     private AbilityRepository abilityRepo = AbilityRepository.getInstance();
     private InventoryRepository inventoryRepo = InventoryRepository.getInstance();
+    private InventoryDAO inventoryDAO = new InventoryDAO();
     private RaceDAO raceDAO = new RaceDAO();
     private Handler uiThread = new Handler();
     private PopupHandler popHandler;
@@ -282,7 +284,40 @@ public class EditUserFragment extends Fragment {
         saveInventorybtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                
+                Executor bgThread = Executors.newSingleThreadExecutor();
+                bgThread.execute(() -> {
+                    ArrayList<InventoryDTO> newInventory = new ArrayList<>();
+                    InventoryDTO gold = new InventoryDTO();
+                    InventoryDTO silver = new InventoryDTO();
+                    InventoryDTO copper = new InventoryDTO();
+                    gold.setIdItem(0);
+                    silver.setIdItem(1);
+                    copper.setIdItem(2);
+                    gold.setItemName("Guld");
+                    silver.setItemName("Sølv");
+                    copper.setItemName("Kobber");
+                    gold.setAmount(Integer.parseInt(goldEdit.getText().toString()));
+                    silver.setAmount(Integer.parseInt(silverEdit.getText().toString()));
+                    copper.setAmount(Integer.parseInt(copperEdit.getText().toString()));
+                    newInventory.add(gold);
+                    newInventory.add(silver);
+                    newInventory.add(copper);
+                    newInventory.addAll(items);
+
+                    Result<List<InventoryDTO>> inventoryRes =  inventoryRepo.saveInventory(chosenCharacter.getIdcharacter(), newInventory);
+                    uiThread.post(() -> {
+                        if (inventoryRes instanceof Result.Success){
+                            Toast.makeText(getContext(), "Inventar gemt!", Toast.LENGTH_SHORT).show();
+                            Executor bgThread2 = Executors.newSingleThreadExecutor();
+                            bgThread2.execute(() -> {
+                                inventoryDAO.confirm(chosenCharacter.getIdcharacter());
+                            });
+                        } else {
+                            popHandler.getInfoAlert(root2, "Fejl", "Invertaren kunne ikke blive gemt").show();
+                        }
+                    });
+
+                });
             }
         });
 
