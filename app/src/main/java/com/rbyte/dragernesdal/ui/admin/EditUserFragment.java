@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -111,6 +112,7 @@ public class EditUserFragment extends Fragment {
     private EditText kpEdit;
     private EditText backgroundEdit;
 
+    private Button newLinebtn;
     private Button saveInventorybtn;
     private EditText copperEdit;
     private EditText silverEdit;
@@ -263,6 +265,34 @@ public class EditUserFragment extends Fragment {
             }
         });
 
+        newLinebtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                InventoryDTO dto = new InventoryDTO();
+                if (items.size() > 0) dto.setIdItem(items.get(items.size()-1).getIdItem()+1);
+                else  dto.setIdItem(3);
+                dto.setIdInventoryRelation(inventory.get(0).getIdInventoryRelation());
+                dto.setItemName("");
+                dto.setAmount(0);
+                items.add(dto);
+                inventoryAdapter.notifyDataSetChanged();
+            }
+        });
+
+        typeSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                String choice = abilityTypes.get(position);
+                loadIntoShownAbilities(choice);
+                updateAbilityAdapters();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+            }
+
+        });
+
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
             public void handleOnBackPressed() {
@@ -302,6 +332,7 @@ public class EditUserFragment extends Fragment {
         kpEdit = root2.findViewById(R.id.kpEdit);
         backgroundEdit = root2.findViewById(R.id.backgroundEdit);
 
+        newLinebtn = root2.findViewById(R.id.newLinebtn);
         saveInventorybtn = root2.findViewById(R.id.saveInventorybtn);
         copperEdit = root2.findViewById(R.id.copperEdit);
         silverEdit = root2.findViewById(R.id.silverEdit);
@@ -439,6 +470,17 @@ public class EditUserFragment extends Fragment {
                     }
                 }
                 if (!owned) shownAbilities.add(newDto);
+            }
+        } else {
+            for (AbilityDTO newDto : allAbilities) {
+                boolean owned = false;
+                for (AbilityDTO ownDto : ownedAbilities) {
+                    if (newDto.getId() == ownDto.getId()) {
+                        owned = true;
+                        break;
+                    }
+                }
+                if (!owned && newDto.getType().equals(type)) shownAbilities.add(newDto);
             }
         }
     }
