@@ -321,6 +321,23 @@ public class EditUserFragment extends Fragment {
             }
         });
 
+        saveAbilitiesbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Executor bgThread = Executors.newSingleThreadExecutor();
+                bgThread.execute(() -> {
+                    Result<List<AbilityDTO>> abilitiesRes = charRepo.setAbilities(chosenCharacter.getIdcharacter(), ownedAbilities);
+                    uiThread.post(() -> {
+                        if (abilitiesRes instanceof Result.Success){
+                            Toast.makeText(getContext(), "Evnerne blev gemt!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            popHandler.getInfoAlert(root2, "Fejl", "Evnerne kunne ikke blive gemt").show();
+                        }
+                    });
+                });
+            }
+        });
+
         typeSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {

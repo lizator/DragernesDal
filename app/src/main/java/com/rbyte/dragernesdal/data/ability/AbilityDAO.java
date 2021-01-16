@@ -6,6 +6,7 @@ import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 import com.rbyte.dragernesdal.data.event.model.EventDTO;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -217,6 +218,18 @@ public class AbilityDAO {
         }
     }
 
+    public Result<List<AbilityDTO>> setAbilities(int characterid, ArrayList<AbilityDTO> abilities){
+        try {
+            Call<List<AbilityDTO>> call = service.setAbilities(characterid, abilities);
+            respList = call.execute();
+            if (respList.code() == 200) return new Result.Success<List<AbilityDTO>>(respList.body());
+            return new Result.Error(new IOException(respList.message()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new Result.Error(new IOException("Error connection to database"));
+        }
+    }
+
 
     public interface AbilityCallService {
         @GET("/ability/byCharacterID/{characterID}")
@@ -239,6 +252,9 @@ public class AbilityDAO {
 
         @POST("/ability/edit")
         Call<AbilityDTO> updateAbility(@Body AbilityDTO abilityDTO);
+
+        @POST("/ability/set/{characterid}")
+        Call<List<AbilityDTO>> setAbilities(@Path(value = "characterid") int characterid, @Body ArrayList<AbilityDTO> abilityDTO);
 
         @GET("/ability/all")
         Call<List<AbilityDTO>> getAll();
