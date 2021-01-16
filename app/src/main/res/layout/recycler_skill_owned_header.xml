@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="30dp"
-    android:background="@color/colorTableLine2"
     android:layout_marginRight="3dp"
     android:layout_marginLeft="3dp">
 
@@ -22,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
-            android:text="abilityName"
+            android:text="Navn"
             android:textColor="#000000"/>
         <ImageView
             android:id="@+id/line1"
@@ -34,20 +33,12 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:gravity="center">
-            <ImageView
-                android:id="@+id/checkImage"
-                android:layout_width="26dp"
-                android:layout_height="26dp"
-                app:srcCompat="@drawable/ic_baseline_check_24"
-                android:visibility="gone"/>
-            <Button
-                android:id="@+id/Abilitybtn"
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:textSize="10sp"
                 style="@style/textSmall"
-                android:text="Køb!"
-                android:clickable="false"/>
+                android:text="Fjern"
+                android:gravity="center"/>
         </LinearLayout>
         <ImageView
             android:id="@+id/line2"
@@ -63,7 +54,7 @@
             android:gravity="center"
             android:layout_marginTop="5dp"
             android:layout_height="wrap_content"
-            android:text="4" />
+            android:text="Pris" />
 
 
     </LinearLayout>

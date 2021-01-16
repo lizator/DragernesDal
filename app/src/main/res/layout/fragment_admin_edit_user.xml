@@ -352,13 +352,155 @@
                         android:text="Baggrund"
                         style="@style/text"/>
                     <EditText
+                        android:id="@+id/backgroundEdit"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         style="@style/TextZone"
                         android:text="test\ntest"
-                        android:textSize="14sp"
+                        android:textSize="16sp"
                         android:singleLine="false"
                         android:layout_margin="4dp"/>
+                </LinearLayout>
+
+                <!-- Rediger Invertar -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_marginBottom="16dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center">
+                            <Button
+                                android:id="@+id/newLinebtn"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Ny linje"/>
+                        </LinearLayout>
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Invertar"
+                            style="@style/text"
+                            android:textSize="22dp"
+                            android:layout_weight="1"
+                            android:gravity="center"/>
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center">
+                        <Button
+                            android:id="@+id/saveInventorybtn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Gem Invertar"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/linearLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="horizontal"
+                        app:layout_constraintTop_toBottomOf="@+id/savebtn">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/copperTitle"
+                                style="@style/textSmall"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Kobber: " />
+
+                            <EditText
+                                android:id="@+id/copperEdit"
+                                style="@style/TextZone"
+                                android:inputType="number"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="00" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/silverTitle"
+                                style="@style/textSmall"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Sølv: " />
+
+                            <EditText
+                                android:id="@+id/silverEdit"
+                                style="@style/TextZone"
+                                android:inputType="number"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="00" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/goldTitle"
+                                style="@style/textSmall"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Guld: " />
+
+                            <EditText
+                                android:id="@+id/goldEdit"
+                                style="@style/TextZone"
+                                android:inputType="number"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="00" />
+                        </LinearLayout>
+                    </LinearLayout>z
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/back_table">
+                        <include layout="@layout/recycler_inventory_header" />
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/inventoryRecycler"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/back_table"
+                        android:paddingBottom="3dp"
+                        android:layout_marginBottom="6dp"/>
+
+
                 </LinearLayout>
 
                 <!-- Rediger Evner -->
@@ -401,7 +543,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/back_table">
-                        <include layout="@layout/recycler_skill_header" />
+                        <include layout="@layout/recycler_skill_owned_header" />
                     </LinearLayout>
 
                     <androidx.recyclerview.widget.RecyclerView

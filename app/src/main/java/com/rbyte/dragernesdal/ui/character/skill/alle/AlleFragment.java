@@ -159,7 +159,7 @@ public class AlleFragment extends Fragment {
             view = abilityViews;
             name = abilityViews.findViewById(R.id.lineName);
             cost = abilityViews.findViewById(R.id.abilityCostTv);
-            buybtn = abilityViews.findViewById(R.id.buyAbilitybtn);
+            buybtn = abilityViews.findViewById(R.id.Abilitybtn);
             checkimg = abilityViews.findViewById(R.id.checkImage);
             // Gør listeelementer klikbare og vis det ved at deres baggrunsfarve ændrer sig ved berøring
             name.setBackgroundResource(android.R.drawable.list_selector_background);

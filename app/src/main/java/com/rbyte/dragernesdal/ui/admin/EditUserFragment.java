@@ -1,17 +1,25 @@
 package com.rbyte.dragernesdal.ui.admin;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -20,6 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rbyte.dragernesdal.R;
@@ -28,6 +37,8 @@ import com.rbyte.dragernesdal.data.ability.AbilityRepository;
 import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
+import com.rbyte.dragernesdal.data.inventory.InventoryRepository;
+import com.rbyte.dragernesdal.data.inventory.model.InventoryDTO;
 import com.rbyte.dragernesdal.data.magic.MagicRepository;
 import com.rbyte.dragernesdal.data.magic.magicTier.model.MagicTierDTO;
 import com.rbyte.dragernesdal.data.race.RaceDAO;
@@ -35,6 +46,7 @@ import com.rbyte.dragernesdal.data.race.model.RaceDTO;
 import com.rbyte.dragernesdal.data.user.UserRepository;
 import com.rbyte.dragernesdal.data.user.model.ProfileDTO;
 import com.rbyte.dragernesdal.ui.PopupHandler;
+import com.rbyte.dragernesdal.ui.character.inventory.InventoryFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,10 +58,12 @@ public class EditUserFragment extends Fragment {
     private CharacterRepository charRepo = CharacterRepository.getInstance();
     private MagicRepository magicRepo = MagicRepository.getInstance();
     private AbilityRepository abilityRepo = AbilityRepository.getInstance();
+    private InventoryRepository inventoryRepo = InventoryRepository.getInstance();
     private RaceDAO raceDAO = new RaceDAO();
     private Handler uiThread = new Handler();
     private PopupHandler popHandler;
     private View root2;
+    private int screenWidth = 0;
 
     private ProfileDTO user;
     private ArrayList<CharacterDTO> characters;
@@ -59,6 +73,10 @@ public class EditUserFragment extends Fragment {
     private ArrayList<RaceDTO> customRaces = new ArrayList<>();
     private ArrayList<RaceDTO> racesCollected = new ArrayList<>();
     private ArrayList<String> raceNames = new ArrayList<>();
+    private ArrayList<InventoryDTO> inventory = new ArrayList<>();
+    private ArrayList<InventoryDTO> items = new ArrayList<>();
+    private LinearLayoutManager inventoryLLM;
+    private InventoryAdapter inventoryAdapter = new InventoryAdapter();
     private ArrayList<AbilityDTO> ownedAbilities = new ArrayList<>();
     private ArrayList<String> abilityTypes = new ArrayList<>();
     private ArrayList<AbilityDTO> allAbilities = new ArrayList<>();
@@ -85,11 +103,17 @@ public class EditUserFragment extends Fragment {
     private View characterChosenView;
 
     private Button saveCharacterbtn;
-    private Spinner characerRaceSpin;
+    private Spinner characterRaceSpin;
     private EditText epEdit;
     private EditText strengthEdit;
     private EditText kpEdit;
     private EditText backgroundEdit;
+
+    private Button saveInventorybtn;
+    private EditText copperEdit;
+    private EditText silverEdit;
+    private EditText goldEdit;
+    private RecyclerView inventoryRecycler;
 
     private Button saveAbilitiesbtn;
     private RecyclerView ownedRecycler;
@@ -200,23 +224,28 @@ public class EditUserFragment extends Fragment {
                     chosenCharacter = characters.get(pos);
                     Executor bgThread = Executors.newSingleThreadExecutor();
                     bgThread.execute(() -> {
-                        Result<List<MagicTierDTO>> magicRes = charRepo.getmagicTiers(chosenCharacter.getIdcharacter(), false);
+                        Result<List<RaceDTO>> standartRacesRes = raceDAO.getRaceInfoStandart();
+                        Result<List<RaceDTO>> customRacesRes = raceDAO.getRaceInfoCustom();
+                        Result<List<InventoryDTO>> inventoryRes = inventoryRepo.getActualInventory(chosenCharacter.getIdcharacter(), false);
                         Result<List<AbilityDTO>> abilityRes = charRepo.getAbilitiesByCharacterID(chosenCharacter.getIdcharacter(), false);
                         Result<List<AbilityDTO>> allAbilityRes = abilityRepo.getAll();
                         Result<List<String>> abilityTypesRes = abilityRepo.getTypes();
-                        Result<List<RaceDTO>> standartRacesRes = raceDAO.getRaceInfoStandart();
-                        Result<List<RaceDTO>> customRacesRes = raceDAO.getRaceInfoCustom();
+                        Result<List<MagicTierDTO>> magicRes = charRepo.getmagicTiers(chosenCharacter.getIdcharacter(), false);
                         uiThread.post(() -> {
                             if (magicRes instanceof Result.Success && abilityRes instanceof Result.Success &&
                                     allAbilityRes instanceof Result.Success && standartRacesRes instanceof Result.Success &&
-                                    customRacesRes instanceof Result.Success && abilityTypesRes instanceof Result.Success)
+                                    customRacesRes instanceof Result.Success && abilityTypesRes instanceof Result.Success &&
+                                    inventoryRes instanceof Result.Success)
                             {
                                 characterChosenView.setVisibility(View.VISIBLE);
                                 ownedTiers = ((Result.Success<ArrayList<MagicTierDTO>>) magicRes).getData();
                                 ownedAbilities = ((Result.Success<ArrayList<AbilityDTO>>) abilityRes).getData();
                                 allAbilities = ((Result.Success<ArrayList<AbilityDTO>>) allAbilityRes).getData();
+                                inventory = ((Result.Success<ArrayList<InventoryDTO>>) inventoryRes).getData();
                                 shownAbilities.addAll(allAbilities);
-                                abilityTypes = ((Result.Success<ArrayList<String>>) abilityTypesRes).getData();
+                                abilityTypes.clear();
+                                abilityTypes.add("Alle Typer");
+                                abilityTypes.addAll(((Result.Success<ArrayList<String>>) abilityTypesRes).getData());
                                 standartRaces = ((Result.Success<ArrayList<RaceDTO>>) standartRacesRes).getData();
                                 customRaces = ((Result.Success<ArrayList<RaceDTO>>) customRacesRes).getData();
                                 racesCollected.addAll(standartRaces);
@@ -266,23 +295,32 @@ public class EditUserFragment extends Fragment {
         characterChosenView = root2.findViewById(R.id.characterChosenView);
 
         saveCharacterbtn = root2.findViewById(R.id.saveCharacterbtn);
-        characerRaceSpin = root2.findViewById(R.id.raceSpinner);
+        characterRaceSpin = root2.findViewById(R.id.raceSpinner);
         epEdit = root2.findViewById(R.id.epEdit);
         strengthEdit = root2.findViewById(R.id.strengthEdit);
         kpEdit = root2.findViewById(R.id.kpEdit);
         backgroundEdit = root2.findViewById(R.id.backgroundEdit);
 
+        saveInventorybtn = root2.findViewById(R.id.saveInventorybtn);
+        copperEdit = root2.findViewById(R.id.copperEdit);
+        silverEdit = root2.findViewById(R.id.silverEdit);
+        goldEdit = root2.findViewById(R.id.goldEdit);
+        inventoryRecycler = root2.findViewById(R.id.inventoryRecycler);
+        inventoryRecycler.getLayoutParams().height = (int) (getScreenWidth(root2.getContext()) / 2);
+
         saveAbilitiesbtn = root2.findViewById(R.id.saveAbilitiesbtn);
         ownedRecycler = root2.findViewById(R.id.owningRecycler);
+        ownedRecycler.getLayoutParams().height = (int) (getScreenWidth(root2.getContext()) / 2);
         typeSpin = root2.findViewById(R.id.typeSpinner);
         allRecycler = root2.findViewById(R.id.allRecycler);
+        allRecycler.getLayoutParams().height = (int) (getScreenWidth(root2.getContext()) / 2);
 
         saveMagicbtn = root2.findViewById(R.id.saveMagicbtn);
         checkBoxIDs = new int[]{
-                R.id.elem1, R.id.elem2, R.id.elem3, R.id.elem4, R.id.elem5,
                 R.id.divi1, R.id.divi2, R.id.divi3, R.id.divi4, R.id.divi5,
-                R.id.necro1, R.id.necro2, R.id.necro3, R.id.necro4, R.id.necro5,
                 R.id.demon1, R.id.demon2, R.id.demon3, R.id.demon4, R.id.demon5,
+                R.id.elem1, R.id.elem2, R.id.elem3, R.id.elem4, R.id.elem5,
+                R.id.necro1, R.id.necro2, R.id.necro3, R.id.necro4, R.id.necro5,
                 R.id.transform1, R.id.transform2, R.id.transform3, R.id.transform4, R.id.transform5
         };
     }
@@ -305,7 +343,7 @@ public class EditUserFragment extends Fragment {
                     characterChoices.clear();
                     characterChoices.add("Vælg karakter!");
                     for (CharacterDTO dto : characters) {
-                        characterChoices.add(dto.getName() + "(" + dto.getRaceName() + ")");
+                        characterChoices.add(dto.getName() + " (" + dto.getRaceName() + ")");
                     }
 
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, characterChoices);
@@ -323,8 +361,62 @@ public class EditUserFragment extends Fragment {
     }
 
     private void setupCharacter(){
-        
+
+        //setting up racespinner
+        raceNames.add(chosenCharacter.getRaceName() + " (Uændret)");
+        for (RaceDTO dto : racesCollected){
+            raceNames.add(dto.getRacename());
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, raceNames);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        characterRaceSpin.setAdapter(adapter);
+
+        //setting up other Character Stuff
+        epEdit.setText(chosenCharacter.getCurrentep() + "");
+        strengthEdit.setText(chosenCharacter.getStrength() + "");
+        kpEdit.setText(chosenCharacter.getHealth() + "");
+        backgroundEdit.setText(chosenCharacter.getBackground());
+
+        setupInventory();
+        setupAbilities();
+        setupMagic();
     }
+
+    private void setupInventory(){
+
+        goldEdit.setText(inventory.get(0).getAmount() + "");
+        silverEdit.setText(inventory.get(1).getAmount() + "");
+        copperEdit.setText(inventory.get(2).getAmount() + "");
+
+        for (int i = 3; i < inventory.size(); i++){
+            items.add(inventory.get(i));
+        }
+        
+        inventoryRecycler = (RecyclerView) root2.findViewById(R.id.inventoryRecycler);
+        inventoryLLM = new LinearLayoutManager(root2.getContext());
+        inventoryRecycler.setLayoutManager(inventoryLLM);
+        inventoryRecycler.setAdapter(inventoryAdapter);
+    }
+
+    private void setupAbilities(){
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, abilityTypes);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        typeSpin.setAdapter(adapter);
+    }
+
+    private void setupMagic(){
+        for (int i = 0; i < checkBoxIDs.length; i++) {
+            for (MagicTierDTO dto : ownedTiers){
+                if (i + 1 == dto.getId()){
+                    CheckBox checkBox =  root2.findViewById(checkBoxIDs[i]);
+                    checkBox.setChecked(true);
+                    break;
+                }
+            }
+        }
+    }
+
+
 
     private void hideKeyboard(Activity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -335,5 +427,100 @@ public class EditUserFragment extends Fragment {
             view = new View(activity);
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    private int getScreenWidth(Context context) {
+        if (screenWidth == 0) {
+            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            Display display = wm.getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            screenWidth = size.x;
+        }
+        return screenWidth;
+    }
+
+    class InventoryViewHolder extends RecyclerView.ViewHolder{
+        EditText name;
+        EditText amount;
+        ImageView closeImg;
+        View view;
+        public InventoryViewHolder(View abilityViews) {
+            super(abilityViews);
+            view = abilityViews;
+            name = abilityViews.findViewById(R.id.itemNameEdit);
+            amount = abilityViews.findViewById(R.id.itemAmountEdit);
+            closeImg = abilityViews.findViewById(R.id.closeLine);
+            // Gør listeelementer klikbare og vis det ved at deres baggrunsfarve ændrer sig ved berøring
+        }
+
+    }
+
+    class InventoryAdapter extends RecyclerView.Adapter<InventoryViewHolder> {
+        @Override
+        public int getItemCount() {
+            return items.size();
+        }
+
+        @Override
+        public InventoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View listElementViews = getLayoutInflater().inflate(R.layout.recycler_inventory_line, parent, false);
+            InventoryViewHolder vh = new InventoryViewHolder(listElementViews);
+            return vh;
+        }
+
+        @Override
+        public void onBindViewHolder(InventoryViewHolder vh, int position) {
+            if (position % 2 == 1) vh.view.setBackgroundColor(getResources().getColor(R.color.colorTableLine1));
+
+            TextWatcher lineChangeWatcher = new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    // ignore
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    // ignore
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    for (int i = 0; i < items.size(); i++){
+                        View view = inventoryLLM.findViewByPosition(i);
+                        if (view != null) {
+                            String itemName = ((EditText) view.findViewById(R.id.itemNameEdit)).getText().toString();
+                            String number = ((EditText) view.findViewById(R.id.itemAmountEdit)).getText().toString();
+                            items.get(i).setItemName(itemName);
+                            try {
+                                int amount = Integer.parseInt(number);
+                                items.get(i).setAmount(amount);
+                            } catch (NumberFormatException e){
+                                Log.d("InventoryAdapter", "editUserFragment: amount not found error");
+                            }
+
+                        }
+                    }
+                }
+            };
+
+            vh.name.setText(items.get(position).getItemName());
+            vh.amount.setText(items.get(position).getAmount() + "");
+            vh.name.addTextChangedListener(lineChangeWatcher);
+            vh.amount.addTextChangedListener(lineChangeWatcher);
+
+            vh.closeImg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popHandler.getConfirmRemoveInventoryAlert(root2, items.get(position).getItemName(), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            items.remove(position);
+                            inventoryAdapter.notifyDataSetChanged();
+                        }
+                    }).show();
+                }
+            });
+        }
     }
 }

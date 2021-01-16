@@ -46,6 +46,18 @@ public class InventoryRepository {
         return inventoryRes;
     }
 
+    public Result<List<InventoryDTO>> getActualInventory(int characterID, boolean save){
+        Result<List<InventoryDTO>> inventoryRes = inventoryDAO.getActualInventoryByCharacterID(characterID);
+        if (inventoryRes instanceof Result.Success && save) {
+            inventory = (ArrayList<InventoryDTO>) ((Result.Success<List<InventoryDTO>>) inventoryRes).getData();
+            if (inventory != null && inventory.size() != 0) {
+                relationID = inventory.get(0).getIdInventoryRelation();
+                state = inventoryDAO.getState(relationID);
+            }
+        }
+        return inventoryRes;
+    }
+
     public Result<List<InventoryDTO>> saveInventory(int characterID, ArrayList<InventoryDTO> inventory){
         return inventoryDAO.saveInventory(characterID, inventory);
     }
