@@ -352,6 +352,32 @@ public class EditUserFragment extends Fragment {
 
         });
 
+        saveMagicbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Executor bgThread = Executors.newSingleThreadExecutor();
+                bgThread.execute(() -> {
+                    ArrayList<MagicTierDTO> tierList = new ArrayList<>();
+                    for (int i = 0; i < checkBoxIDs.length; i++){
+                        if (((CheckBox) root2.findViewById(checkBoxIDs[i])).isChecked()){
+                            MagicTierDTO dto = new MagicTierDTO();
+                            dto.setId(i+1);
+                            tierList.add(dto);
+                        }
+                    }
+                    Result<List<MagicTierDTO>> magicTierRes = magicRepo.setCharacterMagic(chosenCharacter.getIdcharacter(), tierList);
+                    uiThread.post(() -> {
+                        if (magicTierRes instanceof Result.Success){
+                            Toast.makeText(getContext(), "Magierne blev gemt!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            popHandler.getInfoAlert(root2, "Fejl", "Magierne kunne ikke blive gemt!").show();
+                        }
+
+                    });
+                });
+            }
+        });
+
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
             public void handleOnBackPressed() {

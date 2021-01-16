@@ -2,16 +2,20 @@ package com.rbyte.dragernesdal.data.magic.magicTier;
 
 import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.WebServerPointer;
+import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
 import com.rbyte.dragernesdal.data.magic.magicTier.model.MagicTierDTO;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public class MagicTierDAO {
@@ -68,6 +72,18 @@ public class MagicTierDAO {
         }
     }
 
+    public Result<List<MagicTierDTO>> setCharacterMagic(int characterid, ArrayList<MagicTierDTO> tierList){
+        try {
+            Call<List<MagicTierDTO>> call = service.setCharacterMagic(characterid, tierList);
+            resplst = call.execute();
+            if (resplst.code() == 200) return new Result.Success<List<MagicTierDTO>>(resplst.body());
+            throw new IOException(resplst.message());
+        } catch (IOException e){
+            e.printStackTrace();
+            return new Result.Error(new IOException(e.getMessage()));
+        }
+    }
+
     public Result<MagicTierDTO> getFreeTier(int characterID, int tierID){
         try {
             Call<MagicTierDTO> call = service.getFreeTier(characterID, tierID);
@@ -94,9 +110,9 @@ public class MagicTierDAO {
         @GET("/magic/getfree/{characterid}/{tierid}")
         Call<MagicTierDTO> getFreeTier(@Path(value = "characterid") int characterid, @Path(value = "tierid") int tierid);
 
-        /*@POST("/character/create")
-        Call<CharacterDTO> createCharacter(@Body CharacterDTO character);
-        */
+        @POST("/magic/set/{characterid}")
+        Call<List<MagicTierDTO>> setCharacterMagic(@Path(value = "characterid") int characterid, @Body ArrayList<MagicTierDTO> tierList);
+
     }
 
 }
