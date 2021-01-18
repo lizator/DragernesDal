@@ -5,31 +5,24 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorPrimary"
-    tools:ignore="ExtraText"><![CDATA[
+    tools:ignore="ExtraText">
 
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-
-
-
-    ]]>
-
-    <com.google.android.material.textfield.TextInputEditText
+    <TextView
         android:id="@+id/input"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1.4"
         android:background="@color/colorPrimaryfaded"
-        android:digits="qwertyuiopåasdfghjklæøzxcvbnmQWERTYUIOPÅASDFGHJKLÆØZXCVBNM"
-        android:imeOptions="actionDone"
+        android:gravity="center"
+        style="@style/text"
+        android:textSize="20sp"
+        android:text="Test\nTest\nTest\nTest"
         android:inputType="none" />
 
-
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/racepic"
         android:layout_width="0dp"
-        android:layout_height="370dp"
+        android:layout_height="230dp"
         android:layout_weight="1"
         app:srcCompat="@drawable/rac_menneske" />
 
