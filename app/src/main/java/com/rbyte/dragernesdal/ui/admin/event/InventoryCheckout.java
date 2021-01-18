@@ -25,10 +25,7 @@ import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
 import com.rbyte.dragernesdal.data.inventory.InventoryRepository;
 import com.rbyte.dragernesdal.data.inventory.model.InventoryDTO;
 import com.rbyte.dragernesdal.ui.PopupHandler;
-import com.rbyte.dragernesdal.ui.character.inventory.InventoryFragment;
 import com.rbyte.dragernesdal.ui.character.inventory.InventoryViewModel;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
@@ -39,7 +36,7 @@ public class InventoryCheckout {
     private final AlertDialog.Builder builder;
     private final AlertDialog dialog;
     private final Context context;
-    private final Button savebtn, newLinebtn;
+    private final Button savebtn, newLinebtn, denybtn;
     private final EditText copper, silver, gold;
     private final RecyclerView recyclerView;
     private final LinearLayoutManager linearLayoutManager;
@@ -55,10 +52,11 @@ public class InventoryCheckout {
     public InventoryCheckout(Context context, View viewFragment, CharacterDTO characterDTO, LifecycleOwner lifecycleOwner) {
         this.context = context;
         builder = new AlertDialog.Builder(context);
-        this.view = LayoutInflater.from(context).inflate(R.layout.fragment_character_inventory, (ViewGroup) viewFragment.getRootView(), false);
+        this.view = LayoutInflater.from(context).inflate(R.layout.fragment_admin_character_inventory, (ViewGroup) viewFragment.getRootView(), false);
         this.characterDTO = characterDTO;
         savebtn = view.findViewById(R.id.savebtn);
         newLinebtn = view.findViewById(R.id.newLinebtn);
+        denybtn = view.findViewById(R.id.button_deny);
         copper = view.findViewById(R.id.copperEdit);
         silver = view.findViewById(R.id.silverEdit);
         gold = view.findViewById(R.id.goldEdit);
@@ -77,6 +75,7 @@ public class InventoryCheckout {
         });
         savebtn.setOnClickListener(saveInventory());
         newLinebtn.setOnClickListener(newLine());
+        denybtn.setOnClickListener(denyInventory());
         dialog = builder.show();
     }
 
@@ -133,6 +132,22 @@ public class InventoryCheckout {
         return click;
     }
 
+    private View.OnClickListener denyInventory(){
+        View.OnClickListener click = new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Executor bgThread = Executors.newSingleThreadExecutor();
+                bgThread.execute(()->{
+                    inventoryRepo.denyInventory(characterDTO.getIdcharacter());
+                    uithread.post(() -> {
+                        dialog.dismiss();
+                    });
+                });
+            }
+        };
+        return click;
+    }
+
     private View.OnClickListener saveInventory(){
         View.OnClickListener click = new View.OnClickListener(){
             @Override
@@ -157,6 +172,7 @@ public class InventoryCheckout {
                     newInventory.add(copperI);
                     newInventory.addAll(inventoryDTOS);
                     inventoryRepo.saveInventory(characterDTO.getIdcharacter(), newInventory);
+                    inventoryRepo.confirm(characterDTO.getIdcharacter());
                     inventoryRepo.startGetThread();
 
                     uithread.post(() -> {
