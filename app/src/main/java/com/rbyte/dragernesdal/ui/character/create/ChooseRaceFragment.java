@@ -117,7 +117,7 @@ public class ChooseRaceFragment extends Fragment {
                 Result<List<AbilityDTO>> raceAbilitiesRes = abilityDAO.getAbilitiesByRaceID(prefs.getInt(ChooseRaceFragment.RACE_ID_SAVESPACE, 1));
                 if (raceAbilitiesRes instanceof Result.Success){
                     ArrayList<AbilityDTO> raceAbilities = (ArrayList<AbilityDTO>) ((Result.Success<List<AbilityDTO>>) raceAbilitiesRes).getData();
-                    desc = "";
+                    desc = "Evner:\n";
                     for (int i = 0; i < 4; i++) {
                         desc = desc + raceAbilities.get(i).getName() + "\n";
                     }
@@ -126,13 +126,50 @@ public class ChooseRaceFragment extends Fragment {
 
                 uiThread.post(() -> {
                     View viewInflated = LayoutInflater.from(root.getContext()).inflate(R.layout.alert_race_info, (ViewGroup)root.getRootView(),false);
-                    final EditText description = (EditText) viewInflated.findViewById(R.id.input);
+                    final TextView description = (TextView) viewInflated.findViewById(R.id.input);
                     description.setText(desc);
-                    builder.setView(viewInflated);
 
                     int raceID = prefs.getInt(ChooseRaceFragment.RACE_ID_SAVESPACE, 1);
 
+                    ImageView racepic = (ImageView)viewInflated.findViewById(R.id.racepic);
 
+
+                    switch (raceID) {
+                        case 1:
+                            racepic.setImageResource(R.drawable.rac_dvaerg);
+                            break;
+                        case 2:
+                            racepic.setImageResource(R.drawable.rac_elver);
+                            break;
+                        case 3:
+                            racepic.setImageResource(R.drawable.rac_gobliner);
+                            break;
+                        case 4:
+                            racepic.setImageResource(R.drawable.rac_granitaner);
+                            break;
+                        case 5:
+                            racepic.setImageResource(R.drawable.rac_havfolk);
+                            break;
+                        case 6:
+                            racepic.setImageResource(R.drawable.rac_krysling);
+                            break;
+                        case 7:
+                            racepic.setImageResource(R.drawable.rac_menneske);
+                            break;
+                        case 8:
+                            racepic.setImageResource(R.drawable.rac_moerkskabt);
+                            break;
+                        case 9:
+                            racepic.setImageResource(R.drawable.rac_orker);
+                            break;
+                        case 10:
+                            racepic.setImageResource(R.drawable.rac_sortelver);
+                            break;
+                        default:
+                            racepic.setImageResource(R.drawable.rac_menneske);
+                            break;
+                    }
+                    builder.setView(viewInflated);
 
                     builder.setPositiveButton("Vælg!", new DialogInterface.OnClickListener() {
                         @Override
