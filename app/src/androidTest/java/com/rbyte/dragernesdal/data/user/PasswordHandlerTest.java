@@ -1,5 +1,6 @@
 package com.rbyte.dragernesdal.data.user;
 
+import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.user.model.ProfileDTO;
 
 import org.junit.Test;

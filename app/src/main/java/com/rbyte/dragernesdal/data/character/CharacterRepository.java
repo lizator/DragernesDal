@@ -2,26 +2,42 @@ package com.rbyte.dragernesdal.data.character;
 
 import android.util.Log;
 
+import androidx.lifecycle.MutableLiveData;
+
 import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.ability.AbilityDAO;
 import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
+import com.rbyte.dragernesdal.data.event.CheckInDAO;
+import com.rbyte.dragernesdal.data.event.model.CheckInDTO;
 import com.rbyte.dragernesdal.data.inventory.InventoryDAO;
+import com.rbyte.dragernesdal.data.inventory.InventoryRepository;
 import com.rbyte.dragernesdal.data.inventory.model.InventoryDTO;
+import com.rbyte.dragernesdal.data.magic.magicSchool.MagicSchoolDAO;
+import com.rbyte.dragernesdal.data.magic.magicTier.MagicTierDAO;
+import com.rbyte.dragernesdal.data.magic.magicTier.model.MagicTierDTO;
+import com.rbyte.dragernesdal.data.race.RaceDAO;
+import com.rbyte.dragernesdal.data.race.model.RaceDTO;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 public class CharacterRepository { //Class for getting characters and saving them for use
     private CharacterDAO characterDAO;
     private AbilityDAO abilityDAO;
     private InventoryDAO inventoryDAO;
-    private HashMap<Integer, CharacterDTO> charList;
-    private HashMap<Integer, List<CharacterDTO>> charListList;
-    private HashMap<Integer, List<AbilityDTO>> abilitiesList; //character id to their List of abilities
-    private HashMap<Integer, List<InventoryDTO>> inventoryList; //character id to their List of abilities
-
+    private RaceDAO raceDAO;
+    private MagicTierDAO tierDAO;
+    private CharacterDTO currentChar;
+    private ArrayList<CharacterDTO> currentCharList;
+    private ArrayList<AbilityDTO> abilitiesList; //current characters List of abilities
+    private RaceDTO race; //current race info
+    private ArrayList<RaceDTO> raceList; //race tracking for kryslings
+    private ArrayList<MagicTierDTO> magicTiers;
+    private boolean updateNeeded = true;
+    private int userID = -1;
+    private MutableLiveData<Boolean> abilityUpdate;
 
     private static CharacterRepository instance;
 
@@ -34,130 +50,152 @@ public class CharacterRepository { //Class for getting characters and saving the
         this.characterDAO = new CharacterDAO();
         this.abilityDAO = new AbilityDAO();
         this.inventoryDAO = new InventoryDAO();
-        this.charList = new HashMap<>();
-        this.charListList = new HashMap<>();
-        this.abilitiesList = new HashMap<>();
-        this.inventoryList = new HashMap<>();
+        this.raceDAO = new RaceDAO();
+        this.tierDAO = new MagicTierDAO();
+        this.currentCharList = new ArrayList<>();
+        this.abilitiesList = new ArrayList<>();
+        this.raceList = new ArrayList<>();
+        this.magicTiers = new ArrayList<>();
+        this.abilityUpdate = new MutableLiveData<>(true);
+    }
+
+    public CharacterDTO getCurrentChar(){
+        return currentChar;
+    }
+
+    public ArrayList<AbilityDTO> getCurrentAbilitiesList() {
+        return abilitiesList;
+    }
+
+    public ArrayList<MagicTierDTO> getCurrentTierList(){
+        return magicTiers;
     }
 
     public Result<List<CharacterDTO>> getCharactersByUserID(int userID){
-        Result<List<CharacterDTO>> result;
-        if (charListList.containsKey(userID)){
-            result = new Result.Success<List<CharacterDTO>>(charListList.get(userID));
-            Log.i("GetCharacters Results", "a");
-        } else {
-            result = characterDAO.getCharacterByUserID(userID);
+        if (updateNeeded || userID != this.userID) {
+            Result<List<CharacterDTO>> result;
+            result = characterDAO.getCharactersByUserID(userID);
             if (result instanceof Result.Success) {
-                ArrayList<CharacterDTO> lst = (ArrayList<CharacterDTO>) ((Result.Success) result).getData();
-                charListList.put(userID, lst);
+                this.currentCharList = (ArrayList<CharacterDTO>) ((Result.Success) result).getData();
                 Log.i("GetCharacters Results", "b");
             }
+            return result;
         }
-        ArrayList<CharacterDTO> lst = (ArrayList<CharacterDTO>) ((Result.Success) result).getData();
-        if (lst.size() == 0) {
-            result = characterDAO.getCharacterByUserID(userID);
-            if (result instanceof Result.Success) {
-                ArrayList<CharacterDTO> lst2 = (ArrayList<CharacterDTO>) ((Result.Success) result).getData();
-                charListList.put(userID, lst2);
-                Log.i("GetCharacters Results", "b");
-            }
+        return new Result.Success<List<CharacterDTO>>(this.currentCharList);
+    }
+
+    public Result<List<CharacterDTO>> getCharactersByUserID(int userID, boolean withNoSaving){
+        Result<List<CharacterDTO>> result;
+        result = characterDAO.getCharactersByUserID(userID);
+        if (result instanceof Result.Success && !withNoSaving) {
+            this.currentCharList = (ArrayList<CharacterDTO>) ((Result.Success) result).getData();
+            Log.i("GetCharacters Results", "b");
         }
         return result;
     }
 
-    public List<CharacterDTO> updateCharacterList(int currUserID){
-        for (int userID : charListList.keySet()) {
-            Result<List<CharacterDTO>> result = characterDAO.getCharacterByUserID(userID);
+    public Result<List<CharacterDTO>> getCharactersByEventID(int eventID, int checkin){
+            Result<List<CharacterDTO>> result;
+            result = characterDAO.getCharactersByEventID(eventID, checkin);
             if (result instanceof Result.Success) {
-                ArrayList<CharacterDTO> lst = (ArrayList<CharacterDTO>) ((Result.Success) result).getData();
-                if (lst == null || lst.size() == 0) {
-                    Log.i("GetCharacters Results", "c");
-                } else {
-                    charListList.put(userID, lst);
-                }
+                this.currentCharList = (ArrayList<CharacterDTO>) ((Result.Success) result).getData();
+                Log.i("GetCharacters Results", "b");
             }
-        }
+        return new Result.Success<List<CharacterDTO>>(this.currentCharList);
+    }
 
-        return charListList.get(currUserID);
+    public Result<CharacterDTO> updateCharacter(CharacterDTO dto){
+        Result<CharacterDTO> result = characterDAO.updateCharacter(dto);
+        return result;
     }
 
     public Result<CharacterDTO> getCharacterByID(int characterID){
-        if (charList.containsKey(characterID)){
-            Result<CharacterDTO> result = new Result.Success<CharacterDTO>(charList.get(characterID));
-            return result;
-        }
         Result<CharacterDTO> result = characterDAO.getCharacterByID(characterID);
-        if (result instanceof Result.Success){
+        if (result instanceof Result.Success) {
             CharacterDTO character = (CharacterDTO) ((Result.Success) result).getData();
-            charList.put(characterID, character) ;
-        }
-        return result;
-    }
+            currentChar = character;
 
-    public CharacterDTO updateCharacter(int currCharacterID){
-        for (int characterID : charList.keySet()) {
-            Result<CharacterDTO> result = characterDAO.getCharacterByID(characterID);
-            if (result instanceof Result.Success) {
-                CharacterDTO character = (CharacterDTO) ((Result.Success) result).getData();
-                //Checking if update is needed
-                if (character == null) {
-                    Log.d("CharacterRepo", "Character NULL");
-                } else if (character.getDate() != charList.get(characterID).getDate() || character.getTimestamp() != charList.get(characterID).getTimestamp()) {
-                    charList.put(characterID, character);
-                }
+            InventoryRepository.getInstance().startGetThread();
+            getAbilitiesByCharacterID(characterID);
+            getmagicTiers(characterID);
+            getSingleRace(character.getIdrace());
+            if (character.getIdrace() == 6) {
+                getKrydsRaces(characterID);
             }
         }
-        return charList.get(currCharacterID);
+        return result;
     }
 
     public Result<List<AbilityDTO>> getAbilitiesByCharacterID(int characterID){
-        if (abilitiesList.containsKey(characterID)){
-            Result<List<AbilityDTO>> result = new Result.Success<List<AbilityDTO>>(abilitiesList.get(characterID));
-            return result;
-        }
         Result<List<AbilityDTO>> result = abilityDAO.getAbilitiesByCharacterID(characterID);
-        if (result instanceof Result.Success){
+        if (result instanceof Result.Success) {
             ArrayList<AbilityDTO> abilities = (ArrayList<AbilityDTO>) ((Result.Success) result).getData();
-            abilitiesList.put(characterID, abilities);
+            abilitiesList = abilities;
+            abilityUpdate.postValue(true);
         }
         return result;
     }
 
-    public List<AbilityDTO> updateAbilities(int currCharacterID){
-        for (int characterID : abilitiesList.keySet()) {
-            Result<List<AbilityDTO>> result = abilityDAO.getAbilitiesByCharacterID(characterID);
-            if (result instanceof Result.Success) {
-                List<AbilityDTO> abilities = (List<AbilityDTO>) ((Result.Success) result).getData();
-                //Checking if update is needed
-                abilitiesList.put(characterID, abilities);
-            }
-        }
-        return abilitiesList.get(currCharacterID);
-    }
-
-    public Result<List<InventoryDTO>> getInventoryByCharacterID(int characterID){
-        if (inventoryList.containsKey(characterID)){
-            Result<List<InventoryDTO>> result = new Result.Success<List<InventoryDTO>>(inventoryList.get(characterID));
-            return result;
-        }
-        Result<List<InventoryDTO>> result = inventoryDAO.getInventoryByCharacterID(characterID);
-        if (result instanceof Result.Success){
-            ArrayList<InventoryDTO> inventory = (ArrayList<InventoryDTO>) ((Result.Success) result).getData();
-            inventoryList.put(characterID, inventory);
+    public Result<List<AbilityDTO>> getAbilitiesByCharacterID(int characterID, boolean save){
+        Result<List<AbilityDTO>> result = abilityDAO.getAbilitiesByCharacterID(characterID);
+        if (result instanceof Result.Success && save) {
+            ArrayList<AbilityDTO> abilities = (ArrayList<AbilityDTO>) ((Result.Success) result).getData();
+            abilitiesList = abilities;
+            abilityUpdate.postValue(true);
         }
         return result;
     }
 
-    public List<InventoryDTO> updateInventory(int currCharacterID){
-        for (int characterID : inventoryList.keySet()) {
-            Result<List<InventoryDTO>> result = inventoryDAO.getInventoryByCharacterID(characterID);
-            if (result instanceof Result.Success) {
-                List<InventoryDTO> inventory = (List<InventoryDTO>) ((Result.Success) result).getData();
-                //Checking if update is needed
-                inventoryList.put(characterID, inventory);
-            }
+    public Result<CharacterDTO> createCharacter(CharacterDTO dto){
+        Result<CharacterDTO> resp = characterDAO.createCharacter(dto);
+        if (resp instanceof Result.Success){
+            currentChar = ((Result.Success<CharacterDTO>) resp).getData();
         }
-        return inventoryList.get(currCharacterID);
+        return resp;
+    }
+
+    public Result<RaceDTO> getSingleRace(int raceID){
+        Result<RaceDTO> res = raceDAO.getRaceInfo(raceID);
+        if (res instanceof Result.Success){
+            this.race = ((Result.Success<RaceDTO>) res).getData();
+        }
+        return res;
+    }
+
+    public Result<List<RaceDTO>> getKrydsRaces(int characterID){
+        Result<List<RaceDTO>> res = raceDAO.getKrysRaces(characterID);
+        if (res instanceof Result.Success){
+            this.raceList = ((Result.Success<ArrayList<RaceDTO>>) res).getData();
+        }
+        return res;
+    }
+
+    public Result<List<MagicTierDTO>> getmagicTiers(int characterID){
+        Result<List<MagicTierDTO>> res = tierDAO.getTiersByCharacterID(characterID);
+        if (res instanceof Result.Success){
+            this.magicTiers = (ArrayList<MagicTierDTO>) ((Result.Success<List<MagicTierDTO>>) res).getData();
+        }
+        return res;
+    }
+
+    public Result<List<MagicTierDTO>> getmagicTiers(int characterID, boolean save){
+        Result<List<MagicTierDTO>> res = tierDAO.getTiersByCharacterID(characterID);
+        if (res instanceof Result.Success && save){
+            this.magicTiers = (ArrayList<MagicTierDTO>) ((Result.Success<List<MagicTierDTO>>) res).getData();
+        }
+        return res;
+    }
+
+    public Result<CharacterDTO> createKrysling(int characterID, int race1ID, int race2ID){
+        return characterDAO.createKrysling(characterID, race1ID, race2ID);
+    }
+
+    public Result<List<AbilityDTO>> setAbilities(int characterid, ArrayList<AbilityDTO> abilities){
+        return abilityDAO.setAbilities(characterid, abilities);
+    }
+
+    public void setAbilityUpdate(boolean update){
+        abilityUpdate.setValue(update);
     }
 
 }

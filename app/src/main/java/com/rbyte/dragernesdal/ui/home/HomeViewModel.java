@@ -1,30 +1,33 @@
 package com.rbyte.dragernesdal.ui.home;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.rbyte.dragernesdal.data.ability.AbilityDAO;
 import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
 import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
+import com.rbyte.dragernesdal.data.inventory.InventoryRepository;
 import com.rbyte.dragernesdal.data.inventory.model.InventoryDTO;
+import com.rbyte.dragernesdal.data.race.model.RaceDTO;
+import com.rbyte.dragernesdal.ui.character.inventory.InventoryViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 public class HomeViewModel extends ViewModel {
 
     private MutableLiveData<CharacterDTO> mCharacter;
     private MutableLiveData<List<AbilityDTO>> mAbilities;
     private MutableLiveData<List<InventoryDTO>> mMoney;
+    private MutableLiveData<RaceDTO> mRace;
+    private MutableLiveData<List<RaceDTO>> mOtherRace;
+    private ArrayList<AbilityDTO> potential3epRaceAbilities;
     private CharacterRepository repo;
+    private InventoryRepository inventoryRepo;
     private static HomeViewModel instance;
-    //TODO Make singleton, so i doens't load character in again
 
     public static HomeViewModel getInstance(){
         if (instance == null) instance = new HomeViewModel();
@@ -35,40 +38,17 @@ public class HomeViewModel extends ViewModel {
         this.mCharacter = new MutableLiveData<>();
         this.mAbilities = new MutableLiveData<>();
         this.mMoney = new MutableLiveData<>();
+        this.mRace = new MutableLiveData<>();
+        this.mOtherRace = new MutableLiveData<>();
+        this.potential3epRaceAbilities = new ArrayList<>();
         this.repo = CharacterRepository.getInstance();
+        this.inventoryRepo = InventoryRepository.getInstance();
         //initialing observers
     }
 
-    public void updateCurrentCharacter(){
-        if (mCharacter.getValue() != null)
-        mCharacter.postValue(repo.updateCharacter(mCharacter.getValue().getIdcharacter())); //TODO Could maybe check to see if is the same? might not be needed
-    }
-
-    public void updateCurrentAbilities(){
-        Executor bgThread = Executors.newSingleThreadExecutor();
-        bgThread.execute(() -> {
-            if (mCharacter.getValue() != null)
-                mAbilities.postValue(repo.updateAbilities(mCharacter.getValue().getIdcharacter())); //TODO Could maybe check to see if is the same? might not be needed
-        });
-    }
-
-    public void updateCurrentMoney(){
-        if (mCharacter.getValue() != null) {
-            ArrayList<InventoryDTO> tmpLst = (ArrayList<InventoryDTO>) repo.updateInventory(mCharacter.getValue().getIdcharacter());
-            //We only want to show money here (ID's: 1 gold, 2 silver, 3 kobber)
-            if (tmpLst == null){
-                Log.d("HomeViewModel", "moneylist NULL");
-            }
-            ArrayList<InventoryDTO> moneyLst = new ArrayList<InventoryDTO>();
-            moneyLst.add(tmpLst.get(0));//Gold first
-            moneyLst.add(tmpLst.get(1));//Silver next
-            moneyLst.add(tmpLst.get(2));//Kobber last
-
-            mMoney.postValue(moneyLst); //TODO Could maybe check to see if is the same? might not be needed
-        }
-    }
 
     public void startGetThread(int characterID){
+        InventoryViewModel.getInstance();
         GetCharacterThread thread = new GetCharacterThread(characterID);
         thread.start();
     }
@@ -85,6 +65,18 @@ public class HomeViewModel extends ViewModel {
         return mMoney;
     }
 
+    public MutableLiveData<RaceDTO> getmRace() {
+        return mRace;
+    }
+
+    public LiveData<List<RaceDTO>> getRaces() {
+        return mOtherRace;
+    }
+
+    public ArrayList<AbilityDTO> getPotential3epRaceAbilities() {
+        return potential3epRaceAbilities;
+    }
+
     private void getCharacterByCharacterID(int characterid){
         Result<CharacterDTO> result;
         result = repo.getCharacterByID(characterid);
@@ -92,8 +84,12 @@ public class HomeViewModel extends ViewModel {
         if (result instanceof Result.Success) {
             CharacterDTO character = ((Result.Success<CharacterDTO>) result).getData();
             mCharacter.postValue(character);
+            getRaceByRaceID(character.getIdrace(), 0);
             getAbilitiesByCharacterID(characterid);
             getMoneyByCharacterID(characterid);
+            if (character.getIdrace() == 6){
+                getKrysRacesByCharacterID(characterid, character.getIdrace(), 0);
+            }
             //loginResult.postValue(new LoginResult(new LoggedInUserView(data.getFirstName() + " " + data.getLastName(), data.getEmail(), data.getPassHash())));
         } else {
             //loginResult.postValue(new LoginResult(R.string.login_failed));
@@ -107,20 +103,20 @@ public class HomeViewModel extends ViewModel {
         if (result instanceof Result.Success) {
             ArrayList<AbilityDTO> tmpLst = ((Result.Success<ArrayList<AbilityDTO>>) result).getData();
             if (!tmpLst.equals((ArrayList<AbilityDTO>) mAbilities.getValue())) mAbilities.postValue(tmpLst);
-            //loginResult.postValue(new LoginResult(new LoggedInUserView(data.getFirstName() + " " + data.getLastName(), data.getEmail(), data.getPassHash())));
         } else {
-            //loginResult.postValue(new LoginResult(R.string.login_failed));
+
         }
     }
 
     public void getMoneyByCharacterID(int characterid){
         Result<List<InventoryDTO>> result;
-        result = repo.getInventoryByCharacterID(characterid);
+        result = inventoryRepo.getActualInventory(characterid);
 
         if (result instanceof Result.Success) {
             ArrayList<InventoryDTO> tmpLst = ((Result.Success<ArrayList<InventoryDTO>>) result).getData();
             //We only want to show money here (ID's: 1 gold, 2 silver, 3 kobber)
             ArrayList<InventoryDTO> moneyLst = new ArrayList<InventoryDTO>();
+            if (tmpLst == null || tmpLst.size() == 0) return;
             moneyLst.add(tmpLst.get(0));//Gold first
             moneyLst.add(tmpLst.get(1));//Silver next
             moneyLst.add(tmpLst.get(2));//Kobber last
@@ -129,6 +125,45 @@ public class HomeViewModel extends ViewModel {
             //loginResult.postValue(new LoginResult(new LoggedInUserView(data.getFirstName() + " " + data.getLastName(), data.getEmail(), data.getPassHash())));
         } else {
             //loginResult.postValue(new LoginResult(R.string.login_failed));
+        }
+    }
+
+    public void getRaceByRaceID(int raceID, int count){
+        Result<RaceDTO> res = repo.getSingleRace(raceID);
+        if (res instanceof Result.Success){
+            RaceDTO race = ((Result.Success<RaceDTO>) res).getData();
+            mRace.postValue(race);
+        }
+
+        if ((res instanceof Result.Error) && count < 10){
+            getRaceByRaceID(raceID, count+1);
+        }
+    }
+
+    public void getKrysRacesByCharacterID(int characterid, int raceID, int count){
+        Result<List<RaceDTO>> res2 = repo.getKrydsRaces(characterid);
+        if (res2 instanceof Result.Success){
+            ArrayList<RaceDTO> raceLst = ((Result.Success<ArrayList<RaceDTO>>) res2).getData();
+            mOtherRace.postValue(raceLst);
+            getAbilitiesFromRace(raceLst.get(0).getEp3(), raceLst.get(1).getEp3());
+        }
+
+        if ((res2 instanceof Result.Error) && count < 10){
+            getKrysRacesByCharacterID(characterid, raceID, count+1);
+        }
+    }
+
+    public void getAbilitiesFromRace(int ability1ID, int ability2ID){
+        AbilityDAO tmpdao = new AbilityDAO();
+        Result<AbilityDTO> resAb1 = tmpdao.getAbilityByID(ability1ID);
+        Result<AbilityDTO> resAb2 = tmpdao.getAbilityByID(ability2ID);
+
+        if (resAb1 instanceof Result.Success && resAb2 instanceof Result.Success){
+            AbilityDTO ab1 = ((Result.Success<AbilityDTO>) resAb1).getData();
+            AbilityDTO ab2 = ((Result.Success<AbilityDTO>) resAb2).getData();
+            potential3epRaceAbilities.clear();
+            potential3epRaceAbilities.add(ab1);
+            potential3epRaceAbilities.add(ab2);
         }
     }
 

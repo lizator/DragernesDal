@@ -1,5 +1,6 @@
 package com.rbyte.dragernesdal.ui.character.create;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,15 +17,20 @@ import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.rbyte.dragernesdal.R;
-import com.rbyte.dragernesdal.data.character.CharacterDAO;
+import com.rbyte.dragernesdal.data.ability.AbilityRepository;
+import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
+import com.rbyte.dragernesdal.ui.PopupHandler;
 import com.rbyte.dragernesdal.ui.character.select.SelectViewModel;
+import com.rbyte.dragernesdal.ui.character.skill.SkillViewModel;
+import com.rbyte.dragernesdal.ui.home.HomeFragment;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -42,7 +48,9 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
     private TextChecker textChecker;
     private Handler uiThread = new Handler();
     private NavController navController;
+    private View root;
     private View root2;
+    private PopupHandler popHandler;
 
     public CreateCharacterFragment(int raceID) {
         this.raceID = raceID;
@@ -53,16 +61,16 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_character_create, container, false);
+        root = inflater.inflate(R.layout.fragment_character_create, container, false);
 
         create = root.findViewById(R.id.create);
-        characterName = root.findViewById(R.id.characterName);
+        characterName = root.findViewById(R.id.editText_Title);
         characterAge = root.findViewById(R.id.characterAge);
-        characterBackground = root.findViewById(R.id.characterBackground);
+        characterBackground = root.findViewById(R.id.eventInformation);
         textChecker = new TextChecker("","","");
 
 
-
+        popHandler = new PopupHandler(getContext());
         create.setOnClickListener(this);
         create.setEnabled(false);
         SharedPreferences prefs = getDefaultSharedPreferences(getContext());
@@ -154,7 +162,7 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
             public void handleOnBackPressed() {
                 Log.d("OnBackPress","Back pressed in CreateCharacterFragment");
                 navController = Navigation.findNavController(root);
-                navController.popBackStack(R.id.nav_chooseRaceFragment,false);
+                navController.popBackStack();
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
@@ -163,7 +171,6 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
         root2 = root;
         return root;
     }
-
 
 
     @Override
@@ -175,21 +182,74 @@ public class CreateCharacterFragment extends Fragment implements View.OnClickLis
         characterDTO.setIdrace(raceID);
         characterDTO.setIduser(userID);
 
-        CharacterDAO characterDAO = new CharacterDAO();
+        CharacterRepository charRepo = CharacterRepository.getInstance();
+        AbilityRepository abilityRepo = AbilityRepository.getInstance();
 
         Executor bgThread = Executors.newSingleThreadExecutor();
         bgThread.execute(() ->{
-            characterDAO.createCharacter(characterDTO);
+            charRepo.createCharacter(characterDTO);
             uiThread.post(()-> {
                 Toast.makeText(getActivity(), "Karakter oprettet", Toast.LENGTH_SHORT).show();
                 SelectViewModel selectViewModel = SelectViewModel.getInstance();
                 selectViewModel.updateCurrentCharacters();
-                navController = Navigation.findNavController(root2);
-                navController.popBackStack(R.id.nav_home,false);
+                SharedPreferences prefs = getDefaultSharedPreferences(getContext());
+                SharedPreferences.Editor editor = prefs.edit();
+                CharacterDTO foundDTO = charRepo.getCurrentChar();
+                editor.putInt(HomeFragment.CHARACTER_ID_SAVESPACE, foundDTO.getIdcharacter());
+                editor.apply();
 
+                Executor bgThread2 = Executors.newSingleThreadExecutor();
+                bgThread2.execute(() ->{
+                    int startAbilityID = abilityRepo.getStartAbilityID(characterDTO.getIdrace());
+                    uiThread.post(()-> {
+                        Executor bgThread3 = Executors.newSingleThreadExecutor();
+                        bgThread3.execute(() ->{
+                            String commandType = abilityRepo.tryBuy(foundDTO.getIdcharacter(), startAbilityID);
+                            uiThread.post(()-> {
+                                switch (commandType) {
+                                    case "auto": //do nothing
+                                        Log.d("CharacterCreation", "correct auto getting ability");
+                                        break;
+                                    case "HÅNDVÆRK":
+                                        Log.d("CharacterCreation", "Getting craft ability");
+                                        popHandler.getCraftsAlert(root2, getContext(), uiThread, true).show();
+                                        break;
+                                    case "STARTEVNE":
+                                        Log.d("CharacterCreation", "Getting starter ability");
+                                        Executor bgThread4 = Executors.newSingleThreadExecutor();
+                                        bgThread4.execute(() -> {
+                                            AlertDialog.Builder builder = popHandler.getStartChoiceAlert(root2, getContext(), uiThread);
+                                            uiThread.post(() ->{
+                                                builder.show();
+                                            });
+                                        });
+                                    case "KRYSRACER":
+                                        Log.d("CharacterCreation", "choosing 2 races as krysling");
+                                        Executor bgThread5 = Executors.newSingleThreadExecutor();
+                                        bgThread5.execute(() -> {
+                                            AlertDialog.Builder builder = popHandler.getKrysRaceAlert(root2, getContext(), uiThread);
+                                            uiThread.post(() ->{
+                                                builder.show();
+                                            });
+                                        });
+                                    default: //Error
+                                        Log.d("CharacterCreation", "error getting ability");
+                                        //TODO: handle error
+                                        break;
+                                }
+                                SkillViewModel.getInstance().reset();
+                                navController = Navigation.findNavController(root2);
+                                navController.popBackStack(R.id.nav_home,false);
+                            });
+                        });
+                    });
+                });
             });
         });
     }
+
+
+
 
     class TextChecker{
         private String name;

@@ -22,7 +22,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.rbyte.dragernesdal.R;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
+import com.rbyte.dragernesdal.ui.character.skill.SkillViewModel;
 import com.rbyte.dragernesdal.ui.home.HomeFragment;
+import com.rbyte.dragernesdal.ui.home.HomeViewModel;
 import com.rbyte.dragernesdal.ui.main.MainActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -93,19 +95,20 @@ public class SelectFragment extends Fragment{
         public CharacterViewHolder(View charViews) {
             super(charViews);
             cardView = charViews.findViewById(R.id.card_view);
-            name = charViews.findViewById(R.id.characterName);
+            name = charViews.findViewById(R.id.editText_Title);
             img = charViews.findViewById(R.id.characterRecyclerImageView);
-            // Gør listeelementer klikbare og vis det ved at deres baggrunsfarve ændrer sig ved berøring
-            name.setBackgroundResource(android.R.drawable.list_selector_background);
+            /*// Gør listeelementer klikbare og vis det ved at deres baggrunsfarve ændrer sig ved berøring
+            name.setBackgroundResource(android.R.drawable.list_selector_background);*/
             charViews.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v){
                     Log.i("test", "Running");
                     final int position = getAdapterPosition(); // listeelementets position
-                    SharedPreferences prefs = getDefaultSharedPreferences(root2.getContext());
+                    SharedPreferences prefs = getDefaultSharedPreferences(getContext());;
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putInt(HomeFragment.CHARACTER_ID_SAVESPACE, characterList.get(position).getIdcharacter());
                     editor.commit();
+                    SkillViewModel.getInstance().reset();
                     navController = Navigation.findNavController(root2);
                     navController.popBackStack(R.id.nav_home,false);
                 }

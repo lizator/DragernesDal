@@ -28,27 +28,27 @@
             android:paddingRight="5dp"
             android:paddingBottom="1dp"
             android:elevation="5dp"
-            app:layout_constraintBottom_toTopOf="@+id/characterBackground"
+            app:layout_constraintBottom_toTopOf="@+id/eventInformation"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.121"
             app:srcCompat="@drawable/rac_elver" />
 
         <TextView
-            android:id="@+id/name"
+            android:id="@+id/textView_title"
             style="@style/text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="18dp"
             android:text="@string/Name"
             android:textSize="24sp"
-            app:layout_constraintBottom_toTopOf="@+id/characterName"
+            app:layout_constraintBottom_toTopOf="@+id/editText_Title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0" />
 
         <EditText
-            android:id="@+id/characterName"
+            android:id="@+id/editText_Title"
             style="@style/TextZone"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/age"
+            android:id="@+id/startDate"
             style="@style/text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
 
             app:layout_constraintBottom_toTopOf="@+id/characterAge"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/characterName"
+            app:layout_constraintTop_toBottomOf="@+id/editText_Title"
             app:layout_constraintVertical_bias="1.0" />
 
         <EditText
@@ -108,12 +108,12 @@
             app:layout_constraintTop_toBottomOf="@+id/characterAge" />
 
         <EditText
-            android:id="@+id/characterBackground"
+            android:id="@+id/eventInformation"
             style="@style/TextZone"
-            android:layout_width="378dp"
+            android:layout_width="match_parent"
             android:layout_height="294dp"
             android:layout_marginTop="8dp"
-            android:gravity="top|left"
+            android:gravity="top|start"
             android:imeOptions="actionNext"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
@@ -121,6 +121,7 @@
             android:paddingBottom="16dp"
             android:selectAllOnFocus="true"
             android:textSize="16dp"
+            android:maxLength="5000"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.31"
             app:layout_constraintStart_toStartOf="parent"
@@ -136,7 +137,7 @@
             android:text="@string/opret"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/characterBackground" />
+            app:layout_constraintTop_toBottomOf="@+id/eventInformation" />
     </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

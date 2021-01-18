@@ -4,13 +4,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -24,31 +27,44 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.rbyte.dragernesdal.R;
 import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
+import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
 import com.rbyte.dragernesdal.data.inventory.model.InventoryDTO;
+import com.rbyte.dragernesdal.data.magic.MagicRepository;
+import com.rbyte.dragernesdal.data.race.model.RaceDTO;
+import com.rbyte.dragernesdal.ui.PopupHandler;
 import com.rbyte.dragernesdal.ui.character.select.SelectFragment;
 import com.rbyte.dragernesdal.ui.login.LoginActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
+    private CharacterRepository charRepo = CharacterRepository.getInstance();
     private AbilityAdapter abilityAdapter = new AbilityAdapter();
     private ArrayList<AbilityDTO> abilityList = new ArrayList<AbilityDTO>();
     private RecyclerView recyclerView;
+    private Handler uiThread = new Handler();
     private int imgRes;
     private NavController navController;
+    private PopupHandler popHandler;
+    private View root2;
+    private Button saveCharacterButton;
 
-    public static final String CHARACTER_ID_SAVESPACE = "currCharacterID";
+    public static final String CHARACTER_ID_SAVESPACE = "currCharacterID"; //TODO check if new login or clear when logout.
     //TODO maybe make some animation thing for when logging to to have data loaded and setup made?
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
+        MagicRepository.getInstance(); //Starting getting data about magic
+        popHandler = new PopupHandler(getContext());
         SharedPreferences prefs = getDefaultSharedPreferences(getContext());
         Bundle args = getArguments();
         if (args != null) {
@@ -59,11 +75,6 @@ public class HomeFragment extends Fragment {
                 editor.commit();
             }
         }
-        //Start testing
-        /*SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt(CHARACTER_ID_SAVESPACE, 2);
-        editor.commit();*/
-        //End testing
         int characterID = prefs.getInt(CHARACTER_ID_SAVESPACE, -1);
         if (characterID == -1){
             NavHostFragment navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager()
@@ -74,6 +85,25 @@ public class HomeFragment extends Fragment {
             homeViewModel = HomeViewModel.getInstance();
             homeViewModel.startGetThread(characterID);
 
+            saveCharacterButton = root.findViewById(R.id.saveCharacterbtn);
+            saveCharacterButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String newName = ((EditText) root2.findViewById(R.id.characterNameEdit)).getText().toString();
+                    String number = ((EditText) root2.findViewById(R.id.yearEdit)).getText().toString();
+                    charRepo.getCurrentChar().setName(newName);
+                    if (number.length() != 0) {
+                        charRepo.getCurrentChar().setAge(Integer.parseInt(number));
+                    }
+                    Executor bgThread = Executors.newSingleThreadExecutor();
+                    bgThread.execute(() -> {
+                        charRepo.updateCharacter(charRepo.getCurrentChar());
+                        uiThread.post(() -> {
+                            Toast.makeText(getContext(), "Karakteren er gemt", Toast.LENGTH_SHORT).show();
+                        });
+                    });
+                }
+            });
 
             //Finding recyclerview to input abilities
             ImageView imgView = (ImageView) root.findViewById(R.id.characterPicView);
@@ -101,60 +131,71 @@ public class HomeFragment extends Fragment {
             homeViewModel.getCharacter().observe(getViewLifecycleOwner(), new Observer<CharacterDTO>() {
                 @Override
                 public void onChanged(CharacterDTO character) {
-                    EditText characterNameEdit = (EditText) root.findViewById(R.id.characterNameEdit);
-                    TextView raceTV = (TextView) root.findViewById(R.id.raceTV);
-                    EditText yearEdit = (EditText) root.findViewById(R.id.yearEdit);
-                    TextView strengthTV = (TextView) root.findViewById(R.id.strengthTV); //Insert J, JJ, JJJ, JJJJ, JJJJJ
-                    TextView kpTV = (TextView) root.findViewById(R.id.kpTV); //Insert A, AA, AAA, AAA\nA, AAA\nAA
-                    ImageView imgView = (ImageView) root.findViewById(R.id.characterPicView);
-                    switch (character.getIdrace()) {
-                        case 1:
-                            imgRes = R.drawable.rac_dvaerg;
-                            break;
-                        case 2:
-                            imgRes = R.drawable.rac_elver;
-                            break;
-                        case 3:
-                            imgRes = (R.drawable.rac_gobliner);
-                            break;
-                        case 4:
-                            imgRes = (R.drawable.rac_granitaner);
-                            break;
-                        case 5:
-                            imgRes = (R.drawable.rac_havfolk);
-                            break;
-                        case 6:
-                            imgRes = (R.drawable.rac_krysling);
-                            break;
-                        case 7:
-                            imgRes = (R.drawable.rac_menneske);
-                            break;
-                        case 8:
-                            imgRes = (R.drawable.rac_moerkskabt);
-                            break;
-                        case 9:
-                            imgRes = (R.drawable.rac_orker);
-                            break;
-                        case 10:
-                            imgRes = (R.drawable.rac_sortelver);
-                            break;
-                        default:
-                            imgRes = (R.drawable.rac_menneske);
-                            break;
-                    } //Switch for setting image resource
-                    imgView.setImageResource(imgRes);
-                    characterNameEdit.setText(character.getName());
-                    raceTV.setText(character.getRaceName());
-                    yearEdit.setText(String.valueOf(character.getAge()));
-                    String strength = "";
-                    for (int i = 0; i < character.getStrength(); i++) strength += "J";
-                    strengthTV.setText(strength);
-                    String kp = "";
-                    for (int i = 0; i < character.getHealth(); i++) {
-                        if (i == 4) kp += "\n";
-                        kp += "A";
+                    if (character != null) {
+                        EditText characterNameEdit = (EditText) root.findViewById(R.id.characterNameEdit);
+                        TextView raceTV = (TextView) root.findViewById(R.id.raceTV);
+                        EditText yearEdit = (EditText) root.findViewById(R.id.yearEdit);
+                        TextView strengthTV = (TextView) root.findViewById(R.id.strengthTV); //Insert J, JJ, JJJ, JJJJ, JJJJJ, JJJJJJ
+                        TextView kpTV = (TextView) root.findViewById(R.id.kpTV); //Insert A, AA, AAA, AAA\nA, AAA\nAA
+                        ImageView imgView = (ImageView) root.findViewById(R.id.characterPicView);
+                        switch (character.getIdrace()) {
+                            case 1:
+                                imgRes = R.drawable.rac_dvaerg;
+                                break;
+                            case 2:
+                                imgRes = R.drawable.rac_elver;
+                                break;
+                            case 3:
+                                imgRes = (R.drawable.rac_gobliner);
+                                break;
+                            case 4:
+                                imgRes = (R.drawable.rac_granitaner);
+                                break;
+                            case 5:
+                                imgRes = (R.drawable.rac_havfolk);
+                                break;
+                            case 6:
+                                imgRes = (R.drawable.rac_krysling);
+                                break;
+                            case 7:
+                                imgRes = (R.drawable.rac_menneske);
+                                break;
+                            case 8:
+                                imgRes = (R.drawable.rac_moerkskabt);
+                                break;
+                            case 9:
+                                imgRes = (R.drawable.rac_orker);
+                                break;
+                            case 10:
+                                imgRes = (R.drawable.rac_sortelver);
+                                break;
+                            default:
+                                imgRes = (R.drawable.rac_menneske);
+                                break;
+                        } //Switch for setting image resource
+                        imgView.setImageResource(imgRes);
+                        characterNameEdit.setText(character.getName());
+                        if (character.getIdrace() == 6 && homeViewModel.getRaces().getValue() != null && homeViewModel.getRaces().getValue().size() != 0){
+                            ArrayList<RaceDTO> raceDTOS = (ArrayList<RaceDTO>) homeViewModel.getRaces().getValue();
+                            raceTV.setText(CharacterRepository.getInstance().getCurrentChar().getRaceName() + " (" + raceDTOS.get(0).getRacename() + "/" + raceDTOS.get(1).getRacename() +")" );
+                        } else {
+                            raceTV.setText(character.getRaceName());
+                        }
+                        yearEdit.setText(String.valueOf(character.getAge()));
+                        String strength = "";
+                        for (int i = 0; i < character.getStrength(); i++) strength += "J";
+                        if (strength.length() > 5) {
+                            strengthTV.setTextSize(60);
+                            kpTV.setTextSize(30);
+                        }
+                        strengthTV.setText(strength);
+                        String kp = "";
+                        for (int i = 0; i < character.getHealth(); i++) {
+                            if (i == 4) kp += "\n";
+                            kp += "A";
+                        }
+                        kpTV.setText(kp);
                     }
-                    kpTV.setText(kp);
 
                     //TODO change picture from where its saved
                 }
@@ -183,6 +224,16 @@ public class HomeFragment extends Fragment {
 
                 }
             });
+
+            homeViewModel.getRaces().observe(getViewLifecycleOwner(), new Observer<List<RaceDTO>>() {
+                @Override
+                public void onChanged(List<RaceDTO> raceDTOS) {
+                    if (CharacterRepository.getInstance().getCurrentChar().getIdrace() == 6){
+                        TextView raceTV = (TextView) root.findViewById(R.id.raceTV);
+                        raceTV.setText(CharacterRepository.getInstance().getCurrentChar().getRaceName() + " (" + raceDTOS.get(0).getRacename() + "/" + raceDTOS.get(1).getRacename() +")" );
+                    }
+                }
+            });
         }
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
@@ -203,24 +254,27 @@ public class HomeFragment extends Fragment {
                             }})
                         .setNegativeButton("Nej", null).show();
             }
-        };requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
 
-
+        root2 = root;
         return root;
     }
 
     class AbilityViewHolder extends RecyclerView.ViewHolder{
         TextView name;
+        View view;
         public AbilityViewHolder(View abilityViews) {
             super(abilityViews);
-            name = abilityViews.findViewById(R.id.abilityName);
+            view = abilityViews;
+            name = abilityViews.findViewById(R.id.lineName);
             // Gør listeelementer klikbare og vis det ved at deres baggrunsfarve ændrer sig ved berøring
             name.setBackgroundResource(android.R.drawable.list_selector_background);
         }
 
     }
 
-    class AbilityAdapter extends RecyclerView.Adapter<AbilityViewHolder> { //TODO make use onclick
+    class AbilityAdapter extends RecyclerView.Adapter<AbilityViewHolder> {
         @Override
         public int getItemCount() {
             return abilityList.size();
@@ -236,7 +290,12 @@ public class HomeFragment extends Fragment {
         @Override
         public void onBindViewHolder(AbilityViewHolder vh, int position) {
             vh.name.setText(abilityList.get(position).getName());
-            //TODO set onclick to show abilityList.get(position).getDesc()
+            vh.view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popHandler.getInfoAlert(root2, abilityList.get(position).getName(), abilityList.get(position).getDesc()).show();
+                }
+            });
 
         }
     }

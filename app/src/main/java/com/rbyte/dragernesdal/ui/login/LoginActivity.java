@@ -61,6 +61,7 @@ public class LoginActivity extends AppCompatActivity {
                     myIntent.putExtra("username",loginResult.getSuccess().getDisplayName());
                     myIntent.putExtra("email",loginResult.getSuccess().getEmail());
                     myIntent.putExtra("id",loginResult.getSuccess().getId()+"");
+                    myIntent.putExtra("admin",loginResult.getSuccess().getAdmin());
                     startActivity(myIntent);
                     finish();
                 }
@@ -147,7 +148,6 @@ public class LoginActivity extends AppCompatActivity {
 
         if (loginHandler.getEmail().length() == 0) {
             //all should be set before this is checked, if an error happens in autologin all is still useable
-            //TODO implement buttons should start not pressable and be set pressable here and in loginformstate.observer
         } else {
             loadingProgressBar.setVisibility(View.VISIBLE);
                     /*loginViewModel.login(usernameEditText.getText().toString(),
@@ -180,7 +180,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void updateUiWithUser(LoggedInUserView model) {
         String welcome = String.format(getString(R.string.welcome), model.getDisplayName());
-        // TODO : initiate successful logged in experience
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
         loadingProgressBar.setVisibility(View.INVISIBLE);
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();

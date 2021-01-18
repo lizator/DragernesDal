@@ -1,23 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
-    tools:context=".ui.main.MainActivity">
-
-    <TextView
-        android:id="@+id/text_home"
+    android:background="@color/colorBackground">
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:orientation="vertical"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:context=".ui.main.MainActivity">
+
+            <TextView
+                android:id="@+id/abilityTitleTV"
+                style="@style/text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="Magioversigt"
+                android:textSize="24dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/magicEPValueTV"
+                style="@style/text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="16dp"
+                android:text="5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/abilityEPTitle"
+                style="@style/text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tilgængelige EP: "
+
+                app:layout_constraintEnd_toStartOf="@+id/magicEPValueTV"
+                app:layout_constraintTop_toTopOf="@+id/magicEPValueTV" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout android:id="@+id/spellBookLinear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/abilityRadioGroup"
+            android:orientation="vertical"
+            android:background="@color/colorBackground"
+            android:padding="5dp"
+            android:paddingTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/spellBookHeader"
+                android:text="Besværgelsesbog"
+                style="@style/text"
+                android:textSize="20dp"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/back_table"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp">
+                <include layout="@layout/recycler_magic_spellbook_header" />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/spellbookRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/back_table"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="5dp"
+                android:paddingBottom="3dp"/>
+
+        </LinearLayout>
+
+        <RadioGroup
+            android:id="@+id/magicRadioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/abilityTitleTV">
+
+            <RadioButton
+                android:id="@+id/tab_elementalism"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.70"
+                android:animateLayoutChanges="true"
+                android:background="@drawable/tab_elementalism"
+                android:checked="true"
+                android:button="@android:color/transparent"
+                android:gravity="center"
+                android:elevation="10dp"
+                tools:layout_editor_absoluteX="122dp"
+                tools:layout_editor_absoluteY="154dp" />
+
+            <RadioButton
+                android:id="@+id/tab_divination"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:animateLayoutChanges="true"
+                android:background="@drawable/tab_divination"
+                android:button="@android:color/transparent"
+                android:gravity="center"
+                android:elevation="10dp"
+                tools:layout_editor_absoluteX="122dp"
+                tools:layout_editor_absoluteY="154dp" />
+
+            <RadioButton
+                android:id="@+id/tab_necromancy"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:button="@android:color/transparent"
+                android:animateLayoutChanges="true"
+                android:background="@drawable/tab_necromancy"
+                android:gravity="center"
+                tools:layout_editor_absoluteX="122dp"
+                tools:layout_editor_absoluteY="154dp" />
+
+            <RadioButton
+                android:id="@+id/tab_demonology"
+                android:layout_width="0dp"
+                android:button="@android:color/transparent"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:animateLayoutChanges="true"
+                android:background="@drawable/tab_demonology"
+                android:gravity="center"
+                tools:layout_editor_absoluteX="122dp"
+                tools:layout_editor_absoluteY="154dp" />
+
+            <RadioButton
+                android:id="@+id/tab_transformation"
+                android:button="@android:color/transparent"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:animateLayoutChanges="true"
+                android:gravity="center"
+                android:background="@drawable/tab_transformation"
+                tools:layout_editor_absoluteX="122dp"
+                tools:layout_editor_absoluteY="154dp" />
+
+        </RadioGroup>
+
+        <LinearLayout android:id="@+id/innerLinear"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
