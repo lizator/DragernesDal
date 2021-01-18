@@ -1,5 +1,6 @@
 package com.rbyte.dragernesdal.ui.character.background;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -17,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,12 +27,14 @@ import com.rbyte.dragernesdal.data.ability.AbilityRepository;
 import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.ui.PopupHandler;
+import com.rbyte.dragernesdal.ui.home.HomeFragment;
 import com.rbyte.dragernesdal.ui.home.HomeViewModel;
 
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 import static java.lang.Math.abs;
 
 public class BackgroundFragment extends Fragment {
@@ -54,53 +58,63 @@ public class BackgroundFragment extends Fragment {
 
         backgroundViewModel = BackgroundViewModel.getInstance();
         View root = inflater.inflate(R.layout.fragment_character_background, container, false);
-        popHandler = new PopupHandler(getContext());
-        addBadbtn = root.findViewById(R.id.addBadbtn);
-        saveBackgroundbtn = root.findViewById(R.id.saveBackgoundbtn);
+        SharedPreferences prefs = getDefaultSharedPreferences(root.getContext());
+        int characterID = prefs.getInt(HomeFragment.CHARACTER_ID_SAVESPACE, -1);
+        if (characterID == -1){
+            NavHostFragment navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager()
+                    .findFragmentById(R.id.nav_host_fragment);
+            NavController navController = navHostFragment.getNavController();
+            navController.navigate(R.id.nav_char_select);
+            Toast.makeText(getContext(), "Du skal væge en karakter for at komme her ind", Toast.LENGTH_SHORT).show();
+        } else {
+            popHandler = new PopupHandler(getContext());
+            addBadbtn = root.findViewById(R.id.addBadbtn);
+            saveBackgroundbtn = root.findViewById(R.id.saveBackgoundbtn);
 
-        backgroundViewModel.getUpdate().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean update) {
-                if (update){
-                    insertBad();
+            backgroundViewModel.getUpdate().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                @Override
+                public void onChanged(Boolean update) {
+                    if (update) {
+                        insertBad();
+                    }
                 }
-            }
-        });
+            });
 
-        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.badRecycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
-        recyclerView.setAdapter(adapter);
+            recyclerView = (RecyclerView) root.findViewById(R.id.badRecycler);
+            recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+            recyclerView.setAdapter(adapter);
 
-        insertBad();
+            insertBad();
 
-        backgroundEdit = root.findViewById(R.id.backgroundEdit);
-        backgroundEdit.setText(charRepo.getCurrentChar().getBackground());
+            backgroundEdit = root.findViewById(R.id.backgroundEdit);
+            backgroundEdit.setText(charRepo.getCurrentChar().getBackground());
 
-        saveBackgroundbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String newBackground = backgroundEdit.getText().toString();
-                charRepo.getCurrentChar().setBackground(newBackground);
-                Executor bgThread = Executors.newSingleThreadExecutor();
-                bgThread.execute(() -> {
-                    charRepo.updateCharacter(charRepo.getCurrentChar());
-                    uiThread.post(() -> {
-                        Toast.makeText(getContext(), "Bagground gemt!", Toast.LENGTH_SHORT).show();
+            saveBackgroundbtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String newBackground = backgroundEdit.getText().toString();
+                    charRepo.getCurrentChar().setBackground(newBackground);
+                    Executor bgThread = Executors.newSingleThreadExecutor();
+                    bgThread.execute(() -> {
+                        charRepo.updateCharacter(charRepo.getCurrentChar());
+                        uiThread.post(() -> {
+                            Toast.makeText(getContext(), "Bagground gemt!", Toast.LENGTH_SHORT).show();
+                        });
                     });
-                });
-            }
-        });
+                }
+            });
 
-        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
-            @Override
-            public void handleOnBackPressed() {
-                Log.d("OnBackPress","Back pressed in BackgroundFragment");
-                NavController navController = Navigation.findNavController(root);
-                navController.popBackStack();
-            }
-        };
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
-        root2 = root;
+            OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+                @Override
+                public void handleOnBackPressed() {
+                    Log.d("OnBackPress", "Back pressed in BackgroundFragment");
+                    NavController navController = Navigation.findNavController(root);
+                    navController.popBackStack();
+                }
+            };
+            requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+            root2 = root;
+        }
         return root;
     }
 

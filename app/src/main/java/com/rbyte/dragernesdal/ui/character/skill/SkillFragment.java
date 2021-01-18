@@ -1,5 +1,6 @@
 package com.rbyte.dragernesdal.ui.character.skill;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -20,6 +22,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.rbyte.dragernesdal.R;
 import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
@@ -30,8 +33,11 @@ import com.rbyte.dragernesdal.ui.character.skill.alle.AlleFragment;
 import com.rbyte.dragernesdal.ui.character.skill.kamp.KampFragment;
 import com.rbyte.dragernesdal.ui.character.skill.sniger.SnigerFragment;
 import com.rbyte.dragernesdal.ui.character.skill.viden.VidenFragment;
+import com.rbyte.dragernesdal.ui.home.HomeFragment;
 
 import java.util.ArrayList;
+
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 public class SkillFragment extends Fragment {
 
@@ -66,87 +72,96 @@ public class SkillFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_character_skill, container, false);
+        SharedPreferences prefs = getDefaultSharedPreferences(root.getContext());
+        int characterID = prefs.getInt(HomeFragment.CHARACTER_ID_SAVESPACE, -1);
+        if (characterID == -1){
+            NavHostFragment navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager()
+                    .findFragmentById(R.id.nav_host_fragment);
+            NavController navController = navHostFragment.getNavController();
+            navController.navigate(R.id.nav_char_select);
+            Toast.makeText(getContext(), "Du skal væge en karakter for at komme her ind", Toast.LENGTH_SHORT).show();
+        } else {
+            skillViewModel.setRaceAbilities(charRepo.getCurrentChar().getIdrace());
 
-        skillViewModel.setRaceAbilities(charRepo.getCurrentChar().getIdrace());
+            fm = getActivity().getSupportFragmentManager();
 
-        fm = getActivity().getSupportFragmentManager();
+            kampRadio = root.findViewById(R.id.tab_kamp);
+            snigerRadio = root.findViewById(R.id.tab_sniger);
+            videnRadio = root.findViewById(R.id.tab_viden);
+            alleRadio = root.findViewById(R.id.tab_alle);
 
-        kampRadio = root.findViewById(R.id.tab_kamp);
-        snigerRadio = root.findViewById(R.id.tab_sniger);
-        videnRadio = root.findViewById(R.id.tab_viden);
-        alleRadio = root.findViewById(R.id.tab_alle);
-
-        skillViewModel.getCurrentEP().observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                TextView eptv = root.findViewById(R.id.abilityEPValueTV);
-                eptv.setText(integer+ "");
-            }
-        });
-
-        skillViewModel.getUpdate().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean){
-                    switchFrag(state);
-                    skillViewModel.setUpdate(false);
+            skillViewModel.getCurrentEP().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+                @Override
+                public void onChanged(Integer integer) {
+                    TextView eptv = root.findViewById(R.id.abilityEPValueTV);
+                    eptv.setText(integer + "");
                 }
-            }
-        });
+            });
 
-        skillViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
-
-        TextView eptv = root.findViewById(R.id.abilityEPValueTV);
-        eptv.setText(charRepo.getCurrentChar().getCurrentep() + "");
-
-        RadioGroup abilityRadioGroup = (RadioGroup) root.findViewById(R.id.abilityRadioGroup);
-        abilityRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch(checkedId) {
-                    case R.id.tab_kamp:
-                        if (state != 0) {
-                            state = 0;
-                            switchFrag(state);
-                        }
-
-                        break;
-                    case R.id.tab_sniger:
-                        if (state != 1) {
-                            state = 1;
-                            switchFrag(state);
-                        };
-
-                        break;
-                    case R.id.tab_viden:
-                        if (state != 2) {
-                            state = 2;
-                            switchFrag(state);
-                        }
-
-                        break;
-                    case R.id.tab_alle:
-                        if (state != 3) {
-                            state = 3;
-                            switchFrag(state);
-                        }
-                        break;
+            skillViewModel.getUpdate().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                @Override
+                public void onChanged(Boolean aBoolean) {
+                    if (aBoolean) {
+                        switchFrag(state);
+                        skillViewModel.setUpdate(false);
+                    }
                 }
-            }
-        });
+            });
+
+            skillViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
+
+            TextView eptv = root.findViewById(R.id.abilityEPValueTV);
+            eptv.setText(charRepo.getCurrentChar().getCurrentep() + "");
+
+            RadioGroup abilityRadioGroup = (RadioGroup) root.findViewById(R.id.abilityRadioGroup);
+            abilityRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup group, int checkedId) {
+                    switch (checkedId) {
+                        case R.id.tab_kamp:
+                            if (state != 0) {
+                                state = 0;
+                                switchFrag(state);
+                            }
+
+                            break;
+                        case R.id.tab_sniger:
+                            if (state != 1) {
+                                state = 1;
+                                switchFrag(state);
+                            }
+                            ;
+
+                            break;
+                        case R.id.tab_viden:
+                            if (state != 2) {
+                                state = 2;
+                                switchFrag(state);
+                            }
+
+                            break;
+                        case R.id.tab_alle:
+                            if (state != 3) {
+                                state = 3;
+                                switchFrag(state);
+                            }
+                            break;
+                    }
+                }
+            });
 
 
-
-        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
-            @Override
-            public void handleOnBackPressed() {
-                Log.d("OnBackPress","Back pressed in SkillFragment");
-                NavController navController = Navigation.findNavController(root);
-                navController.popBackStack();
-            }
-        };
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
-        switchFrag(state);
+            OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+                @Override
+                public void handleOnBackPressed() {
+                    Log.d("OnBackPress", "Back pressed in SkillFragment");
+                    NavController navController = Navigation.findNavController(root);
+                    navController.popBackStack();
+                }
+            };
+            requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+            switchFrag(state);
+        }
         return root;
     }
 

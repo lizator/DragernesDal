@@ -1,6 +1,7 @@
 package com.rbyte.dragernesdal.ui.character.magic;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -22,6 +24,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -34,8 +37,11 @@ import com.rbyte.dragernesdal.ui.character.magic.divine.DivineFragment;
 import com.rbyte.dragernesdal.ui.character.magic.elemental.ElemtalFragment;
 import com.rbyte.dragernesdal.ui.character.magic.necro.NecroFragment;
 import com.rbyte.dragernesdal.ui.character.magic.transform.TransformFragment;
+import com.rbyte.dragernesdal.ui.home.HomeFragment;
 
 import java.util.ArrayList;
+
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 public class MagicFragment extends Fragment {
 
@@ -84,104 +90,114 @@ public class MagicFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         magicViewModel = MagicViewModel.getInstance();
         View root = inflater.inflate(R.layout.fragment_character_magic, container, false);
-        popHandler = new PopupHandler(getContext());
-        fm = getActivity().getSupportFragmentManager();
+        SharedPreferences prefs = getDefaultSharedPreferences(root.getContext());
+        int characterID = prefs.getInt(HomeFragment.CHARACTER_ID_SAVESPACE, -1);
+        if (characterID == -1){
+            NavHostFragment navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager()
+                    .findFragmentById(R.id.nav_host_fragment);
+            NavController navController = navHostFragment.getNavController();
+            navController.navigate(R.id.nav_char_select);
+            Toast.makeText(getContext(), "Du skal væge en karakter for at komme her ind", Toast.LENGTH_SHORT).show();
+        } else {
+            popHandler = new PopupHandler(getContext());
+            fm = getActivity().getSupportFragmentManager();
 
-        ownedSpellIDs = magicViewModel.getOwnedSpellIDs();
-        characterSpells = magicViewModel.getCharacterSpells();
+            ownedSpellIDs = magicViewModel.getOwnedSpellIDs();
+            characterSpells = magicViewModel.getCharacterSpells();
 
-        spellAdapter = new SpellAdapter();
+            spellAdapter = new SpellAdapter();
 
-        spellbookRecyclerView = (RecyclerView) root.findViewById(R.id.spellbookRecycler);
-        spellbookRecyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
-        spellbookRecyclerView.getLayoutParams().height = (int) (getScreenWidth(root.getContext()) / 3);
-        spellbookRecyclerView.setAdapter(spellAdapter);
-        spellAdapter.notifyDataSetChanged();
+            spellbookRecyclerView = (RecyclerView) root.findViewById(R.id.spellbookRecycler);
+            spellbookRecyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+            spellbookRecyclerView.getLayoutParams().height = (int) (getScreenWidth(root.getContext()) / 3);
+            spellbookRecyclerView.setAdapter(spellAdapter);
+            spellAdapter.notifyDataSetChanged();
 
-        magicViewModel.getCurrentEP().observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                TextView eptv = root.findViewById(R.id.magicEPValueTV);
-                eptv.setText(integer+ "");
-            }
-        });
-
-        magicViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
-
-        magicViewModel.getUpdate().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean update) {
-                if (update) {
-                    switchFrag(state);
-                    ownedSpellIDs = magicViewModel.getOwnedSpellIDs();
-                    characterSpells = magicViewModel.getCharacterSpells();
-                    spellAdapter.notifyDataSetChanged();
-                    magicViewModel.setUpdate(false);
+            magicViewModel.getCurrentEP().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+                @Override
+                public void onChanged(Integer integer) {
+                    TextView eptv = root.findViewById(R.id.magicEPValueTV);
+                    eptv.setText(integer + "");
                 }
-            }
-        });
+            });
 
-        elementRadio = root.findViewById(R.id.tab_elementalism);
-        divineRadio = root.findViewById(R.id.tab_divination);
-        necroRadio = root.findViewById(R.id.tab_necromancy);
-        demonRadio = root.findViewById(R.id.tab_demonology);
-        transformRadio = root.findViewById(R.id.tab_transformation);
+            magicViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
 
-        RadioGroup abilityRadioGroup = (RadioGroup) root.findViewById(R.id.magicRadioGroup);
-        abilityRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch(checkedId) {
-                    case R.id.tab_elementalism:
-                        if (state != 0) {
-                            state = 0;
-                            switchFrag(state);
-                        }
-
-                        break;
-                    case R.id.tab_divination:
-                        if (state != 1) {
-                            state = 1;
-                            switchFrag(state);
-                        };
-
-                        break;
-                    case R.id.tab_necromancy:
-                        if (state != 2) {
-                            state = 2;
-                            switchFrag(state);
-                        }
-
-                        break;
-                    case R.id.tab_demonology:
-                        if (state != 3) {
-                            state = 3;
-                            switchFrag(state);
-                        }
-                        break;
-                    case R.id.tab_transformation:
-                        if (state != 4) {
-                            state = 4;
-                            switchFrag(state);
-                        }
-                        break;
+            magicViewModel.getUpdate().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                @Override
+                public void onChanged(Boolean update) {
+                    if (update) {
+                        switchFrag(state);
+                        ownedSpellIDs = magicViewModel.getOwnedSpellIDs();
+                        characterSpells = magicViewModel.getCharacterSpells();
+                        spellAdapter.notifyDataSetChanged();
+                        magicViewModel.setUpdate(false);
+                    }
                 }
-            }
-        });
+            });
+
+            elementRadio = root.findViewById(R.id.tab_elementalism);
+            divineRadio = root.findViewById(R.id.tab_divination);
+            necroRadio = root.findViewById(R.id.tab_necromancy);
+            demonRadio = root.findViewById(R.id.tab_demonology);
+            transformRadio = root.findViewById(R.id.tab_transformation);
+
+            RadioGroup abilityRadioGroup = (RadioGroup) root.findViewById(R.id.magicRadioGroup);
+            abilityRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup group, int checkedId) {
+                    switch (checkedId) {
+                        case R.id.tab_elementalism:
+                            if (state != 0) {
+                                state = 0;
+                                switchFrag(state);
+                            }
+
+                            break;
+                        case R.id.tab_divination:
+                            if (state != 1) {
+                                state = 1;
+                                switchFrag(state);
+                            }
+                            ;
+
+                            break;
+                        case R.id.tab_necromancy:
+                            if (state != 2) {
+                                state = 2;
+                                switchFrag(state);
+                            }
+
+                            break;
+                        case R.id.tab_demonology:
+                            if (state != 3) {
+                                state = 3;
+                                switchFrag(state);
+                            }
+                            break;
+                        case R.id.tab_transformation:
+                            if (state != 4) {
+                                state = 4;
+                                switchFrag(state);
+                            }
+                            break;
+                    }
+                }
+            });
 
 
-
-        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
-            @Override
-            public void handleOnBackPressed() {
-                Log.d("OnBackPress","Back pressed in MagicFragment");
-                NavController navController = Navigation.findNavController(root);
-                navController.popBackStack();
-            }
-        };
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
-        switchFrag(state);
-        root2 = root;
+            OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+                @Override
+                public void handleOnBackPressed() {
+                    Log.d("OnBackPress", "Back pressed in MagicFragment");
+                    NavController navController = Navigation.findNavController(root);
+                    navController.popBackStack();
+                }
+            };
+            requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+            switchFrag(state);
+            root2 = root;
+        }
         return root;
     }
 
