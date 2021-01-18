@@ -1,6 +1,8 @@
 package com.rbyte.dragernesdal.ui.character.select;
 
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.content.SharedPreferences;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -25,6 +28,7 @@ import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
 import com.rbyte.dragernesdal.ui.character.skill.SkillViewModel;
 import com.rbyte.dragernesdal.ui.home.HomeFragment;
 import com.rbyte.dragernesdal.ui.home.HomeViewModel;
+import com.rbyte.dragernesdal.ui.login.LoginActivity;
 import com.rbyte.dragernesdal.ui.main.MainActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -69,9 +73,25 @@ public class SelectFragment extends Fragment{
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
             public void handleOnBackPressed() {
-                Log.d("OnBackPress","Back pressed in SelectFragment");
-                navController = Navigation.findNavController(root);
-                navController.popBackStack(R.id.nav_home,false);
+                if (characterList.size() == 0) {
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle("Log ud?")
+                            .setMessage("Er du sikker på at du vil logge ud?")
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    Intent loginIntent = new Intent(getActivity(), LoginActivity.class);
+                                    loginIntent.putExtra(getString(R.string.logout_command), true);
+                                    startActivity(loginIntent);
+                                    getActivity().finish();
+                                }})
+                            .setNegativeButton("Nej", null).show();
+                } else {
+                    Log.d("OnBackPress", "Back pressed in SelectFragment");
+                    navController = Navigation.findNavController(root);
+                    navController.popBackStack(R.id.nav_home, false);
+                }
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
