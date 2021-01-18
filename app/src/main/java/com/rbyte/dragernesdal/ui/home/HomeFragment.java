@@ -4,13 +4,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -27,23 +30,32 @@ import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
 import com.rbyte.dragernesdal.data.inventory.model.InventoryDTO;
+import com.rbyte.dragernesdal.data.magic.MagicRepository;
 import com.rbyte.dragernesdal.data.race.model.RaceDTO;
+import com.rbyte.dragernesdal.ui.PopupHandler;
 import com.rbyte.dragernesdal.ui.character.select.SelectFragment;
 import com.rbyte.dragernesdal.ui.login.LoginActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
+    private CharacterRepository charRepo = CharacterRepository.getInstance();
     private AbilityAdapter abilityAdapter = new AbilityAdapter();
     private ArrayList<AbilityDTO> abilityList = new ArrayList<AbilityDTO>();
     private RecyclerView recyclerView;
+    private Handler uiThread = new Handler();
     private int imgRes;
     private NavController navController;
+    private PopupHandler popHandler;
+    private View root2;
+    private Button saveCharacterButton;
 
     public static final String CHARACTER_ID_SAVESPACE = "currCharacterID"; //TODO check if new login or clear when logout.
     //TODO maybe make some animation thing for when logging to to have data loaded and setup made?
@@ -51,6 +63,8 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
+        MagicRepository.getInstance(); //Starting getting data about magic
+        popHandler = new PopupHandler(getContext());
         SharedPreferences prefs = getDefaultSharedPreferences(getContext());
         Bundle args = getArguments();
         if (args != null) {
@@ -61,11 +75,6 @@ public class HomeFragment extends Fragment {
                 editor.commit();
             }
         }
-        //Start testing
-        /*SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt(CHARACTER_ID_SAVESPACE, 2);
-        editor.commit();*/
-        //End testing
         int characterID = prefs.getInt(CHARACTER_ID_SAVESPACE, -1);
         if (characterID == -1){
             NavHostFragment navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager()
@@ -76,6 +85,25 @@ public class HomeFragment extends Fragment {
             homeViewModel = HomeViewModel.getInstance();
             homeViewModel.startGetThread(characterID);
 
+            saveCharacterButton = root.findViewById(R.id.saveCharacterbtn);
+            saveCharacterButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String newName = ((EditText) root2.findViewById(R.id.characterNameEdit)).getText().toString();
+                    String number = ((EditText) root2.findViewById(R.id.yearEdit)).getText().toString();
+                    charRepo.getCurrentChar().setName(newName);
+                    if (number.length() != 0) {
+                        charRepo.getCurrentChar().setAge(Integer.parseInt(number));
+                    }
+                    Executor bgThread = Executors.newSingleThreadExecutor();
+                    bgThread.execute(() -> {
+                        charRepo.updateCharacter(charRepo.getCurrentChar());
+                        uiThread.post(() -> {
+                            Toast.makeText(getContext(), "Karakteren er gemt", Toast.LENGTH_SHORT).show();
+                        });
+                    });
+                }
+            });
 
             //Finding recyclerview to input abilities
             ImageView imgView = (ImageView) root.findViewById(R.id.characterPicView);
@@ -189,10 +217,9 @@ public class HomeFragment extends Fragment {
                     TextView goldTV = (TextView) root.findViewById(R.id.goldTV);
                     TextView silverTV = (TextView) root.findViewById(R.id.silverTV);
                     TextView kobberTV = (TextView) root.findViewById(R.id.kobberTV);
-
-                    goldTV.setText(moneyList.get(0).getAmount() + "");
-                    silverTV.setText(moneyList.get(1).getAmount() + "");
-                    kobberTV.setText(moneyList.get(2).getAmount() + "");
+                    if(moneyList.size() != 0) goldTV.setText(moneyList.get(0).getAmount() + "");
+                    if(moneyList.size() > 1) silverTV.setText(moneyList.get(1).getAmount() + "");
+                    if(moneyList.size() > 2) kobberTV.setText(moneyList.get(2).getAmount() + "");
 
                 }
             });
@@ -229,22 +256,24 @@ public class HomeFragment extends Fragment {
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
 
-
+        root2 = root;
         return root;
     }
 
     class AbilityViewHolder extends RecyclerView.ViewHolder{
         TextView name;
+        View view;
         public AbilityViewHolder(View abilityViews) {
             super(abilityViews);
-            name = abilityViews.findViewById(R.id.abilityName);
+            view = abilityViews;
+            name = abilityViews.findViewById(R.id.lineName);
             // Gør listeelementer klikbare og vis det ved at deres baggrunsfarve ændrer sig ved berøring
             name.setBackgroundResource(android.R.drawable.list_selector_background);
         }
 
     }
 
-    class AbilityAdapter extends RecyclerView.Adapter<AbilityViewHolder> { //TODO make use onclick
+    class AbilityAdapter extends RecyclerView.Adapter<AbilityViewHolder> {
         @Override
         public int getItemCount() {
             return abilityList.size();
@@ -260,7 +289,12 @@ public class HomeFragment extends Fragment {
         @Override
         public void onBindViewHolder(AbilityViewHolder vh, int position) {
             vh.name.setText(abilityList.get(position).getName());
-            //TODO set onclick to show abilityList.get(position).getDesc()
+            vh.view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popHandler.getInfoAlert(root2, abilityList.get(position).getName(), abilityList.get(position).getDesc()).show();
+                }
+            });
 
         }
     }

@@ -12,13 +12,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -160,9 +157,9 @@ public class AlleFragment extends Fragment {
         public AbilityViewHolder(View abilityViews) {
             super(abilityViews);
             view = abilityViews;
-            name = abilityViews.findViewById(R.id.abilityName);
+            name = abilityViews.findViewById(R.id.lineName);
             cost = abilityViews.findViewById(R.id.abilityCostTv);
-            buybtn = abilityViews.findViewById(R.id.buyAbilitybtn);
+            buybtn = abilityViews.findViewById(R.id.Abilitybtn);
             checkimg = abilityViews.findViewById(R.id.checkImage);
             // Gør listeelementer klikbare og vis det ved at deres baggrunsfarve ændrer sig ved berøring
             name.setBackgroundResource(android.R.drawable.list_selector_background);
@@ -191,6 +188,12 @@ public class AlleFragment extends Fragment {
         public void onBindViewHolder(AbilityViewHolder vh, int position) {
             vh.name.setText(abilityList.get(position).getName());
             vh.cost.setText(abilityList.get(position).getCost() + "");
+            vh.view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popHandler.getInfoAlert(root2, abilityList.get(position).getName(), abilityList.get(position).getDesc()).show();
+                }
+            });
             if (position % 2 == 1) vh.view.setBackgroundColor(getResources().getColor(R.color.colorTableLine1));
             boolean bought = false;
             for (int id : currentAbilityIDs){
@@ -219,7 +222,6 @@ public class AlleFragment extends Fragment {
                     vh.buybtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            //TODO: make popup, buy ability and refresh
                             popHandler.getConfirmBuyAlert(root2,
                                     abilityList.get(position).getName(),
                                     abilityList.get(position).getCost(),
@@ -236,11 +238,10 @@ public class AlleFragment extends Fragment {
                                                     if (command != "auto") { //new popup needed
                                                         switch (command){
                                                             case "HÅNDVÆRK": // Only thing tha might be bought here
-                                                                popHandler.getCraftsAlert(root2, getContext(), uiThread, false).show();
+                                                                popHandler.getCraftsAlert(root2, getContext(), uiThread).show();
                                                                 break;
                                                         }
 
-                                                        //TODO: create more popups
                                                     }
                                                     skillViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
                                                     abilityAdapter.notifyDataSetChanged();
@@ -296,6 +297,12 @@ public class AlleFragment extends Fragment {
             if(!bought){
                 int currEP = skillViewModel.getCurrentEP().getValue();
                 int parent = raceAbilityList.get(position).getIdparent();
+                vh.view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        popHandler.getInfoAlert(root2, raceAbilityList.get(position).getName(), raceAbilityList.get(position).getDesc()).show();
+                    }
+                });
                 Boolean ownsParent = false;
                 if (parent != 0) {
                     for (int id : currentAbilityIDs){
@@ -311,7 +318,6 @@ public class AlleFragment extends Fragment {
                     vh.buybtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            //TODO: make popup, buy ability and refresh
                             popHandler.getConfirmBuyAlert(root2,
                                     raceAbilityList.get(position).getName(),
                                     raceAbilityList.get(position).getCost(),
@@ -337,8 +343,7 @@ public class AlleFragment extends Fragment {
                                                                 popHandler.get4EPChoiceAlert(root2, getContext(), uiThread, currentAbilityIDs).show();
                                                                 break;
                                                             case "EVNE":
-                                                                break;
-                                                            case "EKSTRAMAGI":
+                                                                popHandler.getEvneChoiceAlert(root2, getContext(), uiThread, currentAbilityIDs).show();
                                                                 break;
                                                             case "KRYS2EP":
                                                                 popHandler.getKrys2EPAlert(root2, getContext(), uiThread, currentAbilityIDs).show();
@@ -354,8 +359,6 @@ public class AlleFragment extends Fragment {
                                                                             break;
                                                                         case "3EP":
                                                                             popHandler.get3EPChoiceAlert(root2, getContext(), uiThread, currentAbilityIDs, true).show();
-                                                                            break;
-                                                                        case "EKSTRAMAGI":
                                                                             break;
                                                                         default:
                                                                             break;
@@ -374,7 +377,6 @@ public class AlleFragment extends Fragment {
                                                                 break;
                                                         }
 
-                                                        //TODO: create more popups
                                                     }
                                                     skillViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
                                                     raceAbilityAdapter.notifyDataSetChanged();
@@ -417,6 +419,12 @@ public class AlleFragment extends Fragment {
         public void onBindViewHolder(AbilityViewHolder vh, int position) {
             vh.name.setText(otherAbilityList.get(position).getName());
             vh.cost.setText(otherAbilityList.get(position).getCost() + "");
+            vh.view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popHandler.getInfoAlert(root2, otherAbilityList.get(position).getName(), otherAbilityList.get(position).getDesc()).show();
+                }
+            });
             if (position % 2 == (otherAbilityList.size() + 1) % 2) vh.view.setBackgroundColor(getResources().getColor(R.color.colorTableLine1));
             vh.buybtn.setVisibility(View.GONE);
             vh.checkimg.setVisibility(View.VISIBLE);

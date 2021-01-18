@@ -23,7 +23,10 @@ public class SkillViewModel extends ViewModel {
     private MutableLiveData<ArrayList<AbilityDTO>> videnAbilities;
     private MutableLiveData<ArrayList<AbilityDTO>> alleAbilities;
     private MutableLiveData<ArrayList<AbilityDTO>> raceAbilities;
+    private MutableLiveData<ArrayList<AbilityDTO>> uncommonAbilities;
+    private MutableLiveData<ArrayList<AbilityDTO>> allAbilities;
     private MutableLiveData<ArrayList<Integer>> currentAbilityIDs;
+    private MutableLiveData<ArrayList<String>> types;
     private Handler uiThread = new Handler();
     private AbilityRepository abilityRepo = AbilityRepository.getInstance();
 
@@ -40,12 +43,18 @@ public class SkillViewModel extends ViewModel {
         videnAbilities = new MutableLiveData<>();
         alleAbilities = new MutableLiveData<>();
         raceAbilities = new MutableLiveData<>();
+        uncommonAbilities = new MutableLiveData<>();
         currentAbilityIDs = new MutableLiveData<>();
+        types = new MutableLiveData<>();
+        allAbilities = new MutableLiveData<>();
 
+        getTypes();
+        updateUncommon();
         updateKamp();
         updateSniger();
         updateViden();
         updateAlle();
+        getAll();
 
     }
 
@@ -108,9 +117,73 @@ public class SkillViewModel extends ViewModel {
                     ArrayList<AbilityDTO> data = (ArrayList<AbilityDTO>) ((Result.Success) res).getData();
                     if (data != null) {
                         alleAbilities.postValue(data);
+                        System.out.println("Alle abilities");
                     }
                 }
             });
+        });
+    }
+
+    public void updateUncommon() {
+        Executor bgThread5 = Executors.newSingleThreadExecutor();
+        bgThread5.execute(() -> {
+            Result<List<AbilityDTO>> res = abilityRepo.getAllUnCommonAbilities();
+            uiThread.post(() -> {
+                if (res instanceof Result.Success) {
+                    ArrayList<AbilityDTO> data = (ArrayList<AbilityDTO>) ((Result.Success) res).getData();
+                    if (data != null) {
+                        uncommonAbilities.postValue(data);
+                        System.out.println("Alle uncommon abilities");
+                    }
+                }
+            });
+        });
+    }
+
+    public void getTypes() {
+        Executor bgThread6 = Executors.newSingleThreadExecutor();
+        bgThread6.execute(() -> {
+            Result<List<String>> res = abilityRepo.getTypes();
+            uiThread.post(() -> {
+                if (res instanceof Result.Success) {
+                    ArrayList<String> data = (ArrayList<String>) ((Result.Success) res).getData();
+                    if (data != null) {
+                        types.postValue(data);
+                        System.out.println("Alle types abilities");
+                    }
+                }
+            });
+        });
+    }
+
+    public void getAll() {
+        Executor bgThread7 = Executors.newSingleThreadExecutor();
+        bgThread7.execute(() -> {
+            Result<List<AbilityDTO>> res = abilityRepo.getAll();
+            uiThread.post(() -> {
+                if (res instanceof Result.Success) {
+                    ArrayList<AbilityDTO> data = (ArrayList<AbilityDTO>) ((Result.Success) res).getData();
+                    if (data != null) {
+                        allAbilities.postValue(data);
+                        System.out.println("Alle abilities");
+                    }
+                }
+            });
+        });
+    }
+
+
+    public void createAbility(AbilityDTO dto){
+        Executor bgThread7 = Executors.newSingleThreadExecutor();
+        bgThread7.execute(()-> {
+            abilityRepo.createAbility(dto);
+        });
+    }
+
+    public void updateAbility(AbilityDTO dto){
+        Executor bgThread8 = Executors.newSingleThreadExecutor();
+        bgThread8.execute(()-> {
+            abilityRepo.updateAbility(dto);
         });
     }
 
@@ -151,6 +224,12 @@ public class SkillViewModel extends ViewModel {
     public MutableLiveData<ArrayList<AbilityDTO>> getRaceAbilities() {
         return raceAbilities;
     }
+
+    public MutableLiveData<ArrayList<AbilityDTO>> getUncommonAbilities() {return uncommonAbilities;}
+
+    public MutableLiveData<ArrayList<AbilityDTO>> getAllAbilities() {return allAbilities;}
+
+    public MutableLiveData<ArrayList<String>> getAbilityTypes() {return types;}
 
     public MutableLiveData<Integer> getCurrentEP() {
         return currentEP;

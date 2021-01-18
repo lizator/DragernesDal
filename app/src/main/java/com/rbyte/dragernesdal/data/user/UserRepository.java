@@ -51,6 +51,27 @@ public class UserRepository {
         // @see https://developer.android.com/training/articles/keystore
     }
 
+    public Result<ProfileDTO> getUserByEmail(String email) {
+        Result<ProfileDTO> result = dao.getByEmail(email);
+        if (result instanceof Result.Success) {
+        }
+        return result;
+    }
+
+    public Result<ProfileDTO> updateUser(ProfileDTO user) {
+        Result<ProfileDTO> result = dao.updateUser(user);
+        if (result instanceof Result.Success) {
+        }
+        return result;
+    }
+
+    public Result<ProfileDTO> updatePassword(ProfileDTO user) {
+        Result<ProfileDTO> result = dao.updatePassword(user);
+        if (result instanceof Result.Success) {
+        }
+        return result;
+    }
+
     public Result<ProfileDTO> login(String username, String password) {
         // handle login
         try {

@@ -4,9 +4,11 @@ import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
+import com.rbyte.dragernesdal.data.magic.spell.model.SpellDTO;
 import com.rbyte.dragernesdal.data.race.model.RaceDTO;
 import com.rbyte.dragernesdal.ui.home.HomeViewModel;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +17,9 @@ public class AbilityRepository {
     private AbilityDAO abilityDAO;
     private CharacterRepository characterRepo;
     private ArrayList<AbilityDTO> starterAbilities = new ArrayList<>();
+    private ArrayList<AbilityDTO> allUnCommonAbilities = new ArrayList<>();
+    private ArrayList<AbilityDTO> allAbilities = new ArrayList<>();
+    private ArrayList<String> types = new ArrayList<>();
 
     public static AbilityRepository getInstance(){
         if (instance == null) instance = new AbilityRepository();
@@ -39,6 +44,10 @@ public class AbilityRepository {
         return abilityDAO.getAbilitiesByRaceID(raceID);
     }
 
+    public Result<AbilityDTO> updateAbility(AbilityDTO dto){
+        return abilityDAO.updateAbility(dto);
+    }
+
     public Result<List<AbilityDTO>> getTypeAbilities(String type){
         return abilityDAO.getAbilitiesByType(type);
     }
@@ -51,10 +60,36 @@ public class AbilityRepository {
         return res;
     }
 
+    public Result<List<AbilityDTO>> getAllUnCommonAbilities(){
+        Result<List<AbilityDTO>> res = abilityDAO.getAllUnCommonAbilities();
+        System.out.println("Success");
+        if (res instanceof Result.Success){
+            allUnCommonAbilities = (ArrayList<AbilityDTO>) ((Result.Success<List<AbilityDTO>>) res).getData();
+        }
+        return res;
+    }
+
+    public Result<List<String>> getTypes(){
+        Result<List<String>> res = abilityDAO.getTypes();
+        System.out.println("Success");
+        if (res instanceof Result.Success){
+            types = (ArrayList<String>) ((Result.Success<List<String>>) res).getData();
+        }
+        return res;
+    }
+
+    public Result<List<AbilityDTO>> getAll(){
+        Result<List<AbilityDTO>> res = abilityDAO.getAll();
+        System.out.println("Success");
+        if (res instanceof Result.Success){
+            allAbilities = (ArrayList<AbilityDTO>) ((Result.Success<List<AbilityDTO>>) res).getData();
+        }
+        return res;
+    }
+
     public String tryBuy(int characterID, int abilityID){
         Result<AbilityDTO> res = abilityDAO.getAbilityByID(abilityID);
         if (res instanceof Result.Error){
-            //TODO: handle errors with error msg to frontend
             return null;
         } else {
             AbilityDTO dto = ((Result.Success<AbilityDTO>) res).getData();
@@ -127,14 +162,12 @@ public class AbilityRepository {
                     String fst3ep = tryBuy(characterID, races3ep.get(0).getStart(), true);
                     String scd3ep = tryBuy(characterID, races3ep.get(1).getStart(), true);
                     return "KRYS," + fst3ep + "," + scd3ep;
-                    //TODO: make get both start abilities of races
                 case "KRYS4EP":
                     ArrayList<RaceDTO> races4ep = (ArrayList<RaceDTO>) HomeViewModel.getInstance().getRaces().getValue();
                     confirmBuy(characterID, abilityID);
                     String fst4ep = tryBuy(characterID, races4ep.get(0).getEp2(), true);
                     String scd4ep = tryBuy(characterID, races4ep.get(1).getEp2(), true);
                     return "KRYS," + fst4ep + "," + scd4ep;
-                    //TODO: make get both 2ep abilities of races
                 case "STARTEVNE":
                     return "STARTEVNE";
                 default: // NULL or new
@@ -149,7 +182,6 @@ public class AbilityRepository {
     public String tryBuy(int characterID, int abilityID, boolean free){
         Result<AbilityDTO> res = abilityDAO.getAbilityByID(abilityID);
         if (res instanceof Result.Error){
-            //TODO: handle errors with error msg to frontend
             return null;
         } else {
             AbilityDTO dto = ((Result.Success<AbilityDTO>) res).getData();
@@ -217,11 +249,17 @@ public class AbilityRepository {
                 case "VALG": //should return a string to init a popup
                     return dto.getCommand().split(",")[1];
                 case "KRYS3EP":
-                    return "KRYS3EP";
-                //TODO: make get both start abilities of races
+                    ArrayList<RaceDTO> races3ep = (ArrayList<RaceDTO>) HomeViewModel.getInstance().getRaces().getValue();
+                    confirmBuy(characterID, abilityID);
+                    String fst3ep = tryBuy(characterID, races3ep.get(0).getStart(), true);
+                    String scd3ep = tryBuy(characterID, races3ep.get(1).getStart(), true);
+                    return "KRYS," + fst3ep + "," + scd3ep;
                 case "KRYS4EP":
-                    return "KRYS4EP";
-                //TODO: make get both 2ep abilities of races
+                    ArrayList<RaceDTO> races4ep = (ArrayList<RaceDTO>) HomeViewModel.getInstance().getRaces().getValue();
+                    confirmBuy(characterID, abilityID);
+                    String fst4ep = tryBuy(characterID, races4ep.get(0).getEp2(), true);
+                    String scd4ep = tryBuy(characterID, races4ep.get(1).getEp2(), true);
+                    return "KRYS," + fst4ep + "," + scd4ep;
                 case "STARTEVNE":
                     return "STARTEVNE";
                 default: // NULL or new
@@ -255,6 +293,11 @@ public class AbilityRepository {
 
     public Result<AbilityDTO> freeGet(int characterID, int freeAbilityID){
         Result res = abilityDAO.getFreeAbility(characterID,freeAbilityID);
+        return res;
+    }
+
+    public Result<AbilityDTO> createAbility(AbilityDTO dto){
+        Result res = abilityDAO.createAbility(dto);
         return res;
     }
 

@@ -14,7 +14,9 @@ import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public class RaceDAO {
@@ -38,6 +40,20 @@ public class RaceDAO {
     public Result<List<RaceDTO>> getRaceInfoStandart(){
         try {
             Call<List<RaceDTO>> call = service.getRaceInfoStandart();
+            resplst = call.execute();
+            if (resplst.code() == 200) {
+                return new Result.Success<List<RaceDTO>>(resplst.body());
+            }
+            throw new IOException("error for getting raceinfo");
+        } catch (IOException e){
+            e.printStackTrace();
+            return new Result.Error(new IOException("Error connection to database"));
+        }
+    }
+
+    public Result<List<RaceDTO>> getRaceInfoCustom(){
+        try {
+            Call<List<RaceDTO>> call = service.getRaceInfoCustom();
             resplst = call.execute();
             if (resplst.code() == 200) {
                 return new Result.Success<List<RaceDTO>>(resplst.body());
@@ -77,9 +93,40 @@ public class RaceDAO {
         }
     }
 
+    public Result<RaceDTO> createRace(RaceDTO dto) {
+        try {
+            Call<RaceDTO> call = service.createRace(dto);
+            resp = call.execute();
+            if (resp.code() == 200) {
+                return new Result.Success<RaceDTO>(resp.body());
+            }
+            throw new IOException(resp.message());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new Result.Error(new IOException("Error connection to database"));
+        }
+    }
+
+    public Result<RaceDTO> updateRace(RaceDTO dto) {
+        try {
+            Call<RaceDTO> call = service.updateRace(dto);
+            resp = call.execute();
+            if (resp.code() == 200) {
+                return new Result.Success<RaceDTO>(resp.body());
+            }
+            throw new IOException(resp.message());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new Result.Error(new IOException("Error connection to database"));
+        }
+    }
+
     public interface RaceCallService {
         @GET("/race/info/standart")
         Call<List<RaceDTO>> getRaceInfoStandart();
+
+        @GET("/race/info/custom")
+        Call<List<RaceDTO>> getRaceInfoCustom();
 
         @GET("/race/info/single/{raceID}")
         Call<RaceDTO> getRaceInfo(@Path(value = "raceID") int raceID);
@@ -87,8 +134,11 @@ public class RaceDAO {
         @GET("/race/krys/getCharacterRaces/{characterid}")
         Call<List<RaceDTO>> getKrysRaces(@Path(value = "characterid") int characterid);
 
-        /*@POST("/character/create")
-        Call<CharacterDTO> createCharacter(@Body CharacterDTO character);*/
+        @POST("/race/create")
+        Call<RaceDTO> createRace(@Body RaceDTO dto);
+
+        @POST("/race/update")
+        Call<RaceDTO> updateRace(@Body RaceDTO dto);
     }
 
 }

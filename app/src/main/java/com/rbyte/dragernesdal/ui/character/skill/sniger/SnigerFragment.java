@@ -8,21 +8,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout.LayoutParams;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -115,9 +108,9 @@ public class SnigerFragment extends Fragment {
         public AbilityViewHolder(View abilityViews) {
             super(abilityViews);
             view = abilityViews;
-            name = abilityViews.findViewById(R.id.abilityName);
+            name = abilityViews.findViewById(R.id.lineName);
             cost = abilityViews.findViewById(R.id.abilityCostTv);
-            buybtn = abilityViews.findViewById(R.id.buyAbilitybtn);
+            buybtn = abilityViews.findViewById(R.id.Abilitybtn);
             checkimg = abilityViews.findViewById(R.id.checkImage);
             // Gør listeelementer klikbare og vis det ved at deres baggrunsfarve ændrer sig ved berøring
             name.setBackgroundResource(android.R.drawable.list_selector_background);
@@ -146,6 +139,12 @@ public class SnigerFragment extends Fragment {
         public void onBindViewHolder(AbilityViewHolder vh, int position) {
             vh.name.setText(abilityList.get(position).getName());
             vh.cost.setText(abilityList.get(position).getCost() + "");
+            vh.view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popHandler.getInfoAlert(root2, abilityList.get(position).getName(), abilityList.get(position).getDesc()).show();
+                }
+            });
             if (position % 2 == 1) vh.view.setBackgroundColor(getResources().getColor(R.color.colorTableLine1));
             boolean bought = false;
             for (int id : currentAbilityIDs){
@@ -174,7 +173,6 @@ public class SnigerFragment extends Fragment {
                     vh.buybtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            //TODO: make popup, buy ability and refresh
                             popHandler.getConfirmBuyAlert(root2,
                                     abilityList.get(position).getName(),
                                     abilityList.get(position).getCost(),
@@ -188,8 +186,52 @@ public class SnigerFragment extends Fragment {
                                                 String command = abilityrepo.tryBuy(charRepo.getCurrentChar().getIdcharacter(), abilityList.get(position).getId());
                                                 charRepo.getCharacterByID(charRepo.getCurrentChar().getIdcharacter());
                                                 uiThread.post(() -> {
-                                                    if (command != "auto") { //new popup needed
-                                                        //TODO: create more popups
+                                                    if (command.split(",")[0] != "auto") { //new popup needed
+                                                        switch (command.split(",")[0]){
+                                                            case "HÅNDVÆRK":
+                                                                popHandler.getCraftsAlert(root2, getContext(), uiThread, false).show();
+                                                                break;
+                                                            case "3EP":
+                                                                popHandler.get3EPChoiceAlert(root2, getContext(), uiThread, currentAbilityIDs).show();
+                                                                break;
+                                                            case "4EP":
+                                                                popHandler.get4EPChoiceAlert(root2, getContext(), uiThread, currentAbilityIDs).show();
+                                                                break;
+                                                            case "EVNE":
+                                                                popHandler.getEvneChoiceAlert(root2, getContext(), uiThread, currentAbilityIDs).show();
+                                                                break;
+                                                            case "KRYS2EP":
+                                                                popHandler.getKrys2EPAlert(root2, getContext(), uiThread, currentAbilityIDs).show();
+                                                                break;
+                                                            case "KRYS":
+                                                                ArrayList<String> frees = new ArrayList<>();
+                                                                frees.add(command.split(",")[1]);
+                                                                frees.add(command.split(",")[2]);
+                                                                for (String command2 : frees){
+                                                                    switch (command2){
+                                                                        case "HÅNDVÆRK":
+                                                                            popHandler.getCraftsAlert(root2, getContext(), uiThread, true).show();
+                                                                            break;
+                                                                        case "3EP":
+                                                                            popHandler.get3EPChoiceAlert(root2, getContext(), uiThread, currentAbilityIDs, true).show();
+                                                                            break;
+                                                                        default:
+                                                                            break;
+                                                                    }
+                                                                }
+                                                                break;
+                                                            case "STARTEVNE": //only happens in create character and should be handled there
+                                                                Log.d("CharacterCreation", "Getting starter ability");
+                                                                Executor bgThread4 = Executors.newSingleThreadExecutor();
+                                                                bgThread4.execute(() -> {
+                                                                    AlertDialog.Builder builder = popHandler.getStartChoiceAlert(root2, getContext(), uiThread);
+                                                                    uiThread.post(() ->{
+                                                                        builder.show();
+                                                                    });
+                                                                });
+                                                                break;
+                                                        }
+
                                                     }
                                                     skillViewModel.setCurrentEP(charRepo.getCurrentChar().getCurrentep());
                                                     abilityAdapter.notifyDataSetChanged();

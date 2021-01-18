@@ -9,8 +9,10 @@ import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
 import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
+import com.rbyte.dragernesdal.data.inventory.InventoryRepository;
 import com.rbyte.dragernesdal.data.inventory.model.InventoryDTO;
 import com.rbyte.dragernesdal.data.race.model.RaceDTO;
+import com.rbyte.dragernesdal.ui.character.inventory.InventoryViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,7 @@ public class HomeViewModel extends ViewModel {
     private MutableLiveData<List<RaceDTO>> mOtherRace;
     private ArrayList<AbilityDTO> potential3epRaceAbilities;
     private CharacterRepository repo;
+    private InventoryRepository inventoryRepo;
     private static HomeViewModel instance;
 
     public static HomeViewModel getInstance(){
@@ -39,36 +42,13 @@ public class HomeViewModel extends ViewModel {
         this.mOtherRace = new MutableLiveData<>();
         this.potential3epRaceAbilities = new ArrayList<>();
         this.repo = CharacterRepository.getInstance();
+        this.inventoryRepo = InventoryRepository.getInstance();
         //initialing observers
     }
 
-    /*public void updateCurrentCharacter(){
-        if (mCharacter.getValue() != null)
-        mCharacter.postValue(repo.updateSavedCharacter(mCharacter.getValue().getIdcharacter())); //TODO Could maybe check to see if is the same? might not be needed
-    }
-
-    public void updateCurrentAbilities(){
-        Executor bgThread = Executors.newSingleThreadExecutor();
-        bgThread.execute(() -> {
-            if (mCharacter.getValue() != null)
-                mAbilities.postValue(repo.updateAbilities(mCharacter.getValue().getIdcharacter())); //TODO Could maybe check to see if is the same? might not be needed
-        });
-    }
-
-    public void updateCurrentMoney(){
-        if (mCharacter.getValue() != null) {
-            ArrayList<InventoryDTO> tmpLst = (ArrayList<InventoryDTO>) repo.updateInventory(mCharacter.getValue().getIdcharacter());
-            //We only want to show money here (ID's: 1 gold, 2 silver, 3 kobber)
-            ArrayList<InventoryDTO> moneyLst = new ArrayList<InventoryDTO>();
-            moneyLst.add(tmpLst.get(0));//Gold first
-            moneyLst.add(tmpLst.get(1));//Silver next
-            moneyLst.add(tmpLst.get(2));//Kobber last
-
-            mMoney.postValue(moneyLst); //TODO Could maybe check to see if is the same? might not be needed
-        }
-    }*/
 
     public void startGetThread(int characterID){
+        InventoryViewModel.getInstance();
         GetCharacterThread thread = new GetCharacterThread(characterID);
         thread.start();
     }
@@ -123,23 +103,23 @@ public class HomeViewModel extends ViewModel {
         if (result instanceof Result.Success) {
             ArrayList<AbilityDTO> tmpLst = ((Result.Success<ArrayList<AbilityDTO>>) result).getData();
             if (!tmpLst.equals((ArrayList<AbilityDTO>) mAbilities.getValue())) mAbilities.postValue(tmpLst);
-            //loginResult.postValue(new LoginResult(new LoggedInUserView(data.getFirstName() + " " + data.getLastName(), data.getEmail(), data.getPassHash())));
         } else {
-            //loginResult.postValue(new LoginResult(R.string.login_failed));
+
         }
     }
 
     public void getMoneyByCharacterID(int characterid){
         Result<List<InventoryDTO>> result;
-        result = repo.getInventoryByCharacterID(characterid);
+        result = inventoryRepo.getActualInventory(characterid);
 
         if (result instanceof Result.Success) {
             ArrayList<InventoryDTO> tmpLst = ((Result.Success<ArrayList<InventoryDTO>>) result).getData();
             //We only want to show money here (ID's: 1 gold, 2 silver, 3 kobber)
             ArrayList<InventoryDTO> moneyLst = new ArrayList<InventoryDTO>();
+            if (tmpLst == null || tmpLst.size() == 0) return;
             moneyLst.add(tmpLst.get(0));//Gold first
-            moneyLst.add(tmpLst.get(1));//Silver next
-            moneyLst.add(tmpLst.get(2));//Kobber last
+            if(tmpLst.size() > 1) moneyLst.add(tmpLst.get(1));//Silver next
+            if(tmpLst.size() > 2) moneyLst.add(tmpLst.get(2));//Kobber last
 
             mMoney.postValue(moneyLst);
             //loginResult.postValue(new LoginResult(new LoggedInUserView(data.getFirstName() + " " + data.getLastName(), data.getEmail(), data.getPassHash())));

@@ -14,26 +14,21 @@ public class EventDTO {
     private String endDate;
     private String address;
     private String info;
+    private String hyperlink;
     private int eventID;
 
     public EventDTO(){
 
     }
 
-    public EventDTO(String name, String startDate, String endDate, String address, String info, int eventID){
+    public EventDTO(String name, String startDate, String endDate, String address, String info, String hyperlink, int eventID) {
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
         this.address = address;
         this.info = info;
+        this.hyperlink = hyperlink;
         this.eventID = eventID;
-    }
-    public EventDTO(String name, String startDate, String endDate, String address, String info){
-        this.name = name;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.address = address;
-        this.info = info;
     }
 
     public String getName() {
@@ -44,19 +39,18 @@ public class EventDTO {
         this.name = name;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public LocalDateTime getStartDate() {
-        System.out.println(LocalDateTime.parse(startDate) + "LocalDateTime");
-        return LocalDateTime.parse(startDate);
+    public String getStartDate() {
+        //System.out.println(LocalDateTime.parse(startDate) + "LocalDateTime");
+        return startDate;
     }
 
     public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public LocalDateTime getEndDate() {
-        return LocalDateTime.parse(endDate);
+
+    public String getEndDate() {
+        return endDate;
     }
 
     public void setEndDate(String endDate) {
@@ -81,6 +75,14 @@ public class EventDTO {
 
     public int getEventID() {
         return eventID;
+    }
+
+    public String getHyperlink() {
+        return hyperlink;
+    }
+
+    public void setHyperlink(String hyperlink) {
+        this.hyperlink = hyperlink;
     }
 
     public void setEventID(int eventID) {

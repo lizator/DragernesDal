@@ -22,6 +22,7 @@ public class BackgroundViewModel extends ViewModel {
     private MutableLiveData<ArrayList<AbilityDTO>> badAbilities;
     private Handler uiThread = new Handler();
     private AbilityRepository abilityRepo = AbilityRepository.getInstance();
+    private MutableLiveData<Boolean> update;
 
     public static BackgroundViewModel getInstance(){
         if (instance == null) instance = new BackgroundViewModel();
@@ -30,6 +31,7 @@ public class BackgroundViewModel extends ViewModel {
 
     private BackgroundViewModel() {
         badAbilities = new MutableLiveData<>();
+        update = new MutableLiveData<>();
         updateBad();
     }
 
@@ -52,5 +54,13 @@ public class BackgroundViewModel extends ViewModel {
 
     public LiveData<ArrayList<AbilityDTO>> getBadAbilities() {
         return badAbilities;
+    }
+
+    public LiveData<Boolean> getUpdate(){
+        return update;
+    }
+
+    public void postUpdate(boolean update){
+        this.update.postValue(update);
     }
 }

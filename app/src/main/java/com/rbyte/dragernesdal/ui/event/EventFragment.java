@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rbyte.dragernesdal.R;
+import com.rbyte.dragernesdal.data.StringTimeFormatter;
 import com.rbyte.dragernesdal.data.event.model.AttendingDTO;
 import com.rbyte.dragernesdal.data.event.model.EventDTO;
 import com.rbyte.dragernesdal.ui.home.HomeFragment;
@@ -57,16 +58,18 @@ public class EventFragment extends Fragment {
         eventAdapter.notifyDataSetChanged();
 
         eventViewModel.getEvents().observe(getViewLifecycleOwner(), new Observer<List<EventDTO>>() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onChanged(List<EventDTO> eventDTOS) {
                 eventCards.clear();
+                StringTimeFormatter stringTimeFormatter = new StringTimeFormatter();
                 eventDTOS.forEach((n) -> {
-                    String date = n.getStartDate().toLocalDate().toString().equals((n.getEndDate().toLocalDate().toString())) ?
-                            n.getStartDate().toLocalDate().toString() :
-                            n.getStartDate().toLocalDate().toString() + " - " + n.getEndDate().toLocalDate().toString();
+                    String start = stringTimeFormatter.format(n.getStartDate());
+                    String end = stringTimeFormatter.format(n.getEndDate());
+                    String date =  stringTimeFormatter.equalDate(start, end)?
+                            stringTimeFormatter.getDate(start) :
+                            stringTimeFormatter.getDate(start) + " - " + stringTimeFormatter.getDate(end);
                     eventCards.add(new EventCard(date, n.getInfo(),
-                            "Klokken: " + n.getStartDate().toLocalTime().toString()+":00", n.getEndDate().toLocalTime().toString()+":00", n.getAddress(), n.getName()));
+                            "Klokken: " + stringTimeFormatter.getTime(n.getStartDate()), stringTimeFormatter.getTime(n.getEndDate()), n.getAddress(), n.getName(),n.getHyperlink(), n.getEventID()));
                 });
                 eventAdapter.notifyDataSetChanged();
             }
@@ -77,9 +80,13 @@ public class EventFragment extends Fragment {
             public void onChanged(List<AttendingDTO> attending) {
                 if (attending == null || eventCards == null || eventCards.size() == 0)
                     return;
-                attending.forEach((n) -> {
-                    eventCards.get(n.getIdEvent()).setAttending(true);
-                });
+                for(int i = 0; i < eventCards.size(); i++){
+                    for(int j = 0; j < attending.size(); j++){
+                        AttendingDTO n = attending.get(j);
+                        if(eventCards.get(i).eventID == attending.get(j).getIdEvent()) eventCards.get(i).setAttending(true);
+                    }
+
+                }
                 eventAdapter.notifyDataSetChanged();
             }
         });
@@ -99,7 +106,7 @@ public class EventFragment extends Fragment {
 
     class EventViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
-        TextView date, info, time, attending, address, title;
+        TextView date, info, time, attending, address, title, hyperlink;
 
         public EventViewHolder(View eventViews) {
             super(eventViews);
@@ -110,16 +117,17 @@ public class EventFragment extends Fragment {
             title = eventViews.findViewById(R.id.textTitle);
             attending = eventViews.findViewById(R.id.textAttending);
             address = eventViews.findViewById(R.id.textAddress);
+            hyperlink = eventViews.findViewById(R.id.textLink);
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     final int position = getAdapterPosition();
                     if (!eventCards.get(position).getAttending()) {
                         eventCards.get(position).setAttending(true);
-                        eventViewModel.startSetThread(characterID, position);
+                        eventViewModel.startSetThread(characterID, eventCards.get(position).getEventID());
                     } else {
                         eventCards.get(position).setAttending(false);
-                        eventViewModel.startRemoveThread(characterID, position);
+                        eventViewModel.startRemoveThread(characterID, eventCards.get(position).getEventID());
 
                     }
                     /*System.out.println(eventCards.toString());
@@ -150,6 +158,7 @@ public class EventFragment extends Fragment {
             vh.time.setText(eventCards.get(position).getStartTime() + "-" + eventCards.get(position).getEndTime());
             vh.address.setText("Adresse: " + eventCards.get(position).getAddress());
             vh.title.setText(eventCards.get(position).getTitle());
+            vh.hyperlink.setText(eventCards.get(position).getHyperlink());
             vh.attending.setText(eventCards.get(position).getAttending() ? "Deltager" : "Deltager ikke");
         }
 
@@ -163,18 +172,31 @@ public class EventFragment extends Fragment {
         private Boolean attending = false;
         private String address = "";
         private String title = "";
+        private String hyperlink = "";
+        private int eventID = -1;
 
-        public EventCard(String date, String info, String startTime, String endTime, String address, String title) {
+        public EventCard(String date, String info, String startTime, String endTime, String address, String title, String hyperlink, int eventID) {
             this.title = title;
             this.date = date;
             this.info = info;
             this.startTime = startTime;
             this.endTime = endTime;
             this.address = address;
+            this.hyperlink = hyperlink;
+            this.eventID = eventID;
         }
 
         public EventCard() {
 
+        }
+
+
+        public int getEventID() {
+            return eventID;
+        }
+
+        public void setEventID(int eventID) {
+            this.eventID = eventID;
         }
 
         public String getTitle() {
@@ -219,6 +241,14 @@ public class EventFragment extends Fragment {
 
         public void setEndTime(String endTime) {
             this.endTime = endTime;
+        }
+
+        public String getHyperlink() {
+            return hyperlink;
+        }
+
+        public void setHyperlink(String hyperlink) {
+            this.hyperlink = hyperlink;
         }
 
         public String getAddress() {

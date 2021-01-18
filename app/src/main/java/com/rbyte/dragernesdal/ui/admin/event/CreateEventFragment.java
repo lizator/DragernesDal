@@ -5,6 +5,8 @@ import android.app.TimePickerDialog;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +34,7 @@ import com.rbyte.dragernesdal.ui.character.background.BackgroundViewModel;
 import com.rbyte.dragernesdal.ui.event.EventViewModel;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.concurrent.Executor;
@@ -41,7 +44,7 @@ import java.util.concurrent.Executors;
 public class CreateEventFragment extends Fragment {
 
     private Button createEvent;
-    private EditText title, startDate, endDate, address, info;
+    private EditText title, startDate, endDate, address, info, hyperlink;
     private int mYear, mMonth, mDay, mHour, mMinute;
     private String timeStart = "", timeEnd = "";
     private Handler uiThread = new Handler();
@@ -50,6 +53,9 @@ public class CreateEventFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_admin_create_event, container, false);
         createEvent = root.findViewById(R.id.create_event);
+        createEvent.setEnabled(false);
+        final boolean[] startDateSet = {false};
+        final boolean[] endDateSet = {false};
         title = root.findViewById(R.id.editText_Title);
         startDate = root.findViewById(R.id.editTextStartDate);
         startDate.setOnClickListener(new View.OnClickListener() {
@@ -82,6 +88,8 @@ public class CreateEventFragment extends Fragment {
                                                 timeStart = dateToDTO+"T"+curTime+":00";
                                                 Log.d("date set", timeStart);
                                                 startDate.setText(startDate.getText()+" "+curTime+":00");
+                                                startDateSet[0] = true;
+                                                if(startDateSet[0] && endDateSet[0]) createEvent.setEnabled(true);
                                             }
                                         }, mHour, mMinute, false);
                                 timePickerDialog.show();
@@ -122,6 +130,8 @@ public class CreateEventFragment extends Fragment {
                                                 timeEnd = dateToDTO+"T"+curTime+":00";
                                                 Log.d("date set", timeStart);
                                                 endDate.setText(endDate.getText()+" "+curTime+":00");
+                                                endDateSet[0] = true;
+                                                if(startDateSet[0] && endDateSet[0]) createEvent.setEnabled(true);
                                             }
                                         }, mHour, mMinute, false);
                                 timePickerDialog.show();
@@ -133,7 +143,7 @@ public class CreateEventFragment extends Fragment {
         });
         address = root.findViewById(R.id.editText_Address);
         info = root.findViewById(R.id.eventInformation);
-
+        hyperlink = root.findViewById(R.id.editText_hyperlink);
         createEvent.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -145,6 +155,7 @@ public class CreateEventFragment extends Fragment {
                 eventDTO.setStartDate(timeStart);
                 eventDTO.setEndDate(timeEnd);
                 eventDTO.setInfo(info.getText()+"");
+                eventDTO.setHyperlink(hyperlink.getText()+"");
                 Executor bgThread = Executors.newSingleThreadExecutor();
                 bgThread.execute(() ->{
                     Log.d("Event","Event created");
