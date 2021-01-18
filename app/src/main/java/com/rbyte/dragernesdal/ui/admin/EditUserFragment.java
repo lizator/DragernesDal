@@ -290,7 +290,7 @@ public class EditUserFragment extends Fragment {
 
         saveCharacterbtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) { 
+            public void onClick(View view) {
                 //dealing with races
                 boolean wasKryslin = chosenCharacter.getIdrace() == 6;
                 int racePos = characterRaceSpin.getSelectedItemPosition() - 1;
