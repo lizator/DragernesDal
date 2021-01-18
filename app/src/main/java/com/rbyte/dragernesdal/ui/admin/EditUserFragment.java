@@ -72,6 +72,9 @@ public class EditUserFragment extends Fragment {
     private ArrayList<CharacterDTO> characters;
     private ArrayList<String> characterChoices = new ArrayList<>();
     private CharacterDTO chosenCharacter;
+    private ArrayList<RaceDTO> characterKrysRacer = new ArrayList<>();
+    private ArrayList<String> krysRacer1Names = new ArrayList<>();
+    private ArrayList<String> krysRacer2Names = new ArrayList<>();
     private ArrayList<RaceDTO> standartRaces = new ArrayList<>();
     private ArrayList<RaceDTO> customRaces = new ArrayList<>();
     private ArrayList<RaceDTO> racesCollected = new ArrayList<>();
@@ -258,6 +261,21 @@ public class EditUserFragment extends Fragment {
                                 customRaces = ((Result.Success<ArrayList<RaceDTO>>) customRacesRes).getData();
                                 racesCollected.addAll(standartRaces);
                                 racesCollected.addAll(customRaces);
+                                if (chosenCharacter.getIdrace() == 6) {
+                                    Executor bgThread2 = Executors.newSingleThreadExecutor();
+                                    bgThread2.execute(() -> {
+                                        Result<List<RaceDTO>> krysRacerRes = charRepo.getKrydsRaces(chosenCharacter.getIdcharacter(), false);
+                                        uiThread.post(() -> {
+                                           if (krysRacerRes instanceof Result.Success){
+                                               characterKrysRacer = (ArrayList<RaceDTO>) ((Result.Success<List<RaceDTO>>) krysRacerRes).getData();
+                                               setupKrysling();
+                                           }
+                                        });
+                                    });
+                                }
+                                else {
+                                    krysRacerView.setVisibility(View.GONE);
+                                }
                                 setupCharacter();
                             } else {
                                 popHandler.getInfoAlert(root2, "Fejl", "Kunne ikke hente alt data fra karakteren").show();
@@ -272,7 +290,124 @@ public class EditUserFragment extends Fragment {
 
         saveCharacterbtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view) { //TODO add toasts when correcly complete
+                //dealing with races
+                boolean wasKryslin = chosenCharacter.getIdrace() == 6;
+                int racePos = characterRaceSpin.getSelectedItemPosition() - 1;
+                boolean isSetToKrysling = wasKryslin;
+                if (racePos > -1) {
+                    isSetToKrysling = racesCollected.get(racePos).getID() == 6;
+                    chosenCharacter.setIdrace(racesCollected.get(racePos).getID());
+                    chosenCharacter.setRaceName(racesCollected.get(racePos).getRacename());
+                }
+                ArrayList<Integer> krysRaces = new ArrayList<>();
+                if (isSetToKrysling) {
+                    krysRaces = getKrysRaces(wasKryslin);
+                    if (krysRaces.get(0) == krysRaces.get(1)){
+                        popHandler.getInfoAlert(root2, "Fejl", "Kryslinger kan ikke have den samme race 2 gange!").show();
+                        return;
+                    }
+                }
+
+
+                String ep = epEdit.getText().toString();
+                String strength = strengthEdit.getText().toString();
+                String kp = kpEdit.getText().toString();
+                if (ep.length() != 0) chosenCharacter.setCurrentep(Integer.parseInt(ep));
+                else chosenCharacter.setCurrentep(0);
+                if (strength.length() != 0) chosenCharacter.setStrength(Integer.parseInt(strength));
+                else chosenCharacter.setStrength(0);
+                if (kp.length() != 0) chosenCharacter.setHealth(Integer.parseInt(kp));
+                else chosenCharacter.setHealth(0);
+
+                chosenCharacter.setBackground(backgroundEdit.getText().toString());
+                ArrayList<Integer> newkrysRaces = krysRaces;
+                if (wasKryslin && isSetToKrysling){
+                    Executor bgThread = Executors.newSingleThreadExecutor();
+                    bgThread.execute(() -> {
+                        Result charRes = charRepo.updateCharacter(chosenCharacter);
+                        uiThread.post(() -> {
+                            if (charRes instanceof Result.Success) {
+                                Executor bgThread2 = Executors.newSingleThreadExecutor();
+                                bgThread2.execute(() -> {
+                                    charRepo.updateKrysling(chosenCharacter.getIdcharacter(), newkrysRaces.get(0), newkrysRaces.get(1));
+                                    Result<List<RaceDTO>> krysRacerRes = charRepo.getKrydsRaces(chosenCharacter.getIdcharacter(), false);
+                                    uiThread.post(() -> {
+                                        if (krysRacerRes instanceof Result.Success) {
+                                            Toast.makeText(getContext(), "Karakteren blev opdateret", Toast.LENGTH_SHORT).show();
+                                            characterKrysRacer = (ArrayList<RaceDTO>) ((Result.Success<List<RaceDTO>>) krysRacerRes).getData();
+                                            setupCharacter();
+                                            setupKrysling();
+                                        } else popHandler.getInfoAlert(root2, "Fejl", "Der skete en fejl da krys-racerne skulle gemmes. Prøv at gemme igen.").show();
+                                    });
+                                });
+                            } else {
+                                popHandler.getInfoAlert(root2, "Fejl", "Karakteren kunne ikke gemmes.").show();
+                            }
+                        });
+
+                    });
+                } else if (!wasKryslin && isSetToKrysling){
+                    Executor bgThread = Executors.newSingleThreadExecutor();
+                    bgThread.execute(() -> {
+                        Result charRes = charRepo.updateCharacter(chosenCharacter);
+                        uiThread.post(() -> {
+                            if (charRes instanceof Result.Success) {
+                                Executor bgThread2 = Executors.newSingleThreadExecutor();
+                                bgThread2.execute(() -> {
+                                    charRepo.createKrysling(chosenCharacter.getIdcharacter(), newkrysRaces.get(0), newkrysRaces.get(1));
+                                    Result<List<RaceDTO>> krysRacerRes = charRepo.getKrydsRaces(chosenCharacter.getIdcharacter(), false);
+                                    uiThread.post(() -> {
+                                        if (krysRacerRes instanceof Result.Success) {
+                                            Toast.makeText(getContext(), "Karakteren blev opdateret", Toast.LENGTH_SHORT).show();
+                                            characterKrysRacer = (ArrayList<RaceDTO>) ((Result.Success<List<RaceDTO>>) krysRacerRes).getData();
+                                            setupCharacter();
+                                            setupKrysling();
+                                        } else popHandler.getInfoAlert(root2, "Fejl", "Der skete en fejl da krys-racerne skulle gemmes. Prøv at gemme igen.").show();
+                                    });
+                                });
+                            } else {
+                                popHandler.getInfoAlert(root2, "Fejl", "Karakteren kunne ikke gemmes.").show();
+                            }
+                        });
+
+                    });
+                } else if (wasKryslin && !isSetToKrysling){
+                    Executor bgThread = Executors.newSingleThreadExecutor();
+                    bgThread.execute(() -> {
+                        Result charRes = charRepo.updateCharacter(chosenCharacter);
+                        uiThread.post(() -> {
+                            if (charRes instanceof Result.Success) {
+                                Executor bgThread2 = Executors.newSingleThreadExecutor();
+                                bgThread2.execute(() -> {
+                                    charRepo.deleteKrysling(chosenCharacter.getIdcharacter());
+                                    uiThread.post(() -> {
+                                        Toast.makeText(getContext(), "Karakteren blev opdateret", Toast.LENGTH_SHORT).show();
+                                        characterKrysRacer.clear();
+                                        setupCharacter();
+                                    });
+                                });
+                            } else {
+                                popHandler.getInfoAlert(root2, "Fejl", "Karakteren kunne ikke gemmes.").show();
+                            }
+                        });
+
+                    });
+                } else {
+                    Executor bgThread = Executors.newSingleThreadExecutor();
+                    bgThread.execute(() -> {
+                        Result charRes = charRepo.updateCharacter(chosenCharacter);
+                        uiThread.post(() -> {
+                            if (charRes instanceof Result.Success) {
+                                Toast.makeText(getContext(), "Karakteren blev opdateret", Toast.LENGTH_SHORT).show();
+                                setupCharacter();
+                            } else {
+                                popHandler.getInfoAlert(root2, "Fejl", "Karakteren kunne ikke gemmes.").show();
+                            }
+                        });
+
+                    });
+                }
 
             }
         });
@@ -283,6 +418,7 @@ public class EditUserFragment extends Fragment {
                 String choice = raceNames.get(position);
                 if (choice.equals("Krysling") || (position == 0 && chosenCharacter.getIdrace() == 6)){
                     krysRacerView.setVisibility(View.VISIBLE);
+                    setupKrysling();
                     //TODO: fix
                 } else {
                     krysRacerView.setVisibility(View.GONE);
@@ -511,6 +647,7 @@ public class EditUserFragment extends Fragment {
     private void setupCharacter(){
 
         //setting up racespinner
+        raceNames.clear();
         raceNames.add(chosenCharacter.getRaceName() + " (Uændret)");
         for (RaceDTO dto : racesCollected){
             raceNames.add(dto.getRacename());
@@ -530,15 +667,33 @@ public class EditUserFragment extends Fragment {
         setupMagic();
     }
 
+    private void setupKrysling(){
+        krysRacer1Names.clear();
+        krysRacer2Names.clear();
+        krysRacerView.setVisibility(View.VISIBLE);
+        if (characterKrysRacer.size() > 1) {
+            krysRacer1Names.add(characterKrysRacer.get(0).getRacename() + " (Uændret)");
+            krysRacer2Names.add(characterKrysRacer.get(1).getRacename() + " (Uændret)");
+        }
+        for (RaceDTO dto : racesCollected){
+            krysRacer1Names.add(dto.getRacename());
+            krysRacer2Names.add(dto.getRacename());
+        }
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, krysRacer1Names);
+        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        krysRace1Spin.setAdapter(adapter1);
+        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, krysRacer2Names);
+        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        krysRace2Spin.setAdapter(adapter2);
+    }
+
     private void setupInventory(){
-
-
-        loadIntoShownAbilities("Alle typer");
 
         goldEdit.setText(inventory.get(0).getAmount() + "");
         silverEdit.setText(inventory.get(1).getAmount() + "");
         copperEdit.setText(inventory.get(2).getAmount() + "");
 
+        items.clear();
         for (int i = 3; i < inventory.size(); i++){
             items.add(inventory.get(i));
         }
@@ -549,6 +704,8 @@ public class EditUserFragment extends Fragment {
     }
 
     private void setupAbilities(){
+        loadIntoShownAbilities("Alle typer");
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, abilityTypes);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         typeSpin.setAdapter(adapter);
@@ -572,6 +729,23 @@ public class EditUserFragment extends Fragment {
                 }
             }
         }
+    }
+
+    public ArrayList<Integer> getKrysRaces(boolean wasKrysling){
+        int pos1 = krysRace1Spin.getSelectedItemPosition();
+        int pos2 = krysRace2Spin.getSelectedItemPosition();
+        ArrayList<Integer> racesFound = new ArrayList<>();
+
+        if (wasKrysling){
+            pos1 -= 1;
+            pos2 -= 1;
+        }
+
+        if (pos1 > -1) racesFound.add(racesCollected.get(pos1).getID());
+        else racesFound.add(characterKrysRacer.get(0).getID());
+        if (pos2 > -1) racesFound.add(racesCollected.get(pos2).getID());
+        else racesFound.add(characterKrysRacer.get(1).getID());
+        return racesFound;
     }
 
     private void loadIntoShownAbilities(String type){

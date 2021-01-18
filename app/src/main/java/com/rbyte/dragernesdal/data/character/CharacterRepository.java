@@ -170,6 +170,14 @@ public class CharacterRepository { //Class for getting characters and saving the
         return res;
     }
 
+    public Result<List<RaceDTO>> getKrydsRaces(int characterID, boolean save){
+        Result<List<RaceDTO>> res = raceDAO.getKrysRaces(characterID);
+        if (res instanceof Result.Success && save){
+            this.raceList = ((Result.Success<ArrayList<RaceDTO>>) res).getData();
+        }
+        return res;
+    }
+
     public Result<List<MagicTierDTO>> getmagicTiers(int characterID){
         Result<List<MagicTierDTO>> res = tierDAO.getTiersByCharacterID(characterID);
         if (res instanceof Result.Success){
@@ -188,6 +196,14 @@ public class CharacterRepository { //Class for getting characters and saving the
 
     public Result<CharacterDTO> createKrysling(int characterID, int race1ID, int race2ID){
         return characterDAO.createKrysling(characterID, race1ID, race2ID);
+    }
+
+    public Result<List<RaceDTO>> updateKrysling(int characterID, int race1ID, int race2ID){
+        return characterDAO.updateKrysling(characterID, race1ID, race2ID);
+    }
+
+    public Result<CharacterDTO> deleteKrysling(int characterID){
+        return characterDAO.deleteKrysling(characterID);
     }
 
     public Result<List<AbilityDTO>> setAbilities(int characterid, ArrayList<AbilityDTO> abilities){
