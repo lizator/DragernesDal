@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -49,59 +51,70 @@ public class EventFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_event, container, false);
         prefs = getDefaultSharedPreferences(root.getContext());
         characterID = prefs.getInt(HomeFragment.CHARACTER_ID_SAVESPACE, -1);
-        eventViewModel = EventViewModel.getInstance();
-        eventViewModel.startGetThread(characterID);
+        if (characterID == -1){
+            NavHostFragment navHostFragment = (NavHostFragment) getActivity().getSupportFragmentManager()
+                    .findFragmentById(R.id.nav_host_fragment);
+            NavController navController = navHostFragment.getNavController();
+            navController.navigate(R.id.nav_char_select);
+            Toast.makeText(getContext(), "Du skal væge en karakter for at komme her ind", Toast.LENGTH_SHORT).show();
+        } else {
+            eventViewModel = EventViewModel.getInstance();
+            eventViewModel.startGetThread(characterID);
 
-        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.eventRecyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
-        recyclerView.setAdapter(eventAdapter);
-        eventAdapter.notifyDataSetChanged();
+            RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.eventRecyclerView);
+            recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+            recyclerView.setAdapter(eventAdapter);
+            eventAdapter.notifyDataSetChanged();
 
-        eventViewModel.getEvents().observe(getViewLifecycleOwner(), new Observer<List<EventDTO>>() {
-            @Override
-            public void onChanged(List<EventDTO> eventDTOS) {
-                eventCards.clear();
-                StringTimeFormatter stringTimeFormatter = new StringTimeFormatter();
-                eventDTOS.forEach((n) -> {
-                    String start = stringTimeFormatter.format(n.getStartDate());
-                    String end = stringTimeFormatter.format(n.getEndDate());
-                    String date =  stringTimeFormatter.equalDate(start, end)?
-                            stringTimeFormatter.getDate(start) :
-                            stringTimeFormatter.getDate(start) + " - " + stringTimeFormatter.getDate(end);
-                    eventCards.add(new EventCard(date, n.getInfo(),
-                            "Klokken: " + stringTimeFormatter.getTime(n.getStartDate()), stringTimeFormatter.getTime(n.getEndDate()), n.getAddress(), n.getName(),n.getHyperlink(), n.getEventID()));
-                });
-                eventAdapter.notifyDataSetChanged();
-            }
-        });
-
-        eventViewModel.getAttending(characterID).observe(getViewLifecycleOwner(), new Observer<List<AttendingDTO>>() {
-            @Override
-            public void onChanged(List<AttendingDTO> attending) {
-                if (attending == null || eventCards == null || eventCards.size() == 0)
-                    return;
-                for(int i = 0; i < eventCards.size(); i++){
-                    for(int j = 0; j < attending.size(); j++){
-                        AttendingDTO n = attending.get(j);
-                        if(eventCards.get(i).eventID == attending.get(j).getIdEvent()) eventCards.get(i).setAttending(true);
-                    }
-
+            eventViewModel.getEvents().observe(getViewLifecycleOwner(), new Observer<List<EventDTO>>() {
+                @Override
+                public void onChanged(List<EventDTO> eventDTOS) {
+                    eventCards.clear();
+                    StringTimeFormatter stringTimeFormatter = new StringTimeFormatter();
+                    eventDTOS.forEach((n) -> {
+                        String start = stringTimeFormatter.format(n.getStartDate());
+                        String end = stringTimeFormatter.format(n.getEndDate());
+                        String date = stringTimeFormatter.equalDate(start, end) ?
+                                stringTimeFormatter.getDate(start) :
+                                stringTimeFormatter.getDate(start) + " - " + stringTimeFormatter.getDate(end);
+                        eventCards.add(new EventCard(date, n.getInfo(),
+                                "Klokken: " + stringTimeFormatter.getTime(n.getStartDate()), stringTimeFormatter.getTime(n.getEndDate()), n.getAddress(), n.getName(), n.getHyperlink(), n.getEventID()));
+                    });
+                    eventAdapter.notifyDataSetChanged();
                 }
-                eventAdapter.notifyDataSetChanged();
-            }
-        });
+            });
+
+            eventViewModel.getAttending(characterID).observe(getViewLifecycleOwner(), new Observer<List<AttendingDTO>>() {
+                @Override
+                public void onChanged(List<AttendingDTO> attending) {
+                    if (attending == null || eventCards == null || eventCards.size() == 0)
+                        return;
+                    for (int i = 0; i < eventCards.size(); i++) {
+                        for (int j = 0; j < attending.size(); j++) {
+                            AttendingDTO n = attending.get(j);
+                            if (eventCards.get(i).eventID == attending.get(j).getIdEvent())
+                                eventCards.get(i).setAttending(true);
+                        }
+
+                    }
+                    eventAdapter.notifyDataSetChanged();
+                }
+            });
 
 
-        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
-            @Override
-            public void handleOnBackPressed() {
-                Log.d("OnBackPress", "Back pressed in EventFragment");
-                NavController navController = Navigation.findNavController(root);
-                navController.popBackStack();
-            }
-        };
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+            OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+                @Override
+                public void handleOnBackPressed() {
+                    Log.d("OnBackPress", "Back pressed in EventFragment");
+                    NavController navController = Navigation.findNavController(root);
+                    navController.popBackStack();
+                }
+            };
+            requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+        }
+
         return root;
+
     }
 
     class EventViewHolder extends RecyclerView.ViewHolder {
