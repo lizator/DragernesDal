@@ -63,6 +63,10 @@ public class InventoryRepository {
     public void denyInventory(int charid) {
         inventoryDAO.deny(charid);
     }
+
+    public void denyAll(){
+        inventoryDAO.denyAll();
+    }
     public void confirm(int relationid){
         inventoryDAO.confirm(relationid);
     }
