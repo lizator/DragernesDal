@@ -190,6 +190,10 @@ public class CharacterRepository { //Class for getting characters and saving the
         return characterDAO.createKrysling(characterID, race1ID, race2ID);
     }
 
+    public Result<List<AbilityDTO>> setAbilities(int characterid, ArrayList<AbilityDTO> abilities){
+        return abilityDAO.setAbilities(characterid, abilities);
+    }
+
     public void setAbilityUpdate(boolean update){
         abilityUpdate.setValue(update);
     }

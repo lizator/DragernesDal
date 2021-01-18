@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -38,6 +39,7 @@ import com.rbyte.dragernesdal.data.ability.AbilityRepository;
 import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
+import com.rbyte.dragernesdal.data.inventory.InventoryDAO;
 import com.rbyte.dragernesdal.data.inventory.InventoryRepository;
 import com.rbyte.dragernesdal.data.inventory.model.InventoryDTO;
 import com.rbyte.dragernesdal.data.magic.MagicRepository;
@@ -59,6 +61,7 @@ public class EditUserFragment extends Fragment {
     private MagicRepository magicRepo = MagicRepository.getInstance();
     private AbilityRepository abilityRepo = AbilityRepository.getInstance();
     private InventoryRepository inventoryRepo = InventoryRepository.getInstance();
+    private InventoryDAO inventoryDAO = new InventoryDAO();
     private RaceDAO raceDAO = new RaceDAO();
     private Handler uiThread = new Handler();
     private PopupHandler popHandler;
@@ -106,11 +109,15 @@ public class EditUserFragment extends Fragment {
 
     private Button saveCharacterbtn;
     private Spinner characterRaceSpin;
+    private View krysRacerView;
+    private Spinner krysRace1Spin;
+    private Spinner krysRace2Spin;
     private EditText epEdit;
     private EditText strengthEdit;
     private EditText kpEdit;
     private EditText backgroundEdit;
 
+    private Button newLinebtn;
     private Button saveInventorybtn;
     private EditText copperEdit;
     private EditText silverEdit;
@@ -263,6 +270,142 @@ public class EditUserFragment extends Fragment {
             }
         });
 
+        saveCharacterbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        characterRaceSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                String choice = raceNames.get(position);
+                if (choice.equals("Krysling") || (position == 0 && chosenCharacter.getIdrace() == 6)){
+                    krysRacerView.setVisibility(View.VISIBLE);
+                    //TODO: fix
+                } else {
+                    krysRacerView.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+            }
+
+        });
+
+        newLinebtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                InventoryDTO dto = new InventoryDTO();
+                if (items.size() > 0) dto.setIdItem(items.get(items.size()-1).getIdItem()+1);
+                else  dto.setIdItem(3);
+                dto.setIdInventoryRelation(inventory.get(0).getIdInventoryRelation());
+                dto.setItemName("");
+                dto.setAmount(0);
+                items.add(dto);
+                inventoryAdapter.notifyDataSetChanged();
+            }
+        });
+
+        saveInventorybtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Executor bgThread = Executors.newSingleThreadExecutor();
+                bgThread.execute(() -> {
+                    ArrayList<InventoryDTO> newInventory = new ArrayList<>();
+                    InventoryDTO gold = new InventoryDTO();
+                    InventoryDTO silver = new InventoryDTO();
+                    InventoryDTO copper = new InventoryDTO();
+                    gold.setIdItem(0);
+                    silver.setIdItem(1);
+                    copper.setIdItem(2);
+                    gold.setItemName("Guld");
+                    silver.setItemName("Sølv");
+                    copper.setItemName("Kobber");
+                    gold.setAmount(Integer.parseInt(goldEdit.getText().toString()));
+                    silver.setAmount(Integer.parseInt(silverEdit.getText().toString()));
+                    copper.setAmount(Integer.parseInt(copperEdit.getText().toString()));
+                    newInventory.add(gold);
+                    newInventory.add(silver);
+                    newInventory.add(copper);
+                    newInventory.addAll(items);
+
+                    Result<List<InventoryDTO>> inventoryRes =  inventoryRepo.saveInventory(chosenCharacter.getIdcharacter(), newInventory);
+                    uiThread.post(() -> {
+                        if (inventoryRes instanceof Result.Success){
+                            Toast.makeText(getContext(), "Inventar gemt!", Toast.LENGTH_SHORT).show();
+                            Executor bgThread2 = Executors.newSingleThreadExecutor();
+                            bgThread2.execute(() -> {
+                                inventoryDAO.confirm(chosenCharacter.getIdcharacter());
+                            });
+                        } else {
+                            popHandler.getInfoAlert(root2, "Fejl", "Invertaren kunne ikke blive gemt").show();
+                        }
+                    });
+
+                });
+            }
+        });
+
+        saveAbilitiesbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Executor bgThread = Executors.newSingleThreadExecutor();
+                bgThread.execute(() -> {
+                    Result<List<AbilityDTO>> abilitiesRes = charRepo.setAbilities(chosenCharacter.getIdcharacter(), ownedAbilities);
+                    uiThread.post(() -> {
+                        if (abilitiesRes instanceof Result.Success){
+                            Toast.makeText(getContext(), "Evnerne blev gemt!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            popHandler.getInfoAlert(root2, "Fejl", "Evnerne kunne ikke blive gemt").show();
+                        }
+                    });
+                });
+            }
+        });
+
+        typeSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                String choice = abilityTypes.get(position);
+                loadIntoShownAbilities(choice);
+                updateAbilityAdapters();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+            }
+
+        });
+
+        saveMagicbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Executor bgThread = Executors.newSingleThreadExecutor();
+                bgThread.execute(() -> {
+                    ArrayList<MagicTierDTO> tierList = new ArrayList<>();
+                    for (int i = 0; i < checkBoxIDs.length; i++){
+                        if (((CheckBox) root2.findViewById(checkBoxIDs[i])).isChecked()){
+                            MagicTierDTO dto = new MagicTierDTO();
+                            dto.setId(i+1);
+                            tierList.add(dto);
+                        }
+                    }
+                    Result<List<MagicTierDTO>> magicTierRes = magicRepo.setCharacterMagic(chosenCharacter.getIdcharacter(), tierList);
+                    uiThread.post(() -> {
+                        if (magicTierRes instanceof Result.Success){
+                            Toast.makeText(getContext(), "Magierne blev gemt!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            popHandler.getInfoAlert(root2, "Fejl", "Magierne kunne ikke blive gemt!").show();
+                        }
+
+                    });
+                });
+            }
+        });
+
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
             public void handleOnBackPressed() {
@@ -297,11 +440,15 @@ public class EditUserFragment extends Fragment {
 
         saveCharacterbtn = root2.findViewById(R.id.saveCharacterbtn);
         characterRaceSpin = root2.findViewById(R.id.raceSpinner);
+        krysRacerView = root2.findViewById(R.id.kryslingRacerView);
+        krysRace1Spin = root2.findViewById(R.id.krysRace1);
+        krysRace2Spin = root2.findViewById(R.id.krysRace2);
         epEdit = root2.findViewById(R.id.epEdit);
         strengthEdit = root2.findViewById(R.id.strengthEdit);
         kpEdit = root2.findViewById(R.id.kpEdit);
         backgroundEdit = root2.findViewById(R.id.backgroundEdit);
 
+        newLinebtn = root2.findViewById(R.id.newLinebtn);
         saveInventorybtn = root2.findViewById(R.id.saveInventorybtn);
         copperEdit = root2.findViewById(R.id.copperEdit);
         silverEdit = root2.findViewById(R.id.silverEdit);
@@ -429,7 +576,7 @@ public class EditUserFragment extends Fragment {
 
     private void loadIntoShownAbilities(String type){
         shownAbilities.clear();
-        if (type.equals("Alle typer")){
+        if (type.equals("Alle Typer")){
             for (AbilityDTO newDto : allAbilities) {
                 boolean owned = false;
                 for (AbilityDTO ownDto : ownedAbilities){
@@ -439,6 +586,17 @@ public class EditUserFragment extends Fragment {
                     }
                 }
                 if (!owned) shownAbilities.add(newDto);
+            }
+        } else {
+            for (AbilityDTO newDto : allAbilities) {
+                boolean owned = false;
+                for (AbilityDTO ownDto : ownedAbilities) {
+                    if (newDto.getId() == ownDto.getId()) {
+                        owned = true;
+                        break;
+                    }
+                }
+                if (!owned && newDto.getType().equals(type)) shownAbilities.add(newDto);
             }
         }
     }

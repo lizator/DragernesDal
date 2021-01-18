@@ -88,6 +88,10 @@ public class MagicRepository {
         return tierDAO.buyTier(characterID, tier, cost);
     }
 
+    public Result<List<MagicTierDTO>> setCharacterMagic(int characterid, ArrayList<MagicTierDTO> tierList){
+        return tierDAO.setCharacterMagic(characterid, tierList);
+    }
+
 
     public void startGetThread(){
         new GetSpellsThread().run();
