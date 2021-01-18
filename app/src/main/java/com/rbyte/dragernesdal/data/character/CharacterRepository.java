@@ -210,6 +210,10 @@ public class CharacterRepository { //Class for getting characters and saving the
         return abilityDAO.setAbilities(characterid, abilities);
     }
 
+    public Result<CharacterDTO> deleteCharacter(int characterid){
+        return characterDAO.deleteCharacter(characterid);
+    }
+
     public void setAbilityUpdate(boolean update){
         abilityUpdate.setValue(update);
     }
