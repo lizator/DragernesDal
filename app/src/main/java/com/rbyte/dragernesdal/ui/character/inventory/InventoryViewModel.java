@@ -2,7 +2,6 @@ package com.rbyte.dragernesdal.ui.character.inventory;
 
 import android.os.Handler;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -47,7 +46,13 @@ public class InventoryViewModel extends ViewModel {
             }
             Result<List<InventoryDTO>> finRes = inventoryRes;
             uithread.post(() -> {
-                ArrayList<InventoryDTO> inventory = (ArrayList<InventoryDTO>) ((Result.Success) finRes).getData();
+                ArrayList<InventoryDTO> inventory = new ArrayList<>();
+                try {
+                    inventory = (ArrayList<InventoryDTO>) ((Result.Success) finRes).getData();
+                } catch (ClassCastException exc){
+                    exc.printStackTrace();
+                }
+
                 postInventory(inventory);
             });
         });

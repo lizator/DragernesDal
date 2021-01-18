@@ -118,8 +118,8 @@ public class HomeViewModel extends ViewModel {
             ArrayList<InventoryDTO> moneyLst = new ArrayList<InventoryDTO>();
             if (tmpLst == null || tmpLst.size() == 0) return;
             moneyLst.add(tmpLst.get(0));//Gold first
-            moneyLst.add(tmpLst.get(1));//Silver next
-            moneyLst.add(tmpLst.get(2));//Kobber last
+            if(tmpLst.size() > 1) moneyLst.add(tmpLst.get(1));//Silver next
+            if(tmpLst.size() > 2) moneyLst.add(tmpLst.get(2));//Kobber last
 
             mMoney.postValue(moneyLst);
             //loginResult.postValue(new LoginResult(new LoggedInUserView(data.getFirstName() + " " + data.getLastName(), data.getEmail(), data.getPassHash())));

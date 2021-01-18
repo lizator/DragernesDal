@@ -217,10 +217,9 @@ public class HomeFragment extends Fragment {
                     TextView goldTV = (TextView) root.findViewById(R.id.goldTV);
                     TextView silverTV = (TextView) root.findViewById(R.id.silverTV);
                     TextView kobberTV = (TextView) root.findViewById(R.id.kobberTV);
-
-                    goldTV.setText(moneyList.get(0).getAmount() + "");
-                    silverTV.setText(moneyList.get(1).getAmount() + "");
-                    kobberTV.setText(moneyList.get(2).getAmount() + "");
+                    if(moneyList.size() != 0) goldTV.setText(moneyList.get(0).getAmount() + "");
+                    if(moneyList.size() > 1) silverTV.setText(moneyList.get(1).getAmount() + "");
+                    if(moneyList.size() > 2) kobberTV.setText(moneyList.get(2).getAmount() + "");
 
                 }
             });

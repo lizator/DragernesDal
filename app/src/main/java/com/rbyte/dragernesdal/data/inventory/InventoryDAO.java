@@ -84,11 +84,13 @@ public class InventoryDAO {
         }
     }
 
-    public boolean deny(int relationid){
+    public boolean deny(int charid){
         try {
-            Call<InventoryDTO> call = service.deny(relationid);
+            Call<InventoryDTO> call = service.deny(charid);
             resp = call.execute();
-            if (resp.code() == 200) return resp.body().getAmount() == 1;
+            if (resp.code() == 200 ){
+                if(resp.body() != null) return resp.body().getAmount() == 1;
+            }
             Log.d("Inventory", "deny: error in data from backend: " + respBool.message());
             return false;
         } catch (IOException e){
@@ -111,12 +113,15 @@ public class InventoryDAO {
     }
 
 
-    public boolean confirm(int characterID){
+    public boolean confirm(int relationid){
         try {
-            Call<InventoryDTO> call = service.confirm(characterID);
+            Call<InventoryDTO> call = service.confirm(relationid);
             resp = call.execute();
-            if (resp.code() == 200) return resp.body().getAmount() == 1;
-            Log.d("Inventory", "confirm: error in data from backend: " + respBool.message());
+            if (resp.code() == 200){
+                if(resp.body() != null)
+                return resp.body().getAmount() == 1;
+            }
+            Log.d("Inventory", "confirm: error in data from backend: ");
             return false;
         } catch (IOException e){
             e.printStackTrace();
@@ -138,13 +143,13 @@ public class InventoryDAO {
         @POST("/inventory/save/{characterID}")
         Call<List<InventoryDTO>> saveInventory(@Path(value = "characterID") int characterid, @Body ArrayList<InventoryDTO> inventory);
 
-        @GET("/inventory/deny/{relationid}")
-        Call<InventoryDTO> deny(@Path(value = "relationid") int relationid);
+        @GET("/inventory/deny/{charid}")
+        Call<InventoryDTO> deny(@Path(value = "charid") int charid);
 
         @GET("/inventory/denyall")
         Call<InventoryDTO> denyAll();
 
-        @GET("/inventory/confirm/{characterid}")
-        Call<InventoryDTO> confirm(@Path(value = "characterid") int characterid);
+        @GET("/inventory/confirm/{relationid}")
+        Call<InventoryDTO> confirm(@Path(value = "relationid") int relationid);
     }
 }

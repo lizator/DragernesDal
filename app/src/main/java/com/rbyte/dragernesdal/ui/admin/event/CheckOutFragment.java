@@ -26,10 +26,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.rbyte.dragernesdal.R;
 import com.rbyte.dragernesdal.data.character.model.CharacterDTO;
-import com.rbyte.dragernesdal.data.event.model.CheckInDTO;
+import com.rbyte.dragernesdal.data.inventory.InventoryRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
@@ -43,7 +45,7 @@ public class CheckOutFragment extends Fragment {
     private ArrayList<CharacterDTO> characterList;
     private RecyclerView recyclerView;
     private CheckInViewModel checkInViewModel;
-    private FloatingActionButton fab;
+    private FloatingActionButton fab, fabDeny;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -52,10 +54,31 @@ public class CheckOutFragment extends Fragment {
         SharedPreferences prefs = getDefaultSharedPreferences(getContext());
         characterList = new ArrayList<CharacterDTO>();
         fab = root.findViewById(R.id.checkedIn);
+        fabDeny = root.findViewById(R.id.denyAll);
         eventID = prefs.getInt(EVENT_ID_ARGUMENT, -1);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Check ud: " + prefs.getString(EVENT_SELECTED_NAME, ""));
         checkInViewModel = CheckInViewModel.getInstance();
         checkInViewModel.startGetThread(eventID, 1);
+        fabDeny.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                alertDialog.setTitle("Vil du afvise alle inventories?");
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Ja", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        alertDialog.dismiss();
+                        Executor bgThread = Executors.newSingleThreadExecutor();
+                        bgThread.execute(()->{
+                            InventoryRepository inventoryRepository = InventoryRepository.getInstance();
+                            inventoryRepository.denyAll();
+                        });
+                        Toast.makeText(getContext(),"Alle inventories afvist",Toast.LENGTH_SHORT).show();
+                    }
+                });
+                alertDialog.show();
+            }
+        });
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
