@@ -36,5 +36,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:maxImageSize="48dp"
         app:srcCompat="@drawable/ic_baseline_exposure_plus_1_24" />
-    
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/denyAll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/charRecycler"
+        app:maxImageSize="48dp"
+        app:srcCompat="@drawable/ic_baseline_cancel_24" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

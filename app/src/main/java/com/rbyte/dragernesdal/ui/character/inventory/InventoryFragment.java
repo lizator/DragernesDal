@@ -12,9 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -65,14 +63,18 @@ public class InventoryFragment extends Fragment {
         goldEdit = root.findViewById(R.id.goldEdit);
         silverEdit = root.findViewById(R.id.silverEdit);
         copperEdit = root.findViewById(R.id.copperEdit);
+        gold = new InventoryDTO();
+        silver = new InventoryDTO();
+        copper = new InventoryDTO();
 
         inventoryViewModel.getInventory().observe(getViewLifecycleOwner(), new Observer<ArrayList<InventoryDTO>>() {
             @Override
             public void onChanged(ArrayList<InventoryDTO> inventory) {
                 if (inventory != null && inventory.size() != 0) {
+
                     gold = inventory.get(0);
-                    silver = inventory.get(1);
-                    copper = inventory.get(2);
+                    if(inventory.size() > 1) silver = inventory.get(1);
+                    if(inventory.size() > 2) copper = inventory.get(2);
                     goldEdit.setText(gold.getAmount() + "");
                     silverEdit.setText(silver.getAmount() + "");
                     copperEdit.setText(copper.getAmount() + "");

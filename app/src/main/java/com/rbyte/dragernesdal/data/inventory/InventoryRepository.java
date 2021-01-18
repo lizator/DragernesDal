@@ -1,16 +1,10 @@
 package com.rbyte.dragernesdal.data.inventory;
 
-import android.os.IInterface;
 import android.util.Log;
-
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.rbyte.dragernesdal.data.Result;
 import com.rbyte.dragernesdal.data.character.CharacterRepository;
 import com.rbyte.dragernesdal.data.inventory.model.InventoryDTO;
-import com.rbyte.dragernesdal.data.magic.magicSchool.model.MagicSchoolDTO;
-import com.rbyte.dragernesdal.data.magic.magicTier.model.MagicTierDTO;
-import com.rbyte.dragernesdal.data.magic.spell.model.SpellDTO;
 import com.rbyte.dragernesdal.ui.character.inventory.InventoryViewModel;
 
 import java.util.ArrayList;
@@ -64,6 +58,17 @@ public class InventoryRepository {
 
     public void startGetThread(){
         new GetInventoryThread().run();
+    }
+
+    public void denyInventory(int charid) {
+        inventoryDAO.deny(charid);
+    }
+
+    public void denyAll(){
+        inventoryDAO.denyAll();
+    }
+    public void confirm(int relationid){
+        inventoryDAO.confirm(relationid);
     }
 
     public String updateState(){
