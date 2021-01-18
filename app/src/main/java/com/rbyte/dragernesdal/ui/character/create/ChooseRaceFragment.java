@@ -3,12 +3,15 @@ package com.rbyte.dragernesdal.ui.character.create;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,11 +24,18 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rbyte.dragernesdal.R;
+import com.rbyte.dragernesdal.data.Result;
+import com.rbyte.dragernesdal.data.ability.AbilityDAO;
+import com.rbyte.dragernesdal.data.ability.model.AbilityDTO;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
@@ -36,6 +46,9 @@ public class ChooseRaceFragment extends Fragment {
     private View root;
     public static final String RACE_ID_SAVESPACE = "chosenRaceID";
     AlertDialog.Builder builder;
+    private AbilityDAO abilityDAO = new AbilityDAO();
+    private ArrayList<AbilityDTO> starterAbilities = new ArrayList<>();
+    String desc = "";
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -97,17 +110,31 @@ public class ChooseRaceFragment extends Fragment {
             editor.putInt(RACE_ID_SAVESPACE, raceList.get(getAdapterPosition()).getRaceID());
             editor.commit();
 
-            //builder.setTitle("Vil du vælge denne seje race");
-            View viewInflated = LayoutInflater.from(root.getContext()).inflate(R.layout.alert_race_info, (ViewGroup)root.getRootView(),false);
-            final EditText description = (EditText) viewInflated.findViewById(R.id.input);
-            description.setText("Elvere er nogle grimmerter");
-            builder.setView(viewInflated);
+            Handler uiThread = new Handler();
+            Executor bgThread1 = Executors.newSingleThreadExecutor();
+            bgThread1.execute(() -> {
 
-            int raceID = prefs.getInt(ChooseRaceFragment.RACE_ID_SAVESPACE, 1);
+                Result<List<AbilityDTO>> raceAbilitiesRes = abilityDAO.getAbilitiesByRaceID(prefs.getInt(ChooseRaceFragment.RACE_ID_SAVESPACE, 1));
+                if (raceAbilitiesRes instanceof Result.Success){
+                    ArrayList<AbilityDTO> raceAbilities = (ArrayList<AbilityDTO>) ((Result.Success<List<AbilityDTO>>) raceAbilitiesRes).getData();
+                    desc = "";
+                    for (int i = 0; i < 4; i++) {
+                        desc = desc + raceAbilities.get(i).getName() + "\n";
+                    }
+
+                }
+
+                uiThread.post(() -> {
+                    View viewInflated = LayoutInflater.from(root.getContext()).inflate(R.layout.alert_race_info, (ViewGroup)root.getRootView(),false);
+                    final EditText description = (EditText) viewInflated.findViewById(R.id.input);
+                    description.setText(desc);
+                    builder.setView(viewInflated);
+
+                    int raceID = prefs.getInt(ChooseRaceFragment.RACE_ID_SAVESPACE, 1);
 
 
 
-            builder.setPositiveButton("Vælg!", new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton("Vælg!", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
@@ -117,14 +144,23 @@ public class ChooseRaceFragment extends Fragment {
                         }
                     });
 
-            builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
+                    builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+
+
+                    });
+                    builder.show();
+
+                });
+
+
+
 
             });
-            builder.show();
+
 
 
 
