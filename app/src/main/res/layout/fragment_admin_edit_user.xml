@@ -32,6 +32,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
                 android:layout_margin="4dp"
+                android:inputType="textEmailAddress"
                 android:singleLine="true"
                 style="@style/TextZone"/>
         </LinearLayout>
