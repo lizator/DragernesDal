@@ -1,12 +1,15 @@
 package com.rbyte.dragernesdal.ui.login;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,11 +19,13 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.rbyte.dragernesdal.R;
+import com.rbyte.dragernesdal.ui.PopupHandler;
 import com.rbyte.dragernesdal.ui.main.MainActivity;
 import com.rbyte.dragernesdal.ui.usercreation.*;
 
@@ -78,6 +83,13 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent myIntent = new Intent(LoginActivity.this, CreateUserActivity.class);
                 startActivity(myIntent);
+            }
+        });
+
+        forgotPassTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "Kontakt spilleleder for at ændre kodeord!", Toast.LENGTH_LONG).show();
             }
         });
 
