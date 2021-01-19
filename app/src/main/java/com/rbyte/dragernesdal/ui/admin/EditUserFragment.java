@@ -55,6 +55,8 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import io.sentry.Sentry;
+
 public class EditUserFragment extends Fragment {
     private UserRepository userRepo = UserRepository.getInstance();
     private CharacterRepository charRepo = CharacterRepository.getInstance();
@@ -887,6 +889,7 @@ public class EditUserFragment extends Fragment {
                                 int amount = Integer.parseInt(number);
                                 items.get(i).setAmount(amount);
                             } catch (NumberFormatException e){
+                                Sentry.captureException(e);
                                 Log.d("InventoryAdapter", "editUserFragment: amount not found error");
                             }
 

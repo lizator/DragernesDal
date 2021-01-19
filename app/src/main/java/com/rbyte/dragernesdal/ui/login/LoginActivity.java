@@ -42,10 +42,6 @@ public class LoginActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) { //main
         super.onCreate(savedInstanceState);
 
-        boolean EMULATOR = Build.PRODUCT.contains("sdk") || Build.MODEL.contains("Emulator");
-        if (!EMULATOR) {
-            Sentry.captureMessage("Login Screen");
-        }
 
         setContentView(R.layout.activity_login);
         final EditText usernameEditText = findViewById(R.id.create_username);

@@ -7,6 +7,7 @@ import com.rbyte.dragernesdal.data.magic.magicSchool.model.MagicSchoolDTO;
 import java.io.IOException;
 import java.util.List;
 
+import io.sentry.Sentry;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -39,6 +40,7 @@ public class MagicSchoolDAO {
             throw new IOException(resplst.message());
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException(e.getMessage()));
         }
     }

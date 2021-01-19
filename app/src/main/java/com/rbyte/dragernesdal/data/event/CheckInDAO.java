@@ -7,6 +7,7 @@ import com.rbyte.dragernesdal.data.event.model.CheckInDTO;
 import java.io.IOException;
 import java.util.List;
 
+import io.sentry.Sentry;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -37,6 +38,7 @@ public class CheckInDAO {
             return new Result.Success<CheckInDTO>(resp.body());
         } catch (IOException e) {
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -48,6 +50,7 @@ public class CheckInDAO {
             return new Result.Success<CheckInDTO>(resp.body());
         } catch (IOException e) {
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }

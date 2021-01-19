@@ -37,6 +37,8 @@ import java.util.ArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import io.sentry.Sentry;
+
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 public class InventoryFragment extends Fragment {
@@ -243,6 +245,7 @@ public class InventoryFragment extends Fragment {
                                 int amount = Integer.parseInt(number);
                                 items.get(i).setAmount(amount);
                             } catch (NumberFormatException e){
+                                Sentry.captureException(e);
                                 Log.d("InventoryFragment", "lineChangeWatcher: amount not found error");
                             }
 

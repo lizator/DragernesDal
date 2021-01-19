@@ -5,6 +5,8 @@ import com.rbyte.dragernesdal.data.user.model.ProfileDTO;
 
 import java.io.IOException;
 
+import io.sentry.Sentry;
+
 /**
  * Class that requests authentication and user information from the remote data source and
  * maintains an in-memory cache of login status and user credentials information.
@@ -41,6 +43,7 @@ public class UserRepository {
             dao.logout();
         } catch (IOException e) {
             e.printStackTrace();
+            Sentry.captureException(e);
         }
 
     }
@@ -82,6 +85,7 @@ public class UserRepository {
             return result;
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return null;
         }
     }
@@ -96,6 +100,7 @@ public class UserRepository {
             return result;
         } catch (IOException e) {
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(e);
         }
     }

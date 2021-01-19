@@ -10,6 +10,7 @@ import com.rbyte.dragernesdal.data.event.model.EventDTO;
 import java.io.IOException;
 import java.util.List;
 
+import io.sentry.Sentry;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -42,6 +43,7 @@ public class EventDAO {
             return new Result.Success<List<EventDTO>>(respList.body());
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -54,6 +56,7 @@ public class EventDAO {
             return new Result.Success<EventDTO>(resp.body());
         } catch (IOException e) {
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -65,6 +68,7 @@ public class EventDAO {
             return new Result.Success<EventDTO>(resp.body());
         } catch (IOException e) {
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }

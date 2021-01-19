@@ -9,6 +9,7 @@ import com.rbyte.dragernesdal.data.main.model.MainDTO;
 
 import java.io.IOException;
 
+import io.sentry.Sentry;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -41,6 +42,7 @@ public class MainDAO {
             }
             throw new IOException("error for " + tableName);
         } catch (IOException e){
+            Sentry.captureException(e);
             e.printStackTrace();
             return new Result.Error(new IOException("Error connection to database"));
         }

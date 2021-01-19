@@ -10,6 +10,7 @@ import com.rbyte.dragernesdal.data.user.model.ProfileDTO;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import io.sentry.Sentry;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -41,6 +42,7 @@ public class ProfileDAO {
             return new Result.Error( new IOException(resp.message()));
         } catch (IOException e) {
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(e);
         }
     }
@@ -53,6 +55,7 @@ public class ProfileDAO {
             return new Result.Error( new IOException(resp.message()));
         } catch (IOException e) {
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(e);
         }
     }
@@ -65,6 +68,7 @@ public class ProfileDAO {
             return new Result.Error( new IOException(resp.message()));
         } catch (IOException e) {
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(e);
         }
     }
@@ -103,6 +107,7 @@ public class ProfileDAO {
             return new Result.Success<ProfileDTO>(resp.body());
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }

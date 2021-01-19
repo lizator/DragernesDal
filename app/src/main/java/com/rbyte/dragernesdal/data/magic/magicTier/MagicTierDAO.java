@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.sentry.Sentry;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -44,6 +45,7 @@ public class MagicTierDAO {
             throw new IOException(resplst.message());
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException(e.getMessage()));
         }
     }
@@ -55,6 +57,7 @@ public class MagicTierDAO {
             if (resplst.code() == 200) return new Result.Success<List<MagicTierDTO>>(resplst.body());
             throw new IOException(resplst.message());
         } catch (IOException e){
+            Sentry.captureException(e);
             e.printStackTrace();
             return new Result.Error(new IOException(e.getMessage()));
         }
@@ -67,6 +70,7 @@ public class MagicTierDAO {
             if (resp.code() == 200) return new Result.Success<MagicTierDTO>(resp.body());
             throw new IOException(resplst.message());
         } catch (IOException e){
+            Sentry.captureException(e);
             e.printStackTrace();
             return new Result.Error(new IOException(e.getMessage()));
         }
@@ -79,6 +83,7 @@ public class MagicTierDAO {
             if (resplst.code() == 200) return new Result.Success<List<MagicTierDTO>>(resplst.body());
             throw new IOException(resplst.message());
         } catch (IOException e){
+            Sentry.captureException(e);
             e.printStackTrace();
             return new Result.Error(new IOException(e.getMessage()));
         }
@@ -91,6 +96,7 @@ public class MagicTierDAO {
             if (resp.code() == 200) return new Result.Success<MagicTierDTO>(resp.body());
             throw new IOException(resplst.message());
         } catch (IOException e){
+            Sentry.captureException(e);
             e.printStackTrace();
             return new Result.Error(new IOException(e.getMessage()));
         }

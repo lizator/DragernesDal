@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.sentry.Sentry;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -44,6 +45,7 @@ public class InventoryDAO {
             return new Result.Error(new IOException(respList.message()));
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -56,6 +58,7 @@ public class InventoryDAO {
             return new Result.Error(new IOException(respList.message()));
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -68,6 +71,7 @@ public class InventoryDAO {
             return "Error";
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return "Error";
         }
     }
@@ -80,6 +84,7 @@ public class InventoryDAO {
             return new Result.Error(new IOException(respList.message()));
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -95,6 +100,7 @@ public class InventoryDAO {
             return false;
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return false;
         }
     }
@@ -108,6 +114,7 @@ public class InventoryDAO {
             return false;
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return false;
         }
     }
@@ -125,6 +132,7 @@ public class InventoryDAO {
             return false;
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return false;
         }
     }
