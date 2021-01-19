@@ -111,6 +111,7 @@ public class EditUserFragment extends Fragment {
     private View characterChosenView;
 
     private Button saveCharacterbtn;
+    private Button deleteCharacterbtn;
     private Spinner characterRaceSpin;
     private View krysRacerView;
     private Spinner krysRace1Spin;
@@ -145,25 +146,7 @@ public class EditUserFragment extends Fragment {
         chooseUserbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                userChosenView.setVisibility(View.GONE);
-                characterChosenView.setVisibility(View.GONE);
-                String email = chooseUserEmailEdit.getText().toString();
-                if (email == null || email.length() == 0){
-                    popHandler.getInfoAlert(root2, "Fejl", "Der er ikke indtasten nogen mail").show();
-                } else {
-                    Executor bgThread = Executors.newSingleThreadExecutor();
-                    bgThread.execute(() -> {
-                        Result<ProfileDTO> gottenRes = userRepo.getUserByEmail(email);
-                        uiThread.post(() -> {
-                            if (gottenRes instanceof Result.Success) {
-                                user = ((Result.Success<ProfileDTO>) gottenRes).getData();
-                                setupUser();
-                            } else {
-                                popHandler.getInfoAlert(root2, "Fejl", "Emailen findes ikke i databasen").show();
-                            }
-                        });
-                    });
-                }
+                loadUser();
             }
         });
 
@@ -412,6 +395,29 @@ public class EditUserFragment extends Fragment {
             }
         });
 
+        deleteCharacterbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popHandler.getConfirmDeleteCharacterAlert(root2, chosenCharacter.getName(), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Executor bgThread = Executors.newSingleThreadExecutor();
+                        bgThread.execute(() -> {
+                            Result res = charRepo.deleteCharacter(chosenCharacter.getIdcharacter());
+                            uiThread.post(() -> {
+                                if (res instanceof Result.Success){
+                                    Toast.makeText(getContext(), "Karakteren blev slettet", Toast.LENGTH_SHORT).show();
+                                    loadUser();
+                                } else {
+                                    popHandler.getInfoAlert(root2, "Fejl", "Karakteren kunne ikke blive slettet").show();
+                                }
+                            });
+                        });
+                    }
+                }).show();
+            }
+        });
+
         characterRaceSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -575,6 +581,7 @@ public class EditUserFragment extends Fragment {
         characterChosenView = root2.findViewById(R.id.characterChosenView);
 
         saveCharacterbtn = root2.findViewById(R.id.saveCharacterbtn);
+        deleteCharacterbtn = root2.findViewById(R.id.deleteCharacterbtn);
         characterRaceSpin = root2.findViewById(R.id.raceSpinner);
         krysRacerView = root2.findViewById(R.id.kryslingRacerView);
         krysRace1Spin = root2.findViewById(R.id.krysRace1);
@@ -607,6 +614,28 @@ public class EditUserFragment extends Fragment {
                 R.id.necro1, R.id.necro2, R.id.necro3, R.id.necro4, R.id.necro5,
                 R.id.transform1, R.id.transform2, R.id.transform3, R.id.transform4, R.id.transform5
         };
+    }
+
+    private void loadUser(){
+        userChosenView.setVisibility(View.GONE);
+        characterChosenView.setVisibility(View.GONE);
+        String email = chooseUserEmailEdit.getText().toString();
+        if (email == null || email.length() == 0){
+            popHandler.getInfoAlert(root2, "Fejl", "Der er ikke indtasten nogen mail").show();
+        } else {
+            Executor bgThread = Executors.newSingleThreadExecutor();
+            bgThread.execute(() -> {
+                Result<ProfileDTO> gottenRes = userRepo.getUserByEmail(email);
+                uiThread.post(() -> {
+                    if (gottenRes instanceof Result.Success) {
+                        user = ((Result.Success<ProfileDTO>) gottenRes).getData();
+                        setupUser();
+                    } else {
+                        popHandler.getInfoAlert(root2, "Fejl", "Emailen findes ikke i databasen").show();
+                    }
+                });
+            });
+        }
     }
 
     private void setupUser(){

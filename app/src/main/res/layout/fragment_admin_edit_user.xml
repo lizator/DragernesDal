@@ -254,16 +254,25 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center">
+                        <Button
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:id="@+id/deleteCharacterbtn"
+                            android:text="Slet karakter"/>
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
                             android:layout_height="wrap_content"
                             android:text="Karakter"
+                            android:gravity="center"
                             style="@style/text"
                             android:textSize="22dp"
-                            android:layout_marginRight="20dp"/>
+                            />
                         <Button
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:id="@+id/saveCharacterbtn"
                             android:text="Gem karakter"/>
                     </LinearLayout>

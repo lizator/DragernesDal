@@ -114,6 +114,23 @@ public class PopupHandler {
         return builder;
     }
 
+    public AlertDialog.Builder getConfirmDeleteCharacterAlert(View thisView, String characterName, DialogInterface.OnClickListener okListener){
+        builder.setTitle("Slet Karakter!");
+        View alertView = LayoutInflater.from(context).inflate(R.layout.popup_confirmation_delete_character, (ViewGroup) thisView.getRootView(), false);
+        String text = (String) ((TextView) alertView.findViewById(R.id.Alertmsg)).getText();
+        text = String.format(text, characterName);
+        ((TextView) alertView.findViewById(R.id.Alertmsg)).setText(text);
+        builder.setView(alertView);
+        builder.setPositiveButton(android.R.string.ok, okListener);
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        return builder;
+    }
+
     public AlertDialog.Builder getInfoAlert(View thisView, String name, String msg){
         builder.setTitle(name);
         View alertView = LayoutInflater.from(context).inflate(R.layout.popup_ability_info, (ViewGroup) thisView.getRootView(), false);
