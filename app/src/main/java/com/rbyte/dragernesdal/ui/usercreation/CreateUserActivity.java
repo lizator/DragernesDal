@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,12 +22,18 @@ import android.widget.Toast;
 import com.rbyte.dragernesdal.R;
 import com.rbyte.dragernesdal.data.user.model.ProfileDTO;
 
+import io.sentry.Sentry;
+
 public class CreateUserActivity extends AppCompatActivity {
     private CreateUserViewModel createUserViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        boolean EMULATOR = Build.PRODUCT.contains("sdk") || Build.MODEL.contains("Emulator");
+        if (!EMULATOR) {
+            Sentry.captureMessage("CreateUser Screen");
+        }
         setContentView(R.layout.activity_create_user);
         createUserViewModel = new CreateUserViewModel();
         //https://stackoverflow.com/questions/2479504/forcing-the-soft-keyboard-open - Opens keyboard on create. RequestFocus in activity_create_user.xml

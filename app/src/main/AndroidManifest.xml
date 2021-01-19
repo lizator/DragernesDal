@@ -12,6 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <meta-data android:name="io.sentry.dsn" android:value="https://523904ce24f74f2f9f110c65e1380a70@o507316.ingest.sentry.io/5598250" />
         <activity
             android:name="com.rbyte.dragernesdal.ui.main.MainActivity"
             android:label="@string/title_activity_main"

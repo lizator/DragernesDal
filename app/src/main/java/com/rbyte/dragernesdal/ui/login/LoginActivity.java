@@ -2,6 +2,7 @@ package com.rbyte.dragernesdal.ui.login;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -24,6 +25,8 @@ import com.rbyte.dragernesdal.R;
 import com.rbyte.dragernesdal.ui.main.MainActivity;
 import com.rbyte.dragernesdal.ui.usercreation.*;
 
+import io.sentry.Sentry;
+
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -33,6 +36,12 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) { //main
         super.onCreate(savedInstanceState);
+
+        boolean EMULATOR = Build.PRODUCT.contains("sdk") || Build.MODEL.contains("Emulator");
+        if (!EMULATOR) {
+            Sentry.captureMessage("Login Screen");
+        }
+
         setContentView(R.layout.activity_login);
         final EditText usernameEditText = findViewById(R.id.create_username);
         final EditText passwordEditText = findViewById(R.id.create_password);
