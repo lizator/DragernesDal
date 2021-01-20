@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import io.sentry.Sentry;
+
 public class InventoryCheckout {
     private final View view;
     private final AlertDialog.Builder builder;
@@ -241,6 +243,7 @@ public class InventoryCheckout {
                                 int amount = Integer.parseInt(number);
                                 inventoryDTOS.get(i).setAmount(amount);
                             } catch (NumberFormatException e){
+                                Sentry.captureException(e);
                                 Log.d("InventoryFragment", "lineChangeWatcher: amount not found error");
                             }
 

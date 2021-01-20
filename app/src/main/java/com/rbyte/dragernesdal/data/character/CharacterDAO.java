@@ -10,6 +10,7 @@ import com.rbyte.dragernesdal.data.race.model.RaceDTO;
 import java.io.IOException;
 import java.util.List;
 
+import io.sentry.Sentry;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -45,6 +46,7 @@ public class CharacterDAO {
             throw new IOException(resp.message());
         } catch (IOException e) {
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -59,6 +61,7 @@ public class CharacterDAO {
             throw new IOException(resp.message());
         } catch (IOException e) {
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -74,6 +77,7 @@ public class CharacterDAO {
         } catch (IOException e) {
             Log.d("CharacterDAO", "updateCharacter: error msg: " + e.getMessage());
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -89,6 +93,7 @@ public class CharacterDAO {
         } catch (IOException e) {
             Log.d("CharacterDAO", "updateCharacter: error msg: " + e.getMessage());
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -104,6 +109,7 @@ public class CharacterDAO {
         } catch (IOException e) {
             Log.d("CharacterDAO", "updateCharacter: error msg: " + e.getMessage());
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -118,6 +124,7 @@ public class CharacterDAO {
             throw new IOException(respList.message());
         } catch (IOException e) {
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -132,6 +139,7 @@ public class CharacterDAO {
             throw new IOException(respList.message());
         } catch (IOException e) {
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -150,6 +158,7 @@ public class CharacterDAO {
             else return new Result.Error(new IOException(resp.message()));
         } catch (IOException e) {
             e.printStackTrace();
+            Sentry.captureException(e);
             Log.d("CharacterDAO", "updateCharacter: error msg: " + e.getMessage());
             return new Result.Error(new IOException("Error connection to database"));
         }
@@ -163,6 +172,7 @@ public class CharacterDAO {
             else return new Result.Error(new IOException(resp.message()));
         } catch (IOException e) {
             e.printStackTrace();
+            Sentry.captureException(e);
             Log.d("CharacterDAO", "updateCharacter: error msg: " + e.getMessage());
             return new Result.Error(new IOException("Error connection to database"));
         }

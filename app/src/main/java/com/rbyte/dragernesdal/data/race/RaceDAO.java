@@ -10,6 +10,7 @@ import com.rbyte.dragernesdal.data.race.model.RaceDTO;
 import java.io.IOException;
 import java.util.List;
 
+import io.sentry.Sentry;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -47,6 +48,7 @@ public class RaceDAO {
             throw new IOException("error for getting raceinfo");
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -61,6 +63,7 @@ public class RaceDAO {
             throw new IOException("error for getting raceinfo");
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -75,6 +78,7 @@ public class RaceDAO {
             throw new IOException("error for getting raceinfo");
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -89,6 +93,7 @@ public class RaceDAO {
             throw new IOException(resplst.message());
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException(e.getMessage()));
         }
     }
@@ -103,6 +108,7 @@ public class RaceDAO {
             throw new IOException(resp.message());
         } catch (IOException e) {
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -117,6 +123,7 @@ public class RaceDAO {
             throw new IOException(resp.message());
         } catch (IOException e) {
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }

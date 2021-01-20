@@ -30,10 +30,6 @@ public class CreateUserActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        boolean EMULATOR = Build.PRODUCT.contains("sdk") || Build.MODEL.contains("Emulator");
-        if (!EMULATOR) {
-            Sentry.captureMessage("CreateUser Screen");
-        }
         setContentView(R.layout.activity_create_user);
         createUserViewModel = new CreateUserViewModel();
         //https://stackoverflow.com/questions/2479504/forcing-the-soft-keyboard-open - Opens keyboard on create. RequestFocus in activity_create_user.xml

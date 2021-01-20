@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import io.sentry.Sentry;
+
 public class InventoryViewModel extends ViewModel {
     private static InventoryViewModel instance;
     private MutableLiveData<String> status;
@@ -51,6 +53,7 @@ public class InventoryViewModel extends ViewModel {
                     inventory = (ArrayList<InventoryDTO>) ((Result.Success) finRes).getData();
                 } catch (ClassCastException exc){
                     exc.printStackTrace();
+                    Sentry.captureException(exc);
                 }
 
                 postInventory(inventory);
@@ -76,6 +79,7 @@ public class InventoryViewModel extends ViewModel {
                 }
                 catch (ClassCastException c){
                     c.printStackTrace();
+                    Sentry.captureException(c);
                 }
             });
         });

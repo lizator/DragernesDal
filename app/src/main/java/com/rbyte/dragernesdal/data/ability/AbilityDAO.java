@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.sentry.Sentry;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -43,6 +44,7 @@ public class AbilityDAO {
             return new Result.Error(new IOException(respList.message()));
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -55,6 +57,7 @@ public class AbilityDAO {
             return new Result.Error(new IOException(respList.message()));
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -67,6 +70,7 @@ public class AbilityDAO {
             return new Result.Error(new IOException(respList.message()));
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -79,6 +83,7 @@ public class AbilityDAO {
             return new Result.Error(new IOException(respList.message()));
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -91,6 +96,7 @@ public class AbilityDAO {
             return new Result.Error(new IOException(respList.message()));
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -103,6 +109,7 @@ public class AbilityDAO {
             return new Result.Error(new IOException(respStrings.message()));
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -115,6 +122,7 @@ public class AbilityDAO {
             return new Result.Error(new IOException(respList.message()));
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -128,6 +136,7 @@ public class AbilityDAO {
             return new Result.Error(new IOException(resp.message()));
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -140,6 +149,7 @@ public class AbilityDAO {
             return new Result.Error(new IOException(resp.message()));
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -152,6 +162,7 @@ public class AbilityDAO {
             return new Result.Error(new IOException(resp.message()));
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -164,6 +175,7 @@ public class AbilityDAO {
             return new Result.Error(new IOException(resp.message()));
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -176,6 +188,7 @@ public class AbilityDAO {
             return new Result.Error(new IOException(resp.message()));
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -188,6 +201,7 @@ public class AbilityDAO {
             return new Result.Error(new IOException(resp.message()));
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -203,6 +217,7 @@ public class AbilityDAO {
             return new Result.Error(new IOException(resp.message()));
         } catch (IOException e){
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -214,6 +229,7 @@ public class AbilityDAO {
             return new Result.Success<AbilityDTO>(resp.body());
         } catch (IOException e) {
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }
@@ -226,6 +242,7 @@ public class AbilityDAO {
             return new Result.Error(new IOException(respList.message()));
         } catch (IOException e) {
             e.printStackTrace();
+            Sentry.captureException(e);
             return new Result.Error(new IOException("Error connection to database"));
         }
     }

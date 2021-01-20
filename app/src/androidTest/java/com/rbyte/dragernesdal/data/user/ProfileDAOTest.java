@@ -4,6 +4,8 @@ import com.rbyte.dragernesdal.data.user.model.ProfileDTO;
 
 import org.junit.Test;
 
+import io.sentry.Sentry;
+
 import static org.junit.Assert.*;
 
 public class ProfileDAOTest {
@@ -18,6 +20,7 @@ public class ProfileDAOTest {
             dto = null;
             e.printStackTrace();
             assertTrue(false);
+            Sentry.captureException(e);
         }
         assertEquals(2, dto.getId());
     }
